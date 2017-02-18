@@ -43,7 +43,7 @@
             </meta-data>
         </receiver>
         <receiver android:name=".ImageWidget"
-                  android:icon="@drawable/picture_icon_small"
+                  android:icon="@drawable/icon_camera"
                   android:label="Image Notes">
             <intent-filter >
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>

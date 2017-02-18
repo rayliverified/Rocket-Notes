@@ -5,18 +5,20 @@
               android:layout_height="match_parent">
         <ImageView
             android:id="@+id/image_button"
-            android:layout_width="50dp"
+            android:layout_width="60dp"
             android:layout_height="match_parent"
-            android:src="@drawable/new_message_icon"
+            android:padding="6dp"
+            android:src="@drawable/icon_camera"
             android:scaleType="fitCenter"/>
         <GridView
             android:id="@+id/image_gridview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:numColumns="auto_fit"
-            android:columnWidth="62dp"
-            android:verticalSpacing="0dp"
-            android:horizontalSpacing="4dp"
-            android:stretchMode="columnWidth">
+            android:columnWidth="66dp"
+            android:verticalSpacing="6dp"
+            android:horizontalSpacing="6dp"
+            android:stretchMode="columnWidth"
+            android:gravity="center">
         </GridView>
 </LinearLayout>
