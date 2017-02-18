@@ -42,6 +42,21 @@
                        android:resource="@xml/widget_newnote">
             </meta-data>
         </receiver>
+        <receiver android:name=".ImageWidget"
+                  android:icon="@drawable/picture_icon_small"
+                  android:label="Image Notes">
+            <intent-filter >
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
+                <action android:name="ADD_IMAGE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/widget_image">
+            </meta-data>
+        </receiver>
+        <!-- Services -->
+        <service android:name=".ImageWidgetService"
+                 android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>
