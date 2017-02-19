@@ -58,7 +58,7 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         extras.putInt("EXRA_ITEM", position);
         Intent fillInIntent = new Intent();
         fillInIntent.putExtras(extras);
-        rv.setOnClickFillInIntent(R.id.item_placeholder, fillInIntent);
+       // rv.setOnClickFillInIntent(R.id.item_placeholder, fillInIntent);
 
         return rv;
     }

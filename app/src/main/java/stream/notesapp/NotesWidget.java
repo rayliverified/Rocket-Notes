@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ListView;
 import android.widget.RemoteViews;
 
 public class NotesWidget extends AppWidgetProvider {

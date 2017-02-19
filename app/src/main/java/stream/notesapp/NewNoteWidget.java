@@ -15,7 +15,6 @@ import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-
 public class NewNoteWidget extends AppWidgetProvider {
 
 
@@ -39,6 +38,7 @@ public class NewNoteWidget extends AppWidgetProvider {
             remoteViews.setOnClickPendingIntent(R.id.image_button, pendingIntent);
 
             appWidgetManager.updateAppWidget(widgetID, remoteViews);
+
         }
     }
 
@@ -99,7 +99,10 @@ public class NewNoteWidget extends AppWidgetProvider {
         } else {
             Log.d("onReceive", "Clicked");
             super.onReceive(context, intent);
+
         }
+
     }
+
 
 }

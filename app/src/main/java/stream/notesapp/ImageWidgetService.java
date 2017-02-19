@@ -55,7 +55,7 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_image);
 //        rv.setTextViewText(R.id.item_image, mImageItems.get(position).getSomething());
         Bundle extras = new Bundle();
-        extras.putInt("EXRA_ITEM", position);
+        extras.putInt("EXTRA_ITEM", position);
         Intent fillInIntent = new Intent();
         fillInIntent.putExtras(extras);
         rv.setOnClickFillInIntent(R.id.item_image, fillInIntent);
