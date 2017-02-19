@@ -53,6 +53,13 @@ public class ImageWidget extends AppWidgetProvider {
         RemoteViews remoteViews = getRemoteViews(context, minWidth, minHeight);
         remoteViews.setRemoteAdapter(R.id.image_gridview, intent);
 //        remoteViews.setEmptyView(R.id.image_gridview, R.id.image_button);
+
+        // Register an onClickListener
+        intent = new Intent(context, ImageWidget.class);
+        intent.setAction(ADD_IMAGE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        remoteViews.setOnClickPendingIntent(R.id.image_button, pendingIntent);
+
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
     }
@@ -108,6 +115,9 @@ public class ImageWidget extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(ADD_IMAGE)) {
             Log.d("onReceive", ADD_IMAGE);
+            intent = new Intent(context, CameraActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
         } else {
             Log.d("onReceive", "Clicked");
             super.onReceive(context, intent);
