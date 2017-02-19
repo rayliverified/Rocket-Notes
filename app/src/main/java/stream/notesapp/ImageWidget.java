@@ -3,6 +3,7 @@ package stream.notesapp;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import android.widget.RemoteViews;
 public class ImageWidget extends AppWidgetProvider {
 
     private static final String ADD_IMAGE = "ADD_IMAGE";
+    private static final String OPEN_IMAGE = "OPEN_IMAGE";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -53,11 +55,19 @@ public class ImageWidget extends AppWidgetProvider {
         remoteViews.setRemoteAdapter(R.id.image_gridview, intent);
 //        remoteViews.setEmptyView(R.id.image_gridview, R.id.image_button);
 
-        // Register an onClickListener
-        intent = new Intent(context, ImageWidget.class);
-        intent.setAction(ADD_IMAGE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+//        Register an onClickListener
+        Intent imageAddIntent = new Intent(context, ImageWidget.class);
+        imageAddIntent.setAction(ADD_IMAGE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, imageAddIntent, 0);
         remoteViews.setOnClickPendingIntent(R.id.image_button, pendingIntent);
+
+
+        Intent imageOpenintent = new Intent(context, ImageWidget.class);
+        imageOpenintent.setAction(OPEN_IMAGE);
+        imageOpenintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        pendingIntent = PendingIntent.getBroadcast(context, 0, imageOpenintent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setPendingIntentTemplate(R.id.image_gridview, pendingIntent);
 
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
@@ -117,7 +127,26 @@ public class ImageWidget extends AppWidgetProvider {
             intent = new Intent(context, CameraActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
-        } else {
+        }
+        else if (intent.getAction().equals(OPEN_IMAGE))
+        {
+            Log.d("onReceive", OPEN_IMAGE);
+            try {
+//                Log.d("File Path", intent.getStringExtra("EXTRA_ITEM"));
+                String imagePath = intent.getStringExtra("EXTRA_ITEM");
+                if (imagePath != null)
+                {
+                    intent = new Intent(context, ImageViewerActivity.class);
+                    intent.putExtra("IMAGE_PATH", imagePath);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+            }
+            catch (ActivityNotFoundException e) {
+
+            }
+        }
+        else {
             Log.d("onReceive", "Clicked");
             super.onReceive(context, intent);
         }

@@ -1,10 +1,8 @@
 package stream.notesapp;
 
 import android.Manifest;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,11 +21,7 @@ import java.util.List;
 public class CameraActivity extends AppCompatActivity{
 
     private static final int REQUEST_CAMERA_PERMISSIONS = 931;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
     private final static int CAMERA_RQ = 6969;
-    String mCurrentPhotoPath;
-    Uri mPhotoURI;
-    ContextWrapper mContextWrapper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,7 +66,6 @@ public class CameraActivity extends AppCompatActivity{
 
     @RequiresPermission(Manifest.permission.CAMERA)
     public void StartCamera() {
-        mContextWrapper = new ContextWrapper(getApplicationContext());
         File dir = new File(getFilesDir() + "/.Pictures");
         if (!dir.exists()) {
             dir.mkdirs();

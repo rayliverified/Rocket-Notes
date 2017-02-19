@@ -31,13 +31,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
         </activity>
-        <activity android:name=".CameraActivity"></activity>
+        <activity android:name=".CameraActivity"/>
         <activity
             android:name="com.afollestad.materialcamera.CaptureActivity"
             android:theme="@style/MaterialCamera.CaptureActivity" />
         <activity
             android:name="com.afollestad.materialcamera.CaptureActivity2"
             android:theme="@style/MaterialCamera.CaptureActivity" />
+        <activity android:name=".ImageViewerActivity"/>
         <!-- Widgets -->
         <receiver android:name=".NewNoteWidget"
                   android:icon="@drawable/new_message_icon"
@@ -45,6 +46,7 @@
             <intent-filter >
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="ACTION_CLICK"/>
+                <action android:name="OPEN_IMAGE"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                        android:resource="@xml/widget_newnote">
