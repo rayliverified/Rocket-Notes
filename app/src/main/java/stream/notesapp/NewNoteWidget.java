@@ -15,7 +15,9 @@ import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+
 public class NewNoteWidget extends AppWidgetProvider {
+
 
     private static final String ACTION_CLICK = "ACTION_CLICK";
 
@@ -99,4 +101,5 @@ public class NewNoteWidget extends AppWidgetProvider {
             super.onReceive(context, intent);
         }
     }
+
 }
