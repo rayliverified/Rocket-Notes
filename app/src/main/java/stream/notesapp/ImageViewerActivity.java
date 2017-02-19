@@ -28,4 +28,10 @@ public class ImageViewerActivity extends AppCompatActivity {
         Log.d("Received Image Uri", String.valueOf(imageUri));
         mPhotoDraweeView.setPhotoUri(imageUri);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        moveTaskToBack(true);
+    }
 }

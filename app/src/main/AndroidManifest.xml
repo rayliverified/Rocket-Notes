@@ -59,6 +59,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
                 <action android:name=".ImageWidget.ADD_IMAGE"/>
+                <action android:name=".ImageWidget.OPEN_IMAGE"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                        android:resource="@xml/widget_image">

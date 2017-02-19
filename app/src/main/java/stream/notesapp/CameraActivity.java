@@ -1,6 +1,8 @@
 package stream.notesapp;
 
 import android.Manifest;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -102,8 +104,13 @@ public class CameraActivity extends AppCompatActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_RQ && resultCode == RESULT_OK) {
             Log.d("Camera Result", data.getDataString());
+            int widgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), ImageWidget.class));
+
+            for (int id : widgetIDs)
+            {
+                AppWidgetManager.getInstance(getApplication()).notifyAppWidgetViewDataChanged(id, R.id.image_gridview);
+            }
             moveTaskToBack(true);
-//            mImageView.setImageBitmap(imageBitmap);
         }
         else
         {

@@ -68,13 +68,13 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             int numberOfImages = files.length;
             Arrays.sort(files, Collections.<File>reverseOrder());
             int smallerNumber = 0;
-            if (numberOfImages < 8)
+            if (numberOfImages < 9)
             {
                 smallerNumber = numberOfImages;
             }
             else
             {
-                smallerNumber = 8;
+                smallerNumber = 9;
             }
             Log.d("Number of Images", String.valueOf(numberOfImages));
             for (int i = 0; i < smallerNumber - 1; i++) {
@@ -97,6 +97,7 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     public RemoteViews getViewAt(int position) {
 
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_image);
+        Log.d("Size mImageItems", String.valueOf(mImageItems.size()));
         if (position < mImageItems.size())
         {
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -115,6 +116,10 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             Log.d("Image Width", String.valueOf(imageBitmap.getWidth()));
             Log.d("Image Height", String.valueOf(imageBitmap.getHeight()));
             rv.setImageViewBitmap(R.id.item_image, imageBitmap);
+        }
+        else
+        {
+            rv.setImageViewResource(R.id.item_image, R.drawable.icon_picture);
         }
         Bundle extras = new Bundle();
 
@@ -209,6 +214,8 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         return true;
     }
     public void onDataSetChanged() {
+        Log.d("Widget Updated", "Data Changed");
+        onCreate();
         // This is triggered when you call AppWidgetManager notifyAppWidgetViewDataChanged
         // on the collection view corresponding to this factory. You can do heaving lifting in
         // here, synchronously. For example, if you need to process an image, fetch something

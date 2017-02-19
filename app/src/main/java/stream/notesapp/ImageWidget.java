@@ -84,25 +84,11 @@ public class ImageWidget extends AppWidgetProvider {
         // First find out rows and columns based on width provided.
         int rows = getCellsForSize(minHeight);
         int columns = getCellsForSize(minWidth);
-        // Now you changing layout base on you column count
-        // In this code from 1 column to 4
-        // you can make code for more columns on your own.
+        // Change layout based on column count
         switch (columns) {
-            case 1:
-                Log.d("Widget Columns", "1");
-                return new RemoteViews(context.getPackageName(), R.layout.widget_image_1column);
-            case 2:
-                Log.d("Widget Columns", "2");
-                return new RemoteViews(context.getPackageName(), R.layout.widget_image_2column);
-            case 3:
-                Log.d("Widget Columns", "3");
-                return new RemoteViews(context.getPackageName(), R.layout.widget_image_3column);
-            case 4:
-                Log.d("Widget Columns", "4");
-                return new RemoteViews(context.getPackageName(), R.layout.widget_image_4column);
             default:
                 Log.d("Widget Columns", "default");
-                return new RemoteViews(context.getPackageName(), R.layout.widget_image_4column);
+                return new RemoteViews(context.getPackageName(), R.layout.widget_image_gallery);
         }
     }
 
