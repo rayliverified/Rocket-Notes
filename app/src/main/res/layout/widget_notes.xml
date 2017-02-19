@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notes App"/>
+        <Button
+            android:id="@+id/new_note"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_toLeftOf="@+id/camera_note"
+            android:background="@drawable/new_message_icon"/>
+        <Button
+            android:id="@+id/camera_note"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_keyboard"/>
+    </RelativeLayout>
+    <ImageView
+        android:id="@+id/image_button"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="12dp"
+        android:src="@drawable/icon_camera"
+        android:scaleType="fitCenter"/>
+    <ListView
+        android:id="@+id/image_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="auto_fit"
+        android:columnWidth="66dp"
+        android:verticalSpacing="6dp"
+        android:horizontalSpacing="6dp"
+        android:stretchMode="columnWidth"
+        android:gravity="center">
+    </ListView>
+</LinearLayout>

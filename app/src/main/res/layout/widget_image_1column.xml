@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/image_button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/new_message_icon"
+        android:scaleType="fitCenter"/>
+    <GridView
+        android:id="@+id/image_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="auto_fit"
+        android:columnWidth="90dp"
+        android:verticalSpacing="10dp"
+        android:horizontalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:layout_toRightOf="@+id/image_button">
+    </GridView>
+</LinearLayout>

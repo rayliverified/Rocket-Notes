@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/image_button"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/icon_camera"
+            android:scaleType="fitCenter"/>
+        <GridView
+            android:id="@+id/image_gridview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="auto_fit"
+            android:columnWidth="66dp"
+            android:verticalSpacing="6dp"
+            android:horizontalSpacing="6dp"
+            android:stretchMode="columnWidth"
+            android:gravity="center">
+        </GridView>
+</LinearLayout>
