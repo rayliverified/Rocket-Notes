@@ -17,6 +17,7 @@ import android.widget.RemoteViews;
 
 public class NewNoteWidget extends AppWidgetProvider {
 
+
     private static final String ACTION_CLICK = "ACTION_CLICK";
 
     @Override
@@ -37,6 +38,7 @@ public class NewNoteWidget extends AppWidgetProvider {
             remoteViews.setOnClickPendingIntent(R.id.image_button, pendingIntent);
 
             appWidgetManager.updateAppWidget(widgetID, remoteViews);
+
         }
     }
 
@@ -97,6 +99,10 @@ public class NewNoteWidget extends AppWidgetProvider {
         } else {
             Log.d("onReceive", "Clicked");
             super.onReceive(context, intent);
+
         }
+
     }
+
+
 }
