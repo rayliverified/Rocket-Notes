@@ -1,11 +1,16 @@
 package stream.notesapp;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -16,8 +21,8 @@ public class NotesWidgetService extends RemoteViewsService {
     }
 }
 class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
-    private static final int mCount = 8;
-    private List<NotesItem> mNotesItems = new ArrayList<NotesItem>();
+    private static int mCount = 0;
+    private ArrayList<NotesItem> mNotesItems = new ArrayList<NotesItem>();
     private Context mContext;
     private int mAppWidgetId;
     public NotesRemoteViewsFactory(Context context, Intent intent) {
@@ -29,18 +34,16 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // In onCreate() you setup any connections / cursors to your data source. Heavy lifting,
         // for example downloading or creating content etc, should be deferred to onDataSetChanged()
         // or getViewAt(). Taking more than 20 seconds in this call will result in an ANR.
-        for (int i = 0; i < mCount; i++) {
-            mNotesItems.add(new NotesItem(i + "!"));
-        }
-        // We sleep for 3 seconds here to show how the empty view appears in the interim.
-        // The empty view is set in the StackWidgetProvider and should be a sibling of the
-        // collection view.
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        mNotesItems = lastNotesModified();
+        DatabaseHelper dbHelper = new DatabaseHelper(mContext);
+        mNotesItems = dbHelper.GetNotesDate();
+        Log.d("Note Size", String.valueOf(mNotesItems.size()));
+        mCount = mNotesItems.size();
     }
+    //    public static ArrayList<File> lastFileModified() {
+//
+//        return imageItems;
+//    }
     public void onDestroy() {
         // In onDestroy() you should tear down anything that was setup for your data source,
         // eg. cursors, connections, etc.
@@ -53,12 +56,17 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     public RemoteViews getViewAt(int position) {
 
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_notes);
-//        rv.setTextViewText(R.id.item_placeholder, mNotesItems.get(position).getSomething());
+        if (position < mNotesItems.size()) {
+            rv.setTextViewText(R.id.item_note_title, mNotesItems.get(position).getNotesNote());
+            rv.setTextViewText(R.id.item_note_note, mNotesItems.get(position).getNotesNote());
+        }
         Bundle extras = new Bundle();
-        extras.putInt("EXRA_ITEM", position);
         Intent fillInIntent = new Intent();
-        fillInIntent.putExtras(extras);
-       // rv.setOnClickFillInIntent(R.id.item_placeholder, fillInIntent);
+        if (position < mNotesItems.size()) {
+            extras.putInt("EXRA_ITEM", position);
+            fillInIntent.putExtras(extras);
+        }
+        rv.setOnClickFillInIntent(R.id.item_note, fillInIntent);
 
         return rv;
     }
@@ -77,6 +85,8 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         return true;
     }
     public void onDataSetChanged() {
+        Log.d("Widget Updated", "Data Changed");
+        onCreate();
         // This is triggered when you call AppWidgetManager notifyAppWidgetViewDataChanged
         // on the collection view corresponding to this factory. You can do heaving lifting in
         // here, synchronously. For example, if you need to process an image, fetch something

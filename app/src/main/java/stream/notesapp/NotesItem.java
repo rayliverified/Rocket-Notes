@@ -1,19 +1,60 @@
 package stream.notesapp;
 
+import android.content.Context;
+
 public class NotesItem {
-    String something;
 
-    public NotesItem(String something) {
-        super();
-        this.something = something;
+
+    Context mContext;
+
+    Integer _id = null;
+    String note = null;
+    Long date = null;
+
+    public NotesItem()
+    {
+
     }
 
-    public String getSomething() {
-        return something;
+    public NotesItem (Context mContext)
+    {
+        this.mContext = mContext;
     }
 
-    public void setSomething(String something) {
-        this.something = something;
+    public NotesItem getNotes()
+    {
+        return this;
+    }
+
+    public void setNotesID (Integer _id)
+    {
+        this._id = _id;
+    }
+
+    public void setNotesNote(String note)
+    {
+        this.note = note;
+    }
+
+    public void setNotesDate(Long date)
+    {
+        this.date = date;
+    }
+
+    public Integer getNotesID ()
+    {
+        return this._id;
+    }
+
+    public String getNotesNote()
+    {
+        return this.note;
+    }
+
+    public Long getNotesDate()
+    {
+        return this.date;
     }
 
 }
+

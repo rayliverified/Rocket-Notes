@@ -1,27 +1,23 @@
 package stream.notesapp;
 
+import android.appwidget.AppWidgetManager;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.RemoteViews;
+import android.widget.RemoteViewsService;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import android.appwidget.AppWidgetManager;
-import android.content.ContentUris;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.widget.RemoteViews;
-import android.widget.RemoteViewsService;
 
 public class ImageWidgetService extends RemoteViewsService {
     @Override
@@ -30,7 +26,7 @@ public class ImageWidgetService extends RemoteViewsService {
     }
 }
 class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
-    private static final int mCount = 8;
+    private static final int mCount = 40;
     private ArrayList<File> mImageItems = new ArrayList<File>();
     private Context mContext;
     private int mAppWidgetId;

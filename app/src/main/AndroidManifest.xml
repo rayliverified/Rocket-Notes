@@ -71,7 +71,9 @@
             <intent-filter >
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
-                <action android:name=".NotesWidget.ADD_IMAGE"/>
+                <action android:name=".NotesWidget.NEW_NOTE"/>
+                <action android:name=".NotesWidget.OPEN_NOTE"/>
+                <action android:name=".NotesWidget.NEW_REPLY"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                        android:resource="@xml/widget_notes">
