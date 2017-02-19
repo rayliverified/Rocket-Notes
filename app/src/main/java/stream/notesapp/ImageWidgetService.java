@@ -32,14 +32,14 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         for (int i = 0; i < mCount; i++) {
             mImageItems.add(new ImageItem(i + "!"));
         }
-        // We sleep for 3 seconds here to show how the empty view appears in the interim.
-        // The empty view is set in the StackWidgetProvider and should be a sibling of the
-        // collection view.
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        // We sleep for 3 seconds here to show how the empty view appears in the interim.
+//        // The empty view is set in the StackWidgetProvider and should be a sibling of the
+//        // collection view.
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
     public void onDestroy() {
         // In onDestroy() you should tear down anything that was setup for your data source,

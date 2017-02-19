@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Notes App</string>
+    <string name="camera_retake">Retake</string>
+    <string name="camera_save">Save</string>
 </resources>
