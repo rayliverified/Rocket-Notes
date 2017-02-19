@@ -28,7 +28,6 @@ public class NotesWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-//        DatabaseHelper dbHelper = new DatabaseHelper(context);
         for (int i = 0; i < appWidgetIds.length; ++i) {
             Intent intent = new Intent(context, NotesWidgetService.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
@@ -37,20 +36,18 @@ public class NotesWidget extends AppWidgetProvider {
             RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_notes_listview);
             rv.setRemoteAdapter(R.id.notes_listview, intent);
 
-            rv.setEmptyView(R.id.notes_listview, R.id.new_note);
+            rv.setEmptyView(R.id.notes_listview, R.id.text_title);
 
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
-            // Register an onClickListener
-            Intent noteAddIntent = new Intent(context, NotesWidget.class);
-            noteAddIntent.setAction(NEW_NOTE);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, noteAddIntent, 0);
-            rv.setOnClickPendingIntent(R.id.new_note, pendingIntent);
+//            // Register an onClickListener
+//            Intent noteAddIntent = new Intent(context, NotesWidget.class);
+//            noteAddIntent.setAction(NEW_NOTE);
+//            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, noteAddIntent, 0);
+//            rv.setOnClickPendingIntent(R.id.new_note, pendingIntent);
 
             appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
         }
-
-//        dbHelper.close();
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }

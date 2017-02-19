@@ -26,7 +26,7 @@ public class ImageWidgetService extends RemoteViewsService {
     }
 }
 class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
-    private static final int mCount = 40;
+    private static final int mCount = 8;
     private ArrayList<File> mImageItems = new ArrayList<File>();
     private Context mContext;
     private int mAppWidgetId;

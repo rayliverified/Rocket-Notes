@@ -1,11 +1,5 @@
 package stream.notesapp;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import java.util.ArrayList;
 
 public class NotesWidgetService extends RemoteViewsService {
     @Override
