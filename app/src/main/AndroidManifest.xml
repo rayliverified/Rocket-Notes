@@ -3,6 +3,7 @@
           package="stream.notesapp">
 
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -30,6 +31,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
         </activity>
+        <activity android:name=".CameraActivity"></activity>
         <!-- Widgets -->
         <receiver android:name=".NewNoteWidget"
                   android:icon="@drawable/new_message_icon"
@@ -43,20 +45,33 @@
             </meta-data>
         </receiver>
         <receiver android:name=".ImageWidget"
-                  android:icon="@drawable/picture_icon_small"
-                  android:label="Image Notes">
+                  android:icon="@drawable/icon_camera"
+                  android:label="A Image Widget">
             <intent-filter >
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
-                <action android:name="ADD_IMAGE"/>
+                <action android:name=".ImageWidget.ADD_IMAGE"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                        android:resource="@xml/widget_image">
             </meta-data>
         </receiver>
+        <receiver android:name=".NotesWidget"
+                  android:icon="@drawable/icon_camera"
+                  android:label="A Note Widget">
+            <intent-filter >
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
+                <action android:name=".NotesWidget.ADD_IMAGE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/widget_notes">
+            </meta-data>
+        </receiver>
         <!-- Services -->
         <service android:name=".ImageWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service android:name=".NotesWidgetService"
+                 android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
-
 </manifest>

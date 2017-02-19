@@ -10,21 +10,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-public class ImageWidget extends AppWidgetProvider {
+public class NotesWidget extends AppWidgetProvider {
 
     private static final String ADD_IMAGE = "ADD_IMAGE";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int i = 0; i < appWidgetIds.length; ++i) {
-            Intent intent = new Intent(context, ImageWidgetService.class);
+            Intent intent = new Intent(context, NotesWidgetService.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
 
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.activity_main);
-            rv.setRemoteAdapter(R.id.image_gridview, intent);
+            rv.setRemoteAdapter(R.id.image_listview, intent);
 
-            rv.setEmptyView(R.id.image_gridview, R.id.image_button);
+            rv.setEmptyView(R.id.image_listview, R.id.image_button);
 
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
@@ -44,17 +44,17 @@ public class ImageWidget extends AppWidgetProvider {
         int minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
         int minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
 
-        Intent intent = new Intent(context, ImageWidgetService.class);
+        Intent intent = new Intent(context, NotesWidgetService.class);
         // Add the app widget ID to the intent extras.
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
         RemoteViews remoteViews = getRemoteViews(context, minWidth, minHeight);
-        remoteViews.setRemoteAdapter(R.id.image_gridview, intent);
-//        remoteViews.setEmptyView(R.id.image_gridview, R.id.image_button);
+        remoteViews.setRemoteAdapter(R.id.image_listview, intent);
+//        remoteViews.setEmptyView(R.id.image_listview, R.id.image_button);
 
         // Register an onClickListener
-        intent = new Intent(context, ImageWidget.class);
+        intent = new Intent(context, NotesWidget.class);
         intent.setAction(ADD_IMAGE);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         remoteViews.setOnClickPendingIntent(R.id.image_button, pendingIntent);
@@ -78,21 +78,21 @@ public class ImageWidget extends AppWidgetProvider {
         // In this code from 1 column to 4
         // you can make code for more columns on your own.
         switch (columns) {
-            case 1:
-                Log.d("Widget Columns", "1");
-                return new RemoteViews(context.getPackageName(), R.layout.widget_image_1column);
-            case 2:
-                Log.d("Widget Columns", "2");
-                return new RemoteViews(context.getPackageName(), R.layout.widget_image_2column);
-            case 3:
-                Log.d("Widget Columns", "3");
-                return new RemoteViews(context.getPackageName(), R.layout.widget_image_3column);
+//            case 1:
+//                Log.d("Widget Columns", "1");
+//                return new RemoteViews(context.getPackageName(), R.layout.widget_image_1column);
+//            case 2:
+//                Log.d("Widget Columns", "2");
+//                return new RemoteViews(context.getPackageName(), R.layout.widget_image_2column);
+//            case 3:
+//                Log.d("Widget Columns", "3");
+//                return new RemoteViews(context.getPackageName(), R.layout.widget_image_3column);
             case 4:
                 Log.d("Widget Columns", "4");
-                return new RemoteViews(context.getPackageName(), R.layout.widget_image_4column);
+                return new RemoteViews(context.getPackageName(), R.layout.widget_notes);
             default:
                 Log.d("Widget Columns", "default");
-                return new RemoteViews(context.getPackageName(), R.layout.widget_image_4column);
+                return new RemoteViews(context.getPackageName(), R.layout.widget_notes);
         }
     }
 
