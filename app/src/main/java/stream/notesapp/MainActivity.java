@@ -1,12 +1,12 @@
 package stream.notesapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private SharedPreferences sharedPref;
     Context mContext;

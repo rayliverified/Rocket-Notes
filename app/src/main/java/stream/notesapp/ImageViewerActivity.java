@@ -1,8 +1,8 @@
 package stream.notesapp;
 
+import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -11,7 +11,7 @@ import java.io.File;
 
 import me.relex.photodraweeview.PhotoDraweeView;
 
-public class ImageViewerActivity extends AppCompatActivity {
+public class ImageViewerActivity extends Activity {
 
     private PhotoDraweeView mPhotoDraweeView;
 
