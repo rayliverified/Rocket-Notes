@@ -5,6 +5,7 @@
               android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/edit_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -37,6 +38,7 @@
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
             android:paddingTop="6dp"
+            android:paddingBottom="6dp"
             android:text="Note Title"
             android:textStyle="bold"
             android:textSize="16sp"/>
@@ -47,8 +49,9 @@
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
             android:paddingBottom="6dp"
-            android:text="Note Title"
-            android:textSize="14sp"/>
+            android:text="Note Body"
+            android:textSize="14sp"
+            android:visibility="gone"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -59,6 +62,7 @@
             android:orientation="horizontal"
             android:background="@color/colorPrimary">
             <EditText
+                android:id="@+id/edit_edit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -68,7 +72,11 @@
                 android:hint="Enter new note..."
                 android:textColorHint="@android:color/white"
                 android:textColor="@android:color/white"
-                android:inputType="textCapSentences"
+                android:inputType="textMultiLine|textAutoCorrect|textCapSentences"
+                android:imeOptions="actionDone"
+                android:autoText="true"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:background="@null"/>
             <ImageButton
                 android:id="@+id/edit_submit"

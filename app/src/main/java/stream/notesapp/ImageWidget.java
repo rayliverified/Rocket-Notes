@@ -13,9 +13,6 @@ import android.widget.RemoteViews;
 
 public class ImageWidget extends AppWidgetProvider {
 
-    private static final String ADD_IMAGE = "ADD_IMAGE";
-    private static final String OPEN_IMAGE = "OPEN_IMAGE";
-
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int i = 0; i < appWidgetIds.length; ++i) {
@@ -57,13 +54,13 @@ public class ImageWidget extends AppWidgetProvider {
 
 //        Register an onClickListener
         Intent imageAddIntent = new Intent(context, ImageWidget.class);
-        imageAddIntent.setAction(ADD_IMAGE);
+        imageAddIntent.setAction(Constants.ADD_IMAGE);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, imageAddIntent, 0);
         remoteViews.setOnClickPendingIntent(R.id.image_button, pendingIntent);
 
 
         Intent imageOpenintent = new Intent(context, ImageWidget.class);
-        imageOpenintent.setAction(OPEN_IMAGE);
+        imageOpenintent.setAction(Constants.OPEN_IMAGE);
         imageOpenintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         pendingIntent = PendingIntent.getBroadcast(context, 0, imageOpenintent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -108,15 +105,15 @@ public class ImageWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(ADD_IMAGE)) {
-            Log.d("onReceive", ADD_IMAGE);
+        if (intent.getAction().equals(Constants.ADD_IMAGE)) {
+            Log.d("onReceive", Constants.ADD_IMAGE);
             intent = new Intent(context, CameraActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         }
-        else if (intent.getAction().equals(OPEN_IMAGE))
+        else if (intent.getAction().equals(Constants.OPEN_IMAGE))
         {
-            Log.d("onReceive", OPEN_IMAGE);
+            Log.d("onReceive", Constants.OPEN_IMAGE);
             try {
 //                Log.d("File Path", intent.getStringExtra("EXTRA_ITEM"));
                 String imagePath = intent.getStringExtra("EXTRA_ITEM");

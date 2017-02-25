@@ -22,9 +22,6 @@ import java.util.Calendar;
 
 public class NotesWidget extends AppWidgetProvider {
 
-    private static final String NEW_NOTE = "NEW_NOTE";
-    private static final String OPEN_NOTE = "OPEN_NOTE";
-    private static final String NEW_REPLY = "NEW_REPLY";
     private static String KEY_TEXT_REPLY = "key_text_reply";
 
     @Override
@@ -74,12 +71,12 @@ public class NotesWidget extends AppWidgetProvider {
 
         // Register an onClickListener
         Intent noteAddIntent = new Intent(context, NotesWidget.class);
-        noteAddIntent.setAction(NEW_NOTE);
+        noteAddIntent.setAction(Constants.NEW_NOTE);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, noteAddIntent, 0);
         remoteViews.setOnClickPendingIntent(R.id.new_note, pendingIntent);
 
         Intent noteOpenIntent = new Intent(context, NotesWidget.class);
-        noteOpenIntent.setAction(OPEN_NOTE);
+        noteOpenIntent.setAction(Constants.OPEN_NOTE);
         noteOpenIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         pendingIntent = PendingIntent.getBroadcast(context, 0, noteOpenIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -124,14 +121,15 @@ public class NotesWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(NEW_NOTE)) {
-            Log.d("onReceive", NEW_NOTE);
+        if (intent.getAction().equals(Constants.NEW_NOTE)) {
+            Log.d("onReceive", Constants.NEW_NOTE);
 
             intent = new Intent(context, PopupActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            intent.setAction(Constants.NEW_NOTE);
             context.startActivity(intent);
         }
-        else if (intent.getAction().equals(NEW_REPLY))
+        else if (intent.getAction().equals(Constants.NEW_REPLY))
         {
             String newNote = getMessageText(intent);
             if (!newNote.equals(""))
@@ -148,9 +146,9 @@ public class NotesWidget extends AppWidgetProvider {
                 }
             }
         }
-        else if (intent.getAction().equals(OPEN_NOTE))
+        else if (intent.getAction().equals(Constants.OPEN_NOTE))
         {
-            Log.d("onReceive", OPEN_NOTE);
+            Log.d("onReceive", Constants.OPEN_NOTE);
         }
         else {
             Log.d("onReceive", "Clicked");
