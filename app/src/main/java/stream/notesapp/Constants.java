@@ -9,4 +9,6 @@ public interface Constants {
     public static final String NEW_REPLY = "NEW_REPLY";
     public static final String ADD_IMAGE = "ADD_IMAGE";
     public static final String OPEN_IMAGE = "OPEN_IMAGE";
+    public static final String BODY = "BODY";
+    public static final String ID = "ID";
 }

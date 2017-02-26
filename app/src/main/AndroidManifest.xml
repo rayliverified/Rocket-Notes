@@ -85,5 +85,6 @@
                  android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service android:name=".NotesWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service android:name=".SaveNoteService"/>
     </application>
 </manifest>

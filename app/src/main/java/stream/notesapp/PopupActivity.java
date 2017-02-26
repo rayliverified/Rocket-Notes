@@ -1,6 +1,7 @@
 package stream.notesapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
@@ -139,6 +140,10 @@ public class PopupActivity extends Activity {
                         else
                         {
                             //Save note and close activity
+                            Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
+                            saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
+                            saveNote.setAction(Constants.NEW_NOTE);
+                            getApplicationContext().startService(saveNote);
                             finish();
                         }
 
@@ -150,6 +155,20 @@ public class PopupActivity extends Activity {
 //                    // Move cursor to the end of the line
 //                    editText.setSelection(s_text.length());
                     }
+                }
+            });
+            editSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (TextUtils.isEmpty(editText.getText().toString().trim()))
+                    {
+                        //Save note and close activity
+                        Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
+                        saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
+                        saveNote.setAction(Constants.NEW_NOTE);
+                        getApplicationContext().startService(saveNote);
+                    }
+                    finish();
                 }
             });
         }
@@ -200,15 +219,15 @@ public class PopupActivity extends Activity {
         long diff = now.getTimeInMillis() - time;
         long minutes = diff / 60000;
         long hours = minutes / 60;
-        if (hours < 1)
-            return String.valueOf(minutes) + " minutes ago";
-        else if (minutes == 0)
+        if (minutes <= 1)
             return "now";
+        else if (hours < 1)
+            return String.valueOf(minutes) + " minutes ago";
         else if (now.get(Calendar.YEAR) == noteTime.get(Calendar.YEAR)
                 && now.get(Calendar.MONTH) == noteTime.get(Calendar.MONTH)
                 && now.get(Calendar.DATE) == noteTime.get(Calendar.DATE))
         {
-            return "Today" + DateFormat.format(timeFormatString, noteTime);
+            return "Today " + DateFormat.format(timeFormatString, noteTime);
         }
         else if (now.get(Calendar.YEAR) == noteTime.get(Calendar.YEAR)
                 && now.get(Calendar.MONTH) == noteTime.get(Calendar.MONTH)
