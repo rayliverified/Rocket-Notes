@@ -126,26 +126,9 @@ public class NotesWidget extends AppWidgetProvider {
             Log.d("onReceive", Constants.NEW_NOTE);
 
             intent = new Intent(context, PopupActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.setAction(Constants.NEW_NOTE);
             context.startActivity(intent);
-        }
-        else if (intent.getAction().equals(Constants.NEW_REPLY))
-        {
-            String newNote = getMessageText(intent);
-            if (!newNote.equals(""))
-            {
-                Calendar calendar = Calendar.getInstance();
-                Long currentTime = calendar.getTimeInMillis();
-                DatabaseHelper dbHelper = new DatabaseHelper(context);
-                dbHelper.AddNewNote(newNote, currentTime);
-                int widgetIDs[] = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, NotesWidget.class));
-
-                for (int id : widgetIDs)
-                {
-                    AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(id, R.id.notes_listview);
-                }
-            }
         }
         else if (intent.getAction().equals(Constants.OPEN_NOTE))
         {
@@ -158,7 +141,7 @@ public class NotesWidget extends AppWidgetProvider {
                     Log.d("Note ID", String.valueOf(noteID));
                     intent = new Intent(context, PopupActivity.class);
                     intent.putExtra("NOTEID", noteID);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.setAction(Constants.OPEN_NOTE);
                     context.startActivity(intent);
                 }
@@ -171,13 +154,5 @@ public class NotesWidget extends AppWidgetProvider {
             Log.d("onReceive", "Clicked");
             super.onReceive(context, intent);
         }
-    }
-
-    private String getMessageText(Intent intent) {
-        Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
-        if (remoteInput != null) {
-            return remoteInput.getString(KEY_TEXT_REPLY);
-        }
-        return null;
     }
 }

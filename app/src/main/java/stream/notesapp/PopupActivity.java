@@ -160,7 +160,7 @@ public class PopupActivity extends Activity {
             editSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (TextUtils.isEmpty(editText.getText().toString().trim()))
+                    if (!TextUtils.isEmpty(editText.getText().toString().trim()))
                     {
                         //Save note and close activity
                         Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
@@ -182,7 +182,7 @@ public class PopupActivity extends Activity {
             String noteTime = getTimeStamp(note.getNotesDate());
 
             editText.setHint("Add to note...");
-            editDetails.setText("New Note • " + noteTime);
+            editDetails.setText("Update Note • " + noteTime);
             editTitle.setText(note.getNotesNote());
             editBody.setText(note.getNotesNote());
         }

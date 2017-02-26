@@ -110,12 +110,8 @@ public class CameraActivity extends AppCompatActivity{
             {
                 AppWidgetManager.getInstance(getApplication()).notifyAppWidgetViewDataChanged(id, R.id.image_gridview);
             }
-            moveTaskToBack(true);
         }
-        else
-        {
-            moveTaskToBack(true);
-        }
+        finish();
     }
 
     boolean noMediaExists() {

@@ -122,7 +122,7 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         Intent fillInIntent = new Intent();
         if (position < mImageItems.size())
         {
-            extras.putString("EXTRA_ITEM", mImageItems.get(position).getPath());
+            extras.putInt("EXTRA_ITEM", position);
             fillInIntent.putExtras(extras);
         }
         rv.setOnClickFillInIntent(R.id.item_image, fillInIntent);

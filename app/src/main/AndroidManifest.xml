@@ -31,15 +31,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
         </activity>
-        <activity android:name=".CameraActivity"/>
+        <activity android:name=".CameraActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
         <activity
             android:name="com.afollestad.materialcamera.CaptureActivity"
             android:theme="@style/MaterialCamera.CaptureActivity" />
         <activity
             android:name="com.afollestad.materialcamera.CaptureActivity2"
             android:theme="@style/MaterialCamera.CaptureActivity" />
-        <activity android:name=".ImageViewerActivity" android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"/>
-        <activity android:name=".PopupActivity" android:theme="@style/Theme.Transparent"/>
+        <activity android:name=".ImageViewerActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
+        <activity android:name=".PopupActivity" android:theme="@style/Theme.TransparentFloating" android:excludeFromRecents="true"/>
         <!-- Widgets -->
         <receiver android:name=".NewNoteWidget"
                   android:icon="@drawable/new_message_icon"
