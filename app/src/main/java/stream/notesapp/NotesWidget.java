@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -149,6 +150,22 @@ public class NotesWidget extends AppWidgetProvider {
         else if (intent.getAction().equals(Constants.OPEN_NOTE))
         {
             Log.d("onReceive", Constants.OPEN_NOTE);
+            try {
+//                Log.d("File Path", intent.getStringExtra("EXTRA_ITEM"));
+                Integer noteID = intent.getIntExtra("EXTRA_ITEM", 0);
+                if (noteID != 0)
+                {
+                    Log.d("Note ID", String.valueOf(noteID));
+                    intent = new Intent(context, PopupActivity.class);
+                    intent.putExtra("NOTEID", noteID);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                    intent.setAction(Constants.OPEN_NOTE);
+                    context.startActivity(intent);
+                }
+            }
+            catch (ActivityNotFoundException e) {
+
+            }
         }
         else {
             Log.d("onReceive", "Clicked");

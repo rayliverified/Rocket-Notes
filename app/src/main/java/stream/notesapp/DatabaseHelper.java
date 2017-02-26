@@ -85,7 +85,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     }
 
 
-    //Return contacts sorted by last message date
+    //Return notes sorted by last message date
     public ArrayList<NotesItem> GetNotesDate() {
         ArrayList<NotesItem> notes = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_NOTES + " ORDER BY " + KEY_DATE + " DESC LIMIT 20";
@@ -96,6 +96,9 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         if (c.moveToFirst()) {
             do {
                 NotesItem note = new NotesItem();
+                if (c.getString(c.getColumnIndexOrThrow("_id")) != null) {
+                    note.setNotesID(c.getInt(c.getColumnIndexOrThrow("_id")));
+                }
                 if (c.getString(c.getColumnIndexOrThrow("note")) != null) {
                     note.setNotesNote(c.getString(c.getColumnIndexOrThrow("note")));
                 }
@@ -107,5 +110,29 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         }
         c.close();
         return notes;
+    }
+
+    //Return note
+    public NotesItem GetNote(Integer id) {
+        ArrayList<NotesItem> notes = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_ID + " = '" + id + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        NotesItem note = new NotesItem();
+        if (c.moveToFirst()) {
+                if (c.getString(c.getColumnIndexOrThrow("_id")) != null) {
+                    note.setNotesID(c.getInt(c.getColumnIndexOrThrow("_id")));
+                }
+                if (c.getString(c.getColumnIndexOrThrow("note")) != null) {
+                    note.setNotesNote(c.getString(c.getColumnIndexOrThrow("note")));
+                }
+                if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
+                    note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));
+                }
+        }
+        c.close();
+        return note;
     }
 }

@@ -7,6 +7,7 @@ import android.support.v4.view.ViewCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -20,7 +21,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 
 public class PopupActivity extends Activity {
 
@@ -67,86 +72,100 @@ public class PopupActivity extends Activity {
         if (getIntent().getAction().equals(Constants.NEW_NOTE))
         {
             editText.setHint("Enter new note...");
-            editDetails.setHint("New Note • now");
+            editDetails.setText("New Note • now");
             editTitle.setText("Note Title");
             editBody.setText("Note Body");
             editText.addTextChangedListener(new TextWatcher() {
 
-            public void afterTextChanged(Editable s) {
+                public void afterTextChanged(Editable s) {
 
-                String[] noteText = s.toString().split("\n", 2);
-                Log.d("Note Length", String.valueOf(noteText.length));
-                if (noteText.length == 2)
-                {
-                    Log.d("Note Body", noteText[1]);
-                    if (!TextUtils.isEmpty(noteText[1]))
+                    String[] noteText = s.toString().split("\n", 2);
+                    Log.d("Note Length", String.valueOf(noteText.length));
+                    if (noteText.length == 2)
                     {
-                        editBody.setText(noteText[1]);
+                        Log.d("Note Body", noteText[1]);
+                        if (!TextUtils.isEmpty(noteText[1]))
+                        {
+                            editBody.setText(noteText[1]);
+                        }
+                        else
+                        {
+                            editBody.setText("Note Body");
+                        }
                     }
                     else
                     {
                         editBody.setText("Note Body");
+                        editBody.setVisibility(View.GONE);
+                        titleCreated = false;
                     }
-                }
-                else
-                {
-                    editBody.setText("Note Body");
-                    editBody.setVisibility(View.GONE);
-                    titleCreated = false;
-                }
-                editTitle.setText(noteText[0]);
+                    editTitle.setText(noteText[0]);
 
-                //Reset Note Title when EditText is empty
-                if (TextUtils.isEmpty(s.toString()))
-                {
-                    Log.d("Note Empty", "True");
-                    editTitle.setText("Note Title");
-                }
-                Log.d("Note Title", noteText[0]);
-            }
-
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
-                if (s.length() < 1 || start >= s.length() || start < 0)
-                {
-                    return;
-                }
-
-                //Detect enter key presses
-                if (s.subSequence(start, start + 1).toString().equalsIgnoreCase("\n")) {
-                    Log.d("Key", "Enter");
-
-                    Log.d("Start", String.valueOf(start));
-                    if (start == 0)
+                    //Reset Note Title when EditText is empty
+                    if (TextUtils.isEmpty(s.toString()))
                     {
-                        finish();
+                        Log.d("Note Empty", "True");
+                        editTitle.setText("Note Title");
+                    }
+                    Log.d("Note Title", noteText[0]);
+                }
+
+                public void beforeTextChanged(CharSequence s, int start,
+                                              int count, int after) {
+                }
+
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
+                    if (s.length() < 1 || start >= s.length() || start < 0)
+                    {
+                        return;
                     }
 
-                    if (titleCreated == false)
-                    {
-                        editBody.setVisibility(View.VISIBLE);
-                        titleCreated = true;
-                    }
-                    else
-                    {
-                        //Save note and close activity
-                        finish();
-                    }
+                    //Detect enter key presses
+                    if (s.subSequence(start, start + 1).toString().equalsIgnoreCase("\n")) {
+                        Log.d("Key", "Enter");
 
-                    // Change text to show without '\n'
+                        Log.d("Start", String.valueOf(start));
+                        if (start == 0)
+                        {
+                            finish();
+                        }
+
+                        if (titleCreated == false)
+                        {
+                            editBody.setVisibility(View.VISIBLE);
+                            titleCreated = true;
+                        }
+                        else
+                        {
+                            //Save note and close activity
+                            finish();
+                        }
+
+                        // Change text to show without '\n'
 //                    String s_text = start > 0 ? s.subSequence(0, start).toString() : "";
 //                    s_text += start < s.length() ? s.subSequence(start + 1, s.length()).toString() : "";
 //                    editText.setText(s_text);
 //
 //                    // Move cursor to the end of the line
 //                    editText.setSelection(s_text.length());
+                    }
                 }
-            }
-        });
+            });
+        }
+        else if (getIntent().getAction().equals(Constants.OPEN_NOTE))
+        {
+            Integer noteID = getIntent().getIntExtra("NOTEID", 0);
+            Log.d("Received Note ID", String.valueOf(noteID));
+
+            DatabaseHelper dbHelper = new DatabaseHelper(this);
+            NotesItem note = dbHelper.GetNote(noteID);
+            String noteTime = getTimeStamp(note.getNotesDate());
+
+            editText.setHint("Add to note...");
+            editDetails.setText("New Note • " + noteTime);
+            editTitle.setText(note.getNotesNote());
+            editBody.setText(note.getNotesNote());
         }
     }
 
@@ -167,5 +186,41 @@ public class PopupActivity extends Activity {
 
         // Delegate everything else to Activity.
         return super.onTouchEvent(event);
+    }
+
+    private String getTimeStamp(Long time) {
+
+        String timestamp = "";
+
+        SimpleDateFormat format;
+        Calendar noteTime = Calendar.getInstance();
+        noteTime.setTimeInMillis(time);
+        Calendar now = Calendar.getInstance();
+        String timeFormatString = "h:mm aa";
+        long diff = now.getTimeInMillis() - time;
+        long minutes = diff / 60000;
+        long hours = minutes / 60;
+        if (hours < 1)
+            return String.valueOf(minutes) + " minutes ago";
+        else if (minutes == 0)
+            return "now";
+        else if (now.get(Calendar.YEAR) == noteTime.get(Calendar.YEAR)
+                && now.get(Calendar.MONTH) == noteTime.get(Calendar.MONTH)
+                && now.get(Calendar.DATE) == noteTime.get(Calendar.DATE))
+        {
+            return "Today" + DateFormat.format(timeFormatString, noteTime);
+        }
+        else if (now.get(Calendar.YEAR) == noteTime.get(Calendar.YEAR)
+                && now.get(Calendar.MONTH) == noteTime.get(Calendar.MONTH)
+                && now.get(Calendar.DATE) - noteTime.get(Calendar.DATE) == 1)
+        {
+            return "Yesterday " + DateFormat.format(timeFormatString, noteTime);
+        }
+
+        format = new SimpleDateFormat("MMMM dd, h:mm a");
+        format.setTimeZone(TimeZone.getDefault());
+        timestamp = format.format(new Date(time));
+
+        return timestamp;
     }
 }

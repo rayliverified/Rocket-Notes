@@ -59,7 +59,8 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         Bundle extras = new Bundle();
         Intent fillInIntent = new Intent();
         if (position < mNotesItems.size()) {
-            extras.putInt("EXRA_ITEM", position);
+            extras.putInt("EXTRA_ITEM", mNotesItems.get(position).getNotesID());
+            Log.d("Set ID", String.valueOf(mNotesItems.get(position).getNotesID()));
             fillInIntent.putExtras(extras);
         }
         rv.setOnClickFillInIntent(R.id.item_note, fillInIntent);
