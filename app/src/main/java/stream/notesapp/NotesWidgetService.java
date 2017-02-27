@@ -51,7 +51,7 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public RemoteViews getViewAt(int position) {
 
-        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_notes);
+        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_notes_widget);
         if (position < mNotesItems.size()) {
             rv.setTextViewText(R.id.item_note_title, mNotesItems.get(position).getNotesNote());
             rv.setTextViewText(R.id.item_note_note, mNotesItems.get(position).getNotesNote());
