@@ -1,6 +1,5 @@
 package stream.notesapp;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,10 +9,8 @@ import android.view.WindowManager;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
-import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
-import com.stfalcon.frescoimageviewer.ImageViewer;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -21,13 +18,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import frescoimageviewer.ImageViewer;
 import me.relex.photodraweeview.PhotoDraweeView;
 
 public class ImageViewerActivity extends AppCompatActivity {
 
     private PhotoDraweeView mPhotoDraweeView;
     private ImageOverlayView overlayView;
-    private String[] recentImages;
+    private ArrayList<String> recentImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +75,7 @@ public class ImageViewerActivity extends AppCompatActivity {
         return new ImageViewer.OnImageChangeListener() {
             @Override
             public void onImageChange(int position) {
-                String url = recentImages[position];
+                String url = recentImages.get(position);
                 overlayView.setShareText(url);
 //                overlayView.setDescription(descriptions[position]);
             }
@@ -97,7 +95,7 @@ public class ImageViewerActivity extends AppCompatActivity {
         return GenericDraweeHierarchyBuilder.newInstance(getResources());
     }
 
-    public static String[] lastFileModified(String dir) {
+    public static ArrayList<String> lastFileModified(String dir) {
         Log.d("Modified", dir);
         File fl = new File(dir);
         File[] files = fl.listFiles(new FileFilter() {
@@ -106,7 +104,7 @@ public class ImageViewerActivity extends AppCompatActivity {
             }
         });
 
-        ArrayList<String> imageList = new ArrayList<String>();
+        ArrayList<String> recentImages = new ArrayList<String>();
         if (files != null)
         {
             int numberOfImages = files.length;
@@ -121,13 +119,10 @@ public class ImageViewerActivity extends AppCompatActivity {
                 smallerNumber = 9;
             }
             for (int i = 0; i < smallerNumber - 1; i++) {
-                imageList.add(String.valueOf(Uri.fromFile(files[i])));
+                recentImages.add(String.valueOf(Uri.fromFile(files[i])));
                 Log.d("Files", String.valueOf(Uri.fromFile(files[i])));
             }
         }
-
-        String[] recentImages = new String[imageList.size()];
-        recentImages = imageList.toArray(recentImages);
 
         return recentImages;
     }
