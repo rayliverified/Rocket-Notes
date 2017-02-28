@@ -30,6 +30,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.android.support:design:25.1.1'
     compile 'com.android.support:recyclerview-v7:25.1.1'
     compile 'com.android.support:cardview-v7:25.1.1'
     testCompile 'junit:junit:4.12'
@@ -37,4 +38,5 @@ dependencies {
     compile 'com.facebook.fresco:fresco:1.0.1'
     compile 'me.relex:photodraweeview:1.1.2'
     compile 'eu.davidea:flexible-adapter:5.0.0-rc1'
+    compile 'com.github.arimorty:floatingsearchview:2.0.3'
 }
