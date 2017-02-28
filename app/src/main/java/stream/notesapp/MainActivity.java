@@ -2,9 +2,13 @@ package stream.notesapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.speech.RecognizerIntent;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -13,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
@@ -32,6 +37,8 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
     private RecyclerView mRecyclerView;
     private FloatingSearchView mSearchView;
     private AppBarLayout mAppBar;
+    private MenuItem mActionVoice;
+    private MenuItem mActionCamera;
     Context mContext;
 
     @Override
@@ -73,9 +80,14 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
         setupSearchBar();
+        checkVoiceRecognition();
     }
 
     private void setupSearchBar() {
+
+        mActionVoice = (MenuItem) findViewById(R.id.action_voice);
+        mActionCamera = (MenuItem) findViewById(R.id.action_camera);
+
         mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
 
             @Override
@@ -89,7 +101,6 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
                     //you can call it where ever you want, but
                     //it makes sense to do it when loading something in
                     //the background.
-                    mSearchView.showProgress();
 
 //                    //simulates a query call to a data source
 //                    //with a new query.
@@ -180,26 +191,24 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
             @Override
             public void onActionMenuItemSelected(MenuItem item) {
 
-//                if (item.getItemId() == R.id.action_change_colors) {
-//
-//                    mIsDarkSearchTheme = true;
-//
-//                    //demonstrate setting colors for items
-//                    mSearchView.setBackgroundColor(Color.parseColor("#787878"));
-//                    mSearchView.setViewTextColor(Color.parseColor("#e9e9e9"));
-//                    mSearchView.setHintTextColor(Color.parseColor("#e9e9e9"));
-//                    mSearchView.setActionMenuOverflowColor(Color.parseColor("#e9e9e9"));
-//                    mSearchView.setMenuItemIconColor(Color.parseColor("#e9e9e9"));
-//                    mSearchView.setLeftActionIconColor(Color.parseColor("#e9e9e9"));
-//                    mSearchView.setClearBtnColor(Color.parseColor("#e9e9e9"));
-//                    mSearchView.setDividerColor(Color.parseColor("#BEBEBE"));
-//                    mSearchView.setLeftActionIconColor(Color.parseColor("#e9e9e9"));
-//                } else {
-//
-//                    //just print action
-//                    Toast.makeText(getActivity().getApplicationContext(), item.getTitle(),
-//                            Toast.LENGTH_SHORT).show();
-//                }
+                if (item.getItemId() == R.id.action_voice)
+                {
+                    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                    //... put other settings in the Intent
+                    startActivityForResult(intent, 0);
+                }
+                else if (item.getItemId() == R.id.action_camera)
+                {
+                    Intent intent = new Intent(mContext, CameraActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                }
+                else
+                {
+
+                }
 
             }
         });
@@ -252,6 +261,29 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
             }
 
         });
+    }
+
+    public void checkVoiceRecognition() {
+        // Check if voice recognition is present
+        PackageManager pm = getPackageManager();
+        List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(
+                RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+        if (activities.size() == 0) {
+            Toast.makeText(this, "Voice recognizer not present",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            ArrayList<String> results = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+            mSearchView.setSearchFocused(true);
+            mSearchView.setSearchText(results.get(0));
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

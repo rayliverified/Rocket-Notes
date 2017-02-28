@@ -66,7 +66,6 @@ public class CameraActivity extends AppCompatActivity{
         }
     }
 
-    @RequiresPermission(Manifest.permission.CAMERA)
     public void StartCamera() {
         File dir = new File(getFilesDir() + "/.Pictures");
         if (!dir.exists()) {
