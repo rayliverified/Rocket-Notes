@@ -22,25 +22,26 @@
 
             <TextView
                 android:id="@+id/item_note_title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
-                android:hint="Note title"
+                android:text="Note title"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="2dp"/>
 
             <TextView
                 android:id="@+id/item_note_note"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:textSize="12sp"
-                android:hint="Note, text can be very long long long long. Sample text continues until it ellipsizes."
+                android:text="Note text."
+                android:maxLines="7"
                 android:ellipsize="end"
-                android:maxLines="1"/>
+                android:singleLine="false"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </RelativeLayout>

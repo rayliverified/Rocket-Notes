@@ -10,6 +10,7 @@ public class NotesItem {
     Integer _id = null;
     String note = null;
     Long date = null;
+    String image = null;
 
     public NotesItem()
     {
@@ -41,20 +42,23 @@ public class NotesItem {
         this.date = date;
     }
 
+    public void setNotesImage(String image)
+    {
+        this.image = image;
+    }
+
     public Integer getNotesID ()
     {
         return this._id;
     }
 
-    public String getNotesNote()
-    {
-        return this.note;
-    }
+    public String getNotesNote() { return this.note; }
 
-    public Long getNotesDate()
-    {
-        return this.date;
-    }
+    public Long getNotesDate() { return this.date; }
 
+    public String getNotesImage()
+    {
+        return this.image;
+    }
 }
 

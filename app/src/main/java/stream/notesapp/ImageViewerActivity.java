@@ -1,5 +1,6 @@
 package stream.notesapp;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,10 +28,12 @@ public class ImageViewerActivity extends AppCompatActivity {
     private PhotoDraweeView mPhotoDraweeView;
     private ImageOverlayView overlayView;
     private ArrayList<String> recentImages;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = this.getApplicationContext();
         /**
          * IMPORTANT! Enable the configuration below, if you expect to open really large images.
          * Also you can add the {@code android:largeHeap="true"} to Manifest file to avoid an OOM error.*/
@@ -48,7 +52,8 @@ public class ImageViewerActivity extends AppCompatActivity {
 
         Integer position = getIntent().getIntExtra("IMAGE_PATH", 0);
         Log.d("Received Image Path", String.valueOf(position));
-        recentImages = lastFileModified(this.getFilesDir() + "/.Pictures");
+        recentImages = lastFileModified(mContext);
+
         showPicker(position);
     }
 
@@ -95,35 +100,16 @@ public class ImageViewerActivity extends AppCompatActivity {
         return GenericDraweeHierarchyBuilder.newInstance(getResources());
     }
 
-    public static ArrayList<String> lastFileModified(String dir) {
-        Log.d("Modified", dir);
-        File fl = new File(dir);
-        File[] files = fl.listFiles(new FileFilter() {
-            public boolean accept(File file) {
-                return file.isFile();
-            }
-        });
+    public static ArrayList<String> lastFileModified(Context context) {
 
-        ArrayList<String> recentImages = new ArrayList<String>();
-        if (files != null)
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        ArrayList<NotesItem> notesItems = dbHelper.GetRecentImages();
+        ArrayList<String> imageItems = new ArrayList<String>();
+        for (NotesItem note : notesItems)
         {
-            int numberOfImages = files.length;
-            Arrays.sort(files, Collections.<File>reverseOrder());
-            int smallerNumber = 0;
-            if (numberOfImages < 9)
-            {
-                smallerNumber = numberOfImages;
-            }
-            else
-            {
-                smallerNumber = 9;
-            }
-            for (int i = 0; i < smallerNumber - 1; i++) {
-                recentImages.add(String.valueOf(Uri.fromFile(files[i])));
-                Log.d("Files", String.valueOf(Uri.fromFile(files[i])));
-            }
+            imageItems.add(note.getNotesImage());
         }
 
-        return recentImages;
+        return imageItems;
     }
 }

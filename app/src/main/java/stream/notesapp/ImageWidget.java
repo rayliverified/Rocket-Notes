@@ -116,8 +116,8 @@ public class ImageWidget extends AppWidgetProvider {
             Log.d("onReceive", Constants.OPEN_IMAGE);
             try {
 //                Log.d("File Path", intent.getStringExtra("EXTRA_ITEM"));
-                Integer position = intent.getIntExtra("EXTRA_ITEM", 0);
-                if (position != null)
+                Integer position = intent.getIntExtra("EXTRA_ITEM", -1);
+                if (position != -1)
                 {
                     intent = new Intent(context, ImageViewerActivity.class);
                     intent.putExtra("IMAGE_PATH", position);

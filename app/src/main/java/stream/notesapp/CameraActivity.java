@@ -17,6 +17,8 @@ import com.afollestad.materialcamera.MaterialCamera;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,12 +105,11 @@ public class CameraActivity extends AppCompatActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_RQ && resultCode == RESULT_OK) {
             Log.d("Camera Result", data.getDataString());
-            int widgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), ImageWidget.class));
 
-            for (int id : widgetIDs)
-            {
-                AppWidgetManager.getInstance(getApplication()).notifyAppWidgetViewDataChanged(id, R.id.image_gridview);
-            }
+            Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
+            saveNote.putExtra(Constants.IMAGE, data.getDataString());
+            saveNote.setAction(Constants.NEW_NOTE);
+            getApplicationContext().startService(saveNote);
         }
         finish();
     }

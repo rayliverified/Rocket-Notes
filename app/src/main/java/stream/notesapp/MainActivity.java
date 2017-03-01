@@ -12,6 +12,7 @@ import android.speech.RecognizerIntent;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,6 +77,8 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         // Prepare the RecyclerView and attach the Adapter to it
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(createNewStaggeredGridLayoutManager());
+        mRecyclerView.setItemViewCacheSize(20);
+        mRecyclerView.setDrawingCacheEnabled(true);
         mRecyclerView.setAdapter(adapter);
 
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
@@ -299,14 +302,24 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         List<IFlexible> list = new ArrayList<>();
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         ArrayList<NotesItem> notesItems = dbHelper.GetNotesDate();
+        Log.d("NotesItem Size", String.valueOf(notesItems.size()));
         for (NotesItem note : notesItems)
         {
-            list.add(new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote()));
+            if (note.getNotesNote() != null)
+            {
+                Log.d("Note", "Note Item");
+                list.add(new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote()));
+            }
+            else if (note.getNotesImage() != null)
+            {
+                Log.d("Image View Holder", note.getNotesImage());
+                list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
+            }
         }
-        for (int i = 0; i < 100; i++)
-        {
-            list.add(new NoteItemViewholder(Integer.toString(i), "Wow, this is a great gig."));
-        }
+//        for (int i = 0; i < 50; i++)
+//        {
+//            list.add(new NoteItemViewholder(Integer.toString(i), "Wow, this is a great gig."));
+//        }
         return list;
     }
 }

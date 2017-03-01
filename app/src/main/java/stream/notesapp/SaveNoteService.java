@@ -21,15 +21,20 @@ public class SaveNoteService extends Service {
         if (intent.getAction().equals(Constants.NEW_NOTE)) {
             Bundle extras = intent.getExtras();
             String body = extras.getString(Constants.BODY);
+            String image = extras.getString(Constants.IMAGE);
             Calendar calendar = Calendar.getInstance();
             Long currentTime = calendar.getTimeInMillis();
             DatabaseHelper dbHelper = new DatabaseHelper(mContext);
-            dbHelper.AddNewNote(body, currentTime);
-            int widgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), NotesWidget.class));
+            dbHelper.AddNewNote(body, currentTime, image);
 
-            for (int id : widgetIDs)
-            {
+            int widgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), NotesWidget.class));
+            for (int id : widgetIDs) {
                 AppWidgetManager.getInstance(getApplication()).notifyAppWidgetViewDataChanged(id, R.id.notes_listview);
+            }
+
+            int imageWidgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), ImageWidget.class));
+            for (int id : imageWidgetIDs) {
+                AppWidgetManager.getInstance(getApplication()).notifyAppWidgetViewDataChanged(id, R.id.image_gridview);
             }
         }
         stopSelf();

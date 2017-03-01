@@ -15,6 +15,8 @@ import android.widget.RemoteViewsService;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,21 +27,25 @@ public class ImageWidgetService extends RemoteViewsService {
         return new ImageRemoteViewsFactory(this.getApplicationContext(), intent);
     }
 }
+
 class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private static final int mCount = 8;
-    private ArrayList<File> mImageItems = new ArrayList<File>();
+    private ArrayList<String> mImageItems = new ArrayList<String>();
     private Context mContext;
     private int mAppWidgetId;
+
     public ImageRemoteViewsFactory(Context context, Intent intent) {
         mContext = context;
         mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
     }
+
     public void onCreate() {
         // In onCreate() you setup any connections / cursors to your data source. Heavy lifting,
         // for example downloading or creating content etc, should be deferred to onDataSetChanged()
         // or getViewAt(). Taking more than 20 seconds in this call will result in an ANR.
-        mImageItems = lastFileModified(mContext.getFilesDir() + "/.Pictures");
+        Log.d("Image Widget", "Created");
+        mImageItems = lastFileModified(mContext);
 //        // We sleep for 3 seconds here to show how the empty view appears in the interim.
 //        // The empty view is set in the StackWidgetProvider and should be a sibling of the
 //        // collection view.
@@ -49,58 +55,52 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 //            e.printStackTrace();
 //        }
     }
-    public static ArrayList<File> lastFileModified(String dir) {
-        Log.d("Modified", dir);
-        File fl = new File(dir);
-        File[] files = fl.listFiles(new FileFilter() {
-            public boolean accept(File file) {
-                return file.isFile();
-            }
-        });
 
-        ArrayList<File> imageItems = new ArrayList<File>();
-        if (files != null)
+    public static ArrayList<String> lastFileModified(Context context) {
+
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        ArrayList<NotesItem> notesItems = dbHelper.GetRecentImages();
+        Log.d("Image Items", String.valueOf(notesItems.size()));
+
+        ArrayList<String> imageItems = new ArrayList<String>();
+        for (NotesItem note : notesItems)
         {
-            int numberOfImages = files.length;
-            Arrays.sort(files, Collections.<File>reverseOrder());
-            int smallerNumber = 0;
-            if (numberOfImages < 9)
-            {
-                smallerNumber = numberOfImages;
-            }
-            else
-            {
-                smallerNumber = 9;
-            }
-            Log.d("Number of Images", String.valueOf(numberOfImages));
-            for (int i = 0; i < smallerNumber - 1; i++) {
-                imageItems.add(files[i]);
-                Log.d("Files", files[i].getAbsolutePath());
+            File imageFile = null;
+            try {
+                imageFile = new File(new URI(note.getNotesImage()));
+                imageItems.add(imageFile.getAbsolutePath());
+                Log.d("Absolute Path", imageFile.getAbsolutePath());
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
         }
 
         return imageItems;
     }
+
     public void onDestroy() {
         // In onDestroy() you should tear down anything that was setup for your data source,
         // eg. cursors, connections, etc.
 //        mImageItems.clear();
     }
+
     public int getCount() {
         return mCount;
     }
+
     @Override
     public RemoteViews getViewAt(int position) {
 
-        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_image);
+        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_image_widget);
         Log.d("Size mImageItems", String.valueOf(mImageItems.size()));
+
         if (position < mImageItems.size())
         {
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
             bmOptions.inJustDecodeBounds = false;
             bmOptions.inSampleSize = 16;
             bmOptions.inPurgeable = false;
-            String imagePath = mImageItems.get(position).getPath();
+            String imagePath = mImageItems.get(position);
             Bitmap imageBitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
             Matrix matrix = getOrientation(imagePath);
             imageBitmap = crop(imageBitmap, matrix);
@@ -117,8 +117,8 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         {
             rv.setImageViewResource(R.id.item_image, R.drawable.icon_picture);
         }
-        Bundle extras = new Bundle();
 
+        Bundle extras = new Bundle();
         Intent fillInIntent = new Intent();
         if (position < mImageItems.size())
         {
@@ -200,15 +200,19 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // return null here, you will get the default loading view.
         return null;
     }
+
     public int getViewTypeCount() {
         return 1;
     }
+
     public long getItemId(int position) {
         return position;
     }
+
     public boolean hasStableIds() {
         return true;
     }
+
     public void onDataSetChanged() {
         Log.d("Widget Updated", "Data Changed");
         onCreate();

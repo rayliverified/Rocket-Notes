@@ -18,6 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     private static final String KEY_ID = "_id";
     private static final String KEY_NOTE = "note";
     private static final String KEY_DATE = "date";
+    private static final String KEY_IMAGE = "image";
 
     public DatabaseHelper(Context context) {
         super(context, DBName, null, DBVersion);
@@ -26,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //Table Query.
-        String notesTable = "CREATE TABLE IF NOT EXISTS notes (_id INTEGER PRIMARY KEY AUTOINCREMENT, note TEXT, date INTEGER);";
+        String notesTable = "CREATE TABLE IF NOT EXISTS notes (_id INTEGER PRIMARY KEY AUTOINCREMENT, note TEXT, date INTEGER, image TEXT);";
         //Execute Query
         db.execSQL(notesTable);
         Log.d("SQLite", "Tables created");
@@ -67,6 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         values.put(KEY_ID, note.getNotesID());
         values.put(KEY_NOTE, note.getNotesNote());
         values.put(KEY_DATE, note.getNotesDate());
+        values.put(KEY_IMAGE, note.getNotesImage());
 
         long id = db.insert(TABLE_NOTES, null, values);
         Log.d("Saved ID", String.valueOf(id));
@@ -75,10 +77,11 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     }
 
     // Adding a new message to database.
-    public NotesItem AddNewNote(String note, Long date) {
+    public NotesItem AddNewNote(String note, Long date, String image) {
         NotesItem notesItem = new NotesItem();
         notesItem.setNotesNote(note);
         notesItem.setNotesDate(date);
+        notesItem.setNotesImage(image);
         notesItem.setNotesID((int) AddNote(notesItem));
 
         return notesItem;
@@ -105,6 +108,9 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
                 if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
                     note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));
                 }
+                if (c.getString(c.getColumnIndexOrThrow("image")) != null) {
+                    note.setNotesImage(c.getString(c.getColumnIndexOrThrow("image")));
+                }
                 notes.add(note);
             } while (c.moveToNext());
         }
@@ -122,6 +128,34 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
         NotesItem note = new NotesItem();
         if (c.moveToFirst()) {
+            if (c.getString(c.getColumnIndexOrThrow("_id")) != null) {
+                note.setNotesID(c.getInt(c.getColumnIndexOrThrow("_id")));
+            }
+            if (c.getString(c.getColumnIndexOrThrow("note")) != null) {
+                note.setNotesNote(c.getString(c.getColumnIndexOrThrow("note")));
+            }
+            if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
+                note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));
+            }
+            if (c.getString(c.getColumnIndexOrThrow("image")) != null) {
+                note.setNotesImage(c.getString(c.getColumnIndexOrThrow("image")));
+            }
+        }
+        c.close();
+        return note;
+    }
+
+    //Return recent images
+    public ArrayList<NotesItem> GetRecentImages() {
+        ArrayList<NotesItem> notes = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_IMAGE + " NOT NULL ORDER BY " + KEY_DATE + " DESC LIMIT " + Constants.RECENT_IMAGES;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c.moveToFirst()) {
+            do {
+                NotesItem note = new NotesItem();
                 if (c.getString(c.getColumnIndexOrThrow("_id")) != null) {
                     note.setNotesID(c.getInt(c.getColumnIndexOrThrow("_id")));
                 }
@@ -131,8 +165,14 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
                 if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
                     note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));
                 }
+                if (c.getString(c.getColumnIndexOrThrow("image")) != null) {
+                    note.setNotesImage(c.getString(c.getColumnIndexOrThrow("image")));
+                    Log.d("Image", note.getNotesImage());
+                }
+                notes.add(note);
+            } while (c.moveToNext());
         }
         c.close();
-        return note;
+        return notes;
     }
 }

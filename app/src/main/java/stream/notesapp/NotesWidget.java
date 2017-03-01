@@ -135,8 +135,8 @@ public class NotesWidget extends AppWidgetProvider {
             Log.d("onReceive", Constants.OPEN_NOTE);
             try {
 //                Log.d("File Path", intent.getStringExtra("EXTRA_ITEM"));
-                Integer noteID = intent.getIntExtra("EXTRA_ITEM", 0);
-                if (noteID != 0)
+                Integer noteID = intent.getIntExtra("EXTRA_ITEM", -1);
+                if (noteID != -1)
                 {
                     Log.d("Note ID", String.valueOf(noteID));
                     intent = new Intent(context, PopupActivity.class);

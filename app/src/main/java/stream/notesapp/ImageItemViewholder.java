@@ -1,26 +1,29 @@
 package stream.notesapp;
 
-import android.text.TextUtils;
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.MyViewHolder> {
+public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholder.ImageViewHolder> {
 
     private String id;
-    private String title;
+    private String image;
 
-    public NoteItemViewholder(String id, String title) {
+    public ImageItemViewholder(String id, String image) {
         this.id = id;
-        this.title = title;
+        this.image = image;
     }
 
     /**
@@ -31,7 +34,7 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
     @Override
     public boolean equals(Object inObject) {
         if (inObject instanceof NoteItemViewholder) {
-            NoteItemViewholder inItem = (NoteItemViewholder) inObject;
+            ImageItemViewholder inItem = (ImageItemViewholder) inObject;
             return this.id.equals(inItem.id);
         }
         return false;
@@ -55,7 +58,7 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
      */
     @Override
     public int getLayoutRes() {
-        return R.layout.item_notes;
+        return R.layout.item_image;
     }
 
     /**
@@ -64,30 +67,22 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
      * creation of the VH.
      */
     @Override
-    public MyViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater,
-                                         ViewGroup parent) {
-        return new MyViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public ImageViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater,
+                                            ViewGroup parent) {
+        return new ImageViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
     }
 
     /**
      * The Adapter and the Payload are provided to get more specific information from it.
      */
     @Override
-    public void bindViewHolder(FlexibleAdapter adapter, MyViewHolder holder, int position,
+    public void bindViewHolder(FlexibleAdapter adapter, ImageViewHolder holder, int position,
                                List payloads) {
-        ArrayList<String> note = NoteHelper.getNote(title);
-        holder.noteTitle.setText(note.get(0));
-        if (!TextUtils.isEmpty(note.get(1)))
-        {
-            holder.noteBody.setText(note.get(1));
-            holder.noteBody.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            holder.noteBody.setVisibility(View.GONE);
-        }
-        //Title appears disabled if item is disabled
-        holder.noteTitle.setEnabled(isEnabled());
+        Context context = holder.itemView.getContext();
+
+        Picasso.with(context).load(image).transform(ImageTransformer.getTransformation(holder.noteImage)).placeholder(R.drawable.icon_picture).into(holder.noteImage);
+        Log.d("Image Adapter", image);
+        holder.noteImage.setEnabled(true);
     }
 
     /**
@@ -95,15 +90,13 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
      * Extending from FlexibleViewHolder is recommended especially when you will use
      * more advanced features.
      */
-    public class MyViewHolder extends FlexibleViewHolder {
+    public class ImageViewHolder extends FlexibleViewHolder {
 
-        public TextView noteTitle;
-        public TextView noteBody;
+        public ImageView noteImage;
 
-        public MyViewHolder(View view, FlexibleAdapter adapter) {
+        public ImageViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            noteTitle = (TextView) view.findViewById(R.id.item_note_title);
-            noteBody = (TextView) view.findViewById(R.id.item_note_note);
+            noteImage = (ImageView) view.findViewById(R.id.item_image);
         }
     }
 }
