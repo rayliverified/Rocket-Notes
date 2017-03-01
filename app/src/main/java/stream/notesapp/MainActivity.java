@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -77,8 +78,6 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         // Prepare the RecyclerView and attach the Adapter to it
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(createNewStaggeredGridLayoutManager());
-        mRecyclerView.setItemViewCacheSize(20);
-        mRecyclerView.setDrawingCacheEnabled(true);
         mRecyclerView.setAdapter(adapter);
 
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);

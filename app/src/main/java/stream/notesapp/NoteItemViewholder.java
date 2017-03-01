@@ -86,8 +86,6 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
         {
             holder.noteBody.setVisibility(View.GONE);
         }
-        //Title appears disabled if item is disabled
-        holder.noteTitle.setEnabled(isEnabled());
     }
 
     /**

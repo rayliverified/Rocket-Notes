@@ -33,7 +33,7 @@ public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholde
      */
     @Override
     public boolean equals(Object inObject) {
-        if (inObject instanceof NoteItemViewholder) {
+        if (inObject instanceof ImageItemViewholder) {
             ImageItemViewholder inItem = (ImageItemViewholder) inObject;
             return this.id.equals(inItem.id);
         }
@@ -82,7 +82,6 @@ public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholde
 
         Picasso.with(context).load(image).transform(ImageTransformer.getTransformation(holder.noteImage)).placeholder(R.drawable.icon_picture).into(holder.noteImage);
         Log.d("Image Adapter", image);
-        holder.noteImage.setEnabled(true);
     }
 
     /**
