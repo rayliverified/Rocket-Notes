@@ -7,6 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
 
@@ -25,7 +29,8 @@ public class SaveNoteService extends Service {
             Calendar calendar = Calendar.getInstance();
             Long currentTime = calendar.getTimeInMillis();
             DatabaseHelper dbHelper = new DatabaseHelper(mContext);
-            dbHelper.AddNewNote(body, currentTime, image);
+            NotesItem savedNote = dbHelper.AddNewNote(body, currentTime, image);
+            NotificationSender(savedNote);
 
             int widgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), NotesWidget.class));
             for (int id : widgetIDs) {
@@ -39,6 +44,12 @@ public class SaveNoteService extends Service {
         }
         stopSelf();
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    public void NotificationSender(NotesItem note)
+    {
+        EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.RECEIVED, note.getNotesID()));
+        Log.d("Note ID", Integer.toString(note.getNotesID()));
     }
 
     @Override

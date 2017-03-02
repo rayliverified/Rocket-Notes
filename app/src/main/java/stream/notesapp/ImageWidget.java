@@ -108,7 +108,7 @@ public class ImageWidget extends AppWidgetProvider {
         if (intent.getAction().equals(Constants.ADD_IMAGE)) {
             Log.d("onReceive", Constants.ADD_IMAGE);
             intent = new Intent(context, CameraActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
         }
         else if (intent.getAction().equals(Constants.OPEN_IMAGE))

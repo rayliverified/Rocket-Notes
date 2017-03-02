@@ -60,7 +60,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         }
     }
 
-    // Adding a new message to database.
+    // Adding a new id to database.
     public long AddNote(NotesItem note) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -76,7 +76,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return id;
     }
 
-    // Adding a new message to database.
+    // Adding a new id to database.
     public NotesItem AddNewNote(String note, Long date, String image) {
         NotesItem notesItem = new NotesItem();
         notesItem.setNotesNote(note);
@@ -88,7 +88,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     }
 
 
-    //Return notes sorted by last message date
+    //Return notes sorted by last id date
     public ArrayList<NotesItem> GetNotesDate() {
         ArrayList<NotesItem> notes = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_NOTES + " ORDER BY " + KEY_DATE + " DESC LIMIT 20";

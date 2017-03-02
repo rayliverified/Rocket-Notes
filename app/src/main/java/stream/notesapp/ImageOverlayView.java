@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class ImageOverlayView extends RelativeLayout {
 
     private TextView tvDescription;
@@ -39,10 +41,16 @@ public class ImageOverlayView extends RelativeLayout {
     private void init() {
         View view = inflate(getContext(), R.layout.view_image_overlay, this);
         tvDescription = (TextView) view.findViewById(R.id.tvDescription);
-        view.findViewById(R.id.btnShare).setOnClickListener(new OnClickListener() {
+        view.findViewById(R.id.button_share).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendShareIntent();
+            }
+        });
+        view.findViewById(R.id.button_gallery).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openGalleryIntent();
             }
         });
     }
@@ -53,5 +61,16 @@ public class ImageOverlayView extends RelativeLayout {
         sendIntent.putExtra(Intent.EXTRA_TEXT, sharingText);
         sendIntent.setType("text/plain");
         getContext().startActivity(sendIntent);
+    }
+
+    private void openGalleryIntent()
+    {
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        ArrayList<NotesItem> notesItems = dbHelper.GetRecentImages();
+        ArrayList<String> imageItems = new ArrayList<String>();
+        for (NotesItem note : notesItems)
+        {
+            imageItems.add(note.getNotesImage());
+        }
     }
 }

@@ -1,6 +1,7 @@
 package stream.notesapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,12 +77,22 @@ public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholde
      * The Adapter and the Payload are provided to get more specific information from it.
      */
     @Override
-    public void bindViewHolder(FlexibleAdapter adapter, ImageViewHolder holder, int position,
+    public void bindViewHolder(FlexibleAdapter adapter, ImageViewHolder holder, final int position,
                                List payloads) {
-        Context context = holder.itemView.getContext();
+        final Context context = holder.itemView.getContext();
 
         Picasso.with(context).load(image).transform(ImageTransformer.getTransformation(holder.noteImage)).placeholder(R.drawable.icon_picture).into(holder.noteImage);
         Log.d("Image Adapter", image);
+
+        holder.noteImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ImageViewerActivity.class);
+                intent.putExtra("IMAGE_PATH", position);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
     }
 
     /**

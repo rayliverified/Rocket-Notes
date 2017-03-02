@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -99,6 +100,9 @@ public class CameraActivity extends AppCompatActivity{
                 .labelRetry(R.string.camera_retake)
                 .labelConfirm(R.string.camera_save)
                 .start(CAMERA_RQ);
+
+        Intent notification = new Intent(Constants.RECEIVED);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(notification);
     }
 
     @Override

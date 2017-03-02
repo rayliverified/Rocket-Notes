@@ -11,9 +11,7 @@ import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,11 +23,16 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollStaggeredLayoutManager;
+import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
 
 public class MainActivity extends Activity implements AppBarLayout.OnOffsetChangedListener {
@@ -37,6 +40,8 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
     private static final String TAG = "Search";
     private SharedPreferences sharedPref;
     private RecyclerView mRecyclerView;
+    private FlexibleAdapter<IFlexible> mAdapter;
+    private StaggeredGridLayoutManager mStaggeredLayoutManager;
     private FloatingSearchView mSearchView;
     private AppBarLayout mAppBar;
     private MenuItem mActionVoice;
@@ -73,14 +78,16 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         List<IFlexible> myItems = getDatabaseList();
 
         // Initialize the Adapter
-        FlexibleAdapter<IFlexible> adapter = new FlexibleAdapter<IFlexible>(myItems);
+        mAdapter = new FlexibleAdapter<IFlexible>(myItems);
+        mStaggeredLayoutManager = createNewStaggeredGridLayoutManager();
 
         // Prepare the RecyclerView and attach the Adapter to it
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(createNewStaggeredGridLayoutManager());
-        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setLayoutManager(mStaggeredLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
 
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
+        
         setupSearchBar();
         checkVoiceRecognition();
     }
@@ -265,6 +272,41 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         });
     }
 
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(UpdateMainEvent event) {
+        Log.d("MainActivity", "Update Received");
+        UpdateOnAdd(event);
+    }
+
+    public void UpdateOnAdd(UpdateMainEvent event)
+    {
+        if (event.getAction().equals(Constants.RECEIVED)) {
+
+            Integer noteID = event.getID();
+            DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+            NotesItem note = dbHelper.GetNote(noteID);
+            AbstractFlexibleItem item = null;
+            if (note.getNotesNote() != null)
+            {
+                Log.d("Note", "Note Item");
+                item = new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote());
+            }
+            else if (note.getNotesImage() != null)
+            {
+                Log.d("Image View Holder", note.getNotesImage());
+                item = new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage());
+            }
+            mAdapter.addItem(0, item);
+            mAdapter.notifyItemInserted(mAdapter.getItemCount() - 1);
+            mStaggeredLayoutManager.scrollToPosition(0);
+            UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
+            if(stickyEvent != null) {
+                EventBus.getDefault().removeStickyEvent(stickyEvent);
+            }
+            Log.d("Broadcast Receiver", Constants.RECEIVED);
+        }
+    }
+
     public void checkVoiceRecognition() {
         // Check if voice recognition is present
         PackageManager pm = getPackageManager();
@@ -274,6 +316,26 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
             Toast.makeText(this, "Voice recognizer not present",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        //Listen for new messages received
+        Log.d("LocalBroadcastManager", "onResume");
+        EventBus.getDefault().register(this);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d("LocalBroadcastManager", "onPause");
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
+    public void updateOnAdd()
+    {
+
     }
 
     @Override

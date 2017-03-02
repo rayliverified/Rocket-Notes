@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="stream.notesapp">
 
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -80,11 +81,19 @@
                        android:resource="@xml/widget_notes">
             </meta-data>
         </receiver>
+        <!--<receiver android:name=".MainActivity" >-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.your.app.example_filter_1" />-->
+                <!--<action android:name="com.your.app.example_filter_2" />-->
+                <!--&lt;!&ndash; etc &ndash;&gt;-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
         <!-- Services -->
         <service android:name=".ImageWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service android:name=".NotesWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service android:name=".SaveNoteService"/>
+        <!-- Providers -->
     </application>
 </manifest>

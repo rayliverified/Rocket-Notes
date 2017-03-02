@@ -41,4 +41,5 @@ dependencies {
     compile 'eu.davidea:flexible-adapter:5.0.0-rc1'
     compile 'com.github.arimorty:floatingsearchview:2.0.3'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'org.greenrobot:eventbus:3.0.0'
 }

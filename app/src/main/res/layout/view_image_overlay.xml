@@ -1,24 +1,53 @@
-<merge
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btnShare"
-        style="@style/SimpleButtonStyle"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:text="Share"/>
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/button_delete"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="24dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/icon_delete"
+            android:text="Gallery"/>
+
+        <ImageButton
+            android:id="@+id/button_share"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_toLeftOf="@+id/button_delete"
+            android:background="@drawable/icon_share"
+            android:text="Share"/>
+
+        <ImageButton
+            android:id="@+id/button_gallery"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_toLeftOf="@+id/button_share"
+            android:background="@drawable/icon_gallery"
+            android:text="Gallery"/>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/tvDescription"
         style="@style/DescriptionText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         android:padding="12dp"/>
 
-</merge>
+</LinearLayout>
