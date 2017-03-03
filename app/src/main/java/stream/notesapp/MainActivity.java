@@ -90,6 +90,12 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         
         setupSearchBar();
         checkVoiceRecognition();
+
+        UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
+        if(stickyEvent != null) {
+            EventBus.getDefault().removeStickyEvent(stickyEvent);
+        }
+        Log.d("MainActivity", "onCreate");
     }
 
     private void setupSearchBar() {
@@ -289,15 +295,14 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
             if (note.getNotesNote() != null)
             {
                 Log.d("Note", "Note Item");
-                item = new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote());
+                item = new NoteItemViewholder(Integer.toString(noteID), note.getNotesNote());
             }
             else if (note.getNotesImage() != null)
             {
                 Log.d("Image View Holder", note.getNotesImage());
-                item = new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage());
+                item = new ImageItemViewholder(Integer.toString(noteID), note.getNotesImage());
             }
             mAdapter.addItem(0, item);
-            mAdapter.notifyItemInserted(mAdapter.getItemCount() - 1);
             mStaggeredLayoutManager.scrollToPosition(0);
             UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
             if(stickyEvent != null) {
@@ -331,11 +336,6 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         Log.d("LocalBroadcastManager", "onPause");
         EventBus.getDefault().unregister(this);
         super.onPause();
-    }
-
-    public void updateOnAdd()
-    {
-
     }
 
     @Override

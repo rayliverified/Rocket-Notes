@@ -42,6 +42,27 @@ public class SaveNoteService extends Service {
                 AppWidgetManager.getInstance(getApplication()).notifyAppWidgetViewDataChanged(id, R.id.image_gridview);
             }
         }
+        else if (intent.getAction().equals(Constants.UPDATE_NOTE))
+        {
+            Bundle extras = intent.getExtras();
+            Integer noteID = extras.getInt(Constants.ID);
+            String body = extras.getString(Constants.BODY);
+            Calendar calendar = Calendar.getInstance();
+            Long currentTime = calendar.getTimeInMillis();
+
+            NotesItem note = new NotesItem();
+            note.setNotesID(noteID);
+            note.setNotesNote(body);
+
+            DatabaseHelper dbHelper = new DatabaseHelper(mContext);
+            dbHelper.UpdateNote(note);
+            NotificationSender(note);
+
+            int widgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), NotesWidget.class));
+            for (int id : widgetIDs) {
+                AppWidgetManager.getInstance(getApplication()).notifyAppWidgetViewDataChanged(id, R.id.notes_listview);
+            }
+        }
         stopSelf();
         return super.onStartCommand(intent, flags, startId);
     }

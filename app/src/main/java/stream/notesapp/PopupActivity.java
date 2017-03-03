@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.StringTokenizer;
@@ -126,7 +127,6 @@ public class PopupActivity extends Activity {
                     if (s.subSequence(start, start + 1).toString().equalsIgnoreCase("\n")) {
                         Log.d("Key", "Enter");
 
-                        Log.d("Start", String.valueOf(start));
                         if (start == 0)
                         {
                             finish();
@@ -146,14 +146,6 @@ public class PopupActivity extends Activity {
                             getApplicationContext().startService(saveNote);
                             finish();
                         }
-
-                        // Change text to show without '\n'
-//                    String s_text = start > 0 ? s.subSequence(0, start).toString() : "";
-//                    s_text += start < s.length() ? s.subSequence(start + 1, s.length()).toString() : "";
-//                    editText.setText(s_text);
-//
-//                    // Move cursor to the end of the line
-//                    editText.setSelection(s_text.length());
                     }
                 }
             });
@@ -174,7 +166,7 @@ public class PopupActivity extends Activity {
         }
         else if (getIntent().getAction().equals(Constants.OPEN_NOTE))
         {
-            Integer noteID = getIntent().getIntExtra("NOTEID", 0);
+            final Integer noteID = getIntent().getIntExtra("NOTEID", 0);
             Log.d("Received Note ID", String.valueOf(noteID));
 
             DatabaseHelper dbHelper = new DatabaseHelper(this);
@@ -183,8 +175,71 @@ public class PopupActivity extends Activity {
 
             editText.setHint("Add to note...");
             editDetails.setText("Update Note • " + noteTime);
-            editTitle.setText(note.getNotesNote());
-            editBody.setText(note.getNotesNote());
+            final String noteTextRaw = note.getNotesNote();
+            ArrayList<String> noteText = NoteHelper.getNote(noteTextRaw);
+            editTitle.setText(noteText.get(0));
+            if (!TextUtils.isEmpty(noteText.get(1)))
+            {
+                editBody.setText(noteText.get(1));
+                editBody.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                editBody.setVisibility(View.GONE);
+            }
+            editText.addTextChangedListener(new TextWatcher() {
+
+                public void afterTextChanged(Editable s) {
+
+                }
+
+                public void beforeTextChanged(CharSequence s, int start,
+                                              int count, int after) {
+                }
+
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
+                    if (s.length() < 1 || start >= s.length() || start < 0)
+                    {
+                        return;
+                    }
+
+                    //Detect enter key presses
+                    if (s.subSequence(start, start + 1).toString().equalsIgnoreCase("\n")) {
+                        Log.d("Key", "Enter");
+
+                        if (start == 0)
+                        {
+                            finish();
+                        }
+                        else
+                        {
+                            //Save note and close activity
+                            Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
+                            saveNote.putExtra(Constants.ID, noteID);
+                            saveNote.putExtra(Constants.BODY, noteTextRaw + "\n" + editText.getText().toString().trim());
+                            saveNote.setAction(Constants.UPDATE_NOTE);
+                            getApplicationContext().startService(saveNote);
+                            finish();
+                        }
+                    }
+                }
+            });
+            editSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!TextUtils.isEmpty(editText.getText().toString().trim()))
+                    {
+                        //Save note and close activity
+                        Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
+                        saveNote.putExtra(Constants.ID, noteID);
+                        saveNote.putExtra(Constants.BODY, noteTextRaw + "\n" + editText.getText().toString().trim());
+                        saveNote.setAction(Constants.UPDATE_NOTE);
+                        getApplicationContext().startService(saveNote);
+                    }
+                    finish();
+                }
+            });
         }
     }
 

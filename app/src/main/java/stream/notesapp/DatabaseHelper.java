@@ -87,6 +87,22 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return notesItem;
     }
 
+    //Update note
+    public long UpdateNote(NotesItem note) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        String selection = Integer.toString(note.getNotesID());
+        selection = "_id=" + selection;
+
+        if (note.getNotesDate() != null) {
+            values.put(KEY_DATE, note.getNotesDate());
+        }
+        if (note.getNotesNote() != null) {
+            values.put(KEY_NOTE, note.getNotesNote());
+        }
+
+        return db.update(TABLE_NOTES, values, selection, null);
+    }
 
     //Return notes sorted by last id date
     public ArrayList<NotesItem> GetNotesDate() {
@@ -145,6 +161,33 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return note;
     }
 
+    //Return recent text notes
+    public ArrayList<NotesItem> GetTextNotes() {
+        ArrayList<NotesItem> notes = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_NOTE + " NOT NULL ORDER BY " + KEY_DATE + " DESC LIMIT 20";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c.moveToFirst()) {
+            do {
+                NotesItem note = new NotesItem();
+                if (c.getString(c.getColumnIndexOrThrow("_id")) != null) {
+                    note.setNotesID(c.getInt(c.getColumnIndexOrThrow("_id")));
+                }
+                if (c.getString(c.getColumnIndexOrThrow("note")) != null) {
+                    note.setNotesNote(c.getString(c.getColumnIndexOrThrow("note")));
+                }
+                if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
+                    note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));
+                }
+                notes.add(note);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return notes;
+    }
+
     //Return recent images
     public ArrayList<NotesItem> GetRecentImages() {
         ArrayList<NotesItem> notes = new ArrayList<>();
@@ -167,7 +210,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
                 }
                 if (c.getString(c.getColumnIndexOrThrow("image")) != null) {
                     note.setNotesImage(c.getString(c.getColumnIndexOrThrow("image")));
-                    Log.d("Image", note.getNotesImage());
                 }
                 notes.add(note);
             } while (c.moveToNext());

@@ -4,7 +4,9 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -32,7 +34,7 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // or getViewAt(). Taking more than 20 seconds in this call will result in an ANR.
 //        mNotesItems = lastNotesModified();
         DatabaseHelper dbHelper = new DatabaseHelper(mContext);
-        mNotesItems = dbHelper.GetNotesDate();
+        mNotesItems = dbHelper.GetTextNotes();
         Log.d("Note Size", String.valueOf(mNotesItems.size()));
         mCount = mNotesItems.size();
     }
@@ -53,8 +55,17 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_notes_widget);
         if (position < mNotesItems.size()) {
-            rv.setTextViewText(R.id.item_note_title, mNotesItems.get(position).getNotesNote());
-            rv.setTextViewText(R.id.item_note_note, mNotesItems.get(position).getNotesNote());
+            ArrayList<String> note = NoteHelper.getNote(mNotesItems.get(position).getNotesNote());
+            rv.setTextViewText(R.id.item_note_title, note.get(0));
+            if (!TextUtils.isEmpty(note.get(1)))
+            {
+                rv.setTextViewText(R.id.item_note_note, note.get(1));
+                rv.setViewVisibility(R.id.item_note_note, View.VISIBLE);
+            }
+            else
+            {
+                rv.setViewVisibility(R.id.item_note_note, View.GONE);
+            }
         }
         Bundle extras = new Bundle();
         Intent fillInIntent = new Intent();

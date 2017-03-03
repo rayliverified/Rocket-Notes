@@ -29,6 +29,7 @@
                 android:text="Note title"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                android:textColor="@color/textPrimary"
                 android:layout_marginBottom="2dp"/>
 
             <TextView
@@ -38,7 +39,8 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:textSize="12sp"
-                android:text="Note text."
+                android:textColor="@color/textSecondary"
+                android:text="Note, text can be very long long long long. Sample text continues until it ellipsizes."
                 android:maxLines="7"
                 android:ellipsize="end"
                 android:singleLine="false"/>

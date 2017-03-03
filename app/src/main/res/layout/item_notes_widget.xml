@@ -7,27 +7,31 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
         android:clickable="true">
 
         <TextView
             android:id="@+id/item_note_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
-            android:hint="Note title"
+            android:text="Note title"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:textColor="@color/textPrimary"
             android:layout_marginBottom="2dp"/>
 
         <TextView
             android:id="@+id/item_note_note"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:textSize="12sp"
-            android:hint="Note, text can be very long long long long. Sample text continues until it ellipsizes."
+            android:textColor="@color/textSecondary"
+            android:text="Note, text can be very long long long long. Sample text continues until it ellipsizes."
             android:ellipsize="end"
             android:maxLines="1"/>
     </LinearLayout>
