@@ -20,15 +20,16 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="68dp"
+                android:layout_height="64dp"
                 android:background="@color/colorPrimary"
                 app:layout_scrollFlags="scroll|enterAlways"/>
             <stream.notesapp.filter.FilterMaterialSearchView
                 android:id="@+id/sv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:visibility="gone"
                 app:msvIsContainEnabled="false"
-                android:elevation="5dip">
+                android:elevation="5dp">
             </stream.notesapp.filter.FilterMaterialSearchView>
         </android.support.design.widget.AppBarLayout>
 

@@ -8,16 +8,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
+import stream.notesapp.Constants;
+import stream.notesapp.NotesItem;
 import stream.notesapp.R;
+import stream.notesapp.UpdateMainEvent;
 import stream.notesapp.filter.model.Filter;
 
 public class FilterMaterialSearchView extends FrameLayout implements RecyclerItemClickListener.OnItemClickListener {
@@ -25,7 +28,6 @@ public class FilterMaterialSearchView extends FrameLayout implements RecyclerIte
     private RecyclerView mRvFilter;
     private FilterRvAdapter mFilterRvAdapter;
     private OnFilterViewListener mOnFilterViewListener;
-    private TextView mTvNoFilter;
     private boolean isContainFilter;
     private String TAG = "Filter";
 
@@ -63,7 +65,6 @@ public class FilterMaterialSearchView extends FrameLayout implements RecyclerIte
         LayoutInflater.from(getContext()).inflate(R.layout.msv_filter, this, true);
 
         mRvFilter = (RecyclerView) findViewById(R.id.rv_filter);
-        mTvNoFilter = (TextView)  findViewById(R.id.tv_no_filter);
 
         mFilterRvAdapter = new FilterRvAdapter(getContext());
         mRvFilter.setHasFixedSize(false);
@@ -77,27 +78,27 @@ public class FilterMaterialSearchView extends FrameLayout implements RecyclerIte
             @Override
             public void onChanged() {
                 if (mFilterRvAdapter.getItemCount() == 0){
-                    mTvNoFilter.setVisibility(VISIBLE);
+                    closeFilter();
                 } else {
-                    mTvNoFilter.setVisibility(GONE);
+                    showFilter();
                 }
             }
 
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 if (mFilterRvAdapter.getItemCount() == 0){
-                    mTvNoFilter.setVisibility(VISIBLE);
+                    closeFilter();
                 } else {
-                    mTvNoFilter.setVisibility(GONE);
+                    showFilter();
                 }
             }
 
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 if (mFilterRvAdapter.getItemCount() == 0){
-                    mTvNoFilter.setVisibility(VISIBLE);
+                    closeFilter();
                 } else {
-                    mTvNoFilter.setVisibility(GONE);
+                    showFilter();
                 }
             }
         });
@@ -107,13 +108,21 @@ public class FilterMaterialSearchView extends FrameLayout implements RecyclerIte
         mFilterRvAdapter.addFilter(filter);
     }
 
-    public void showSearch(boolean animate) {
-        mFilterRvAdapter.clear();
+    public void showFilter() {
+        mRvFilter.setVisibility(VISIBLE);
     }
 
-    public void closeSearch() {
-        mFilterRvAdapter.clear();
+    public void closeFilter() {
+        mRvFilter.setVisibility(GONE);
+        NotificationSender();
     }
+
+    public void NotificationSender()
+    {
+        EventBus.getDefault().post(new UpdateMainEvent(Constants.FILTER));
+        Log.d("Notification", Constants.FILTER);
+    }
+
 
     public boolean isFilterVisible(){
         return mRvFilter.getVisibility() == VISIBLE;
@@ -123,15 +132,6 @@ public class FilterMaterialSearchView extends FrameLayout implements RecyclerIte
        return mRvFilter.getHeight();
     }
 
-    public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-        Log.d(TAG, "onEditorAction: " + actionId);
-
-        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-            return onEditorAction(textView, actionId, keyEvent);
-        }
-        return false;
-    }
-
     @Override
     public void onItemClick(RecyclerView rv, View view, int position) {
         Log.d(TAG, "onItemClick: position:" + position);
@@ -139,6 +139,8 @@ public class FilterMaterialSearchView extends FrameLayout implements RecyclerIte
         final Filter filter = mFilterRvAdapter.removeFilter(position);
 
         if (mFilterRvAdapter.getItemCount() == 0) {
+            Log.d("Filter", "Closed");
+            closeFilter();
         }
 
         if (mOnFilterViewListener != null) {

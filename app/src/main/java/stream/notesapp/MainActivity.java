@@ -73,10 +73,6 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         mAppBar.addOnOffsetChangedListener(this);
 
         initializeRecyclerView(savedInstanceState);
-
-        FilterMaterialSearchView mFilterView = (FilterMaterialSearchView) findViewById(R.id.sv);
-        Filter filter = new Filter(1, "Images", 0, R.drawable.icon_camera, getResources().getColor(R.color.colorPrimary));
-        mFilterView.addFilter(filter);
     }
 
     private void initializeRecyclerView(Bundle savedInstanceState) {
@@ -227,6 +223,14 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
                 }
+                else if (item.getItemId() == R.id.filter_image)
+                {
+                    FilterImages();
+                }
+                else if (item.getItemId() == R.id.filter_text)
+                {
+                    FilterText();
+                }
                 else
                 {
 
@@ -285,38 +289,89 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         });
     }
 
+    public void FilterImages()
+    {
+        Filter filter = new Filter(1, "Image", 0, R.drawable.icon_gallery_image, getResources().getColor(R.color.colorPrimary));
+        FilterMaterialSearchView mFilterView = (FilterMaterialSearchView) findViewById(R.id.sv);
+        mFilterView.setVisibility(View.VISIBLE);
+        mFilterView.addFilter(filter);
+        List<IFlexible> list = new ArrayList<>();
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        ArrayList<NotesItem> notesItems = dbHelper.GetImageNotes();
+        Log.d("NotesItem Size", String.valueOf(notesItems.size()));
+        for (NotesItem note : notesItems)
+        {
+            list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
+        }
+        mAdapter.updateDataSet(list);
+        Log.d("Filter", "Images");
+    }
+
+    public void FilterText()
+    {
+        Filter filter = new Filter(1, "Text", 0, R.drawable.icon_rocket_image, getResources().getColor(R.color.colorPrimary));
+        FilterMaterialSearchView mFilterView = (FilterMaterialSearchView) findViewById(R.id.sv);
+        mFilterView.setVisibility(View.VISIBLE);
+        mFilterView.addFilter(filter);
+        List<IFlexible> list = new ArrayList<>();
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        ArrayList<NotesItem> notesItems = dbHelper.GetTextNotes();
+        Log.d("NotesItem Size", String.valueOf(notesItems.size()));
+        for (NotesItem note : notesItems)
+        {
+            list.add(new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote()));
+        }
+        mAdapter.updateDataSet(list);
+        Log.d("Filter", "Texts");
+    }
+
+    public void FilterReset()
+    {
+        List<IFlexible> list = getDatabaseList();
+        mAdapter.updateDataSet(list);
+        Log.d("Filter", "Reset");
+    }
+
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onMessageEvent(UpdateMainEvent event) {
         Log.d("MainActivity", "Update Received");
-        UpdateOnAdd(event);
+        if (event.getAction().equals(Constants.RECEIVED)) {
+            UpdateOnAdd(event);
+        }
+        else if (event.getAction().equals(Constants.FILTER))
+        {
+            UpdateFilter(event);
+        }
     }
 
     public void UpdateOnAdd(UpdateMainEvent event)
     {
-        if (event.getAction().equals(Constants.RECEIVED)) {
-
-            Integer noteID = event.getID();
-            DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-            NotesItem note = dbHelper.GetNote(noteID);
-            AbstractFlexibleItem item = null;
-            if (note.getNotesNote() != null)
-            {
-                Log.d("Note", "Note Item");
-                item = new NoteItemViewholder(Integer.toString(noteID), note.getNotesNote());
-            }
-            else if (note.getNotesImage() != null)
-            {
-                Log.d("Image View Holder", note.getNotesImage());
-                item = new ImageItemViewholder(Integer.toString(noteID), note.getNotesImage());
-            }
-            mAdapter.addItem(0, item);
-            mStaggeredLayoutManager.scrollToPosition(0);
-            UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
-            if(stickyEvent != null) {
-                EventBus.getDefault().removeStickyEvent(stickyEvent);
-            }
-            Log.d("Broadcast Receiver", Constants.RECEIVED);
+        Integer noteID = event.getID();
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        NotesItem note = dbHelper.GetNote(noteID);
+        AbstractFlexibleItem item = null;
+        if (note.getNotesNote() != null)
+        {
+            Log.d("Note", "Note Item");
+            item = new NoteItemViewholder(Integer.toString(noteID), note.getNotesNote());
         }
+        else if (note.getNotesImage() != null)
+        {
+            Log.d("Image View Holder", note.getNotesImage());
+            item = new ImageItemViewholder(Integer.toString(noteID), note.getNotesImage());
+        }
+        mAdapter.addItem(0, item);
+        mStaggeredLayoutManager.scrollToPosition(0);
+        UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
+        if(stickyEvent != null) {
+            EventBus.getDefault().removeStickyEvent(stickyEvent);
+        }
+        Log.d("Broadcast Receiver", Constants.RECEIVED);
+    }
+
+    public void UpdateFilter(UpdateMainEvent event)
+    {
+        FilterReset();
     }
 
     public void checkVoiceRecognition() {
@@ -384,10 +439,6 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
                 list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
             }
         }
-//        for (int i = 0; i < 50; i++)
-//        {
-//            list.add(new NoteItemViewholder(Integer.toString(i), "Wow, this is a great gig."));
-//        }
         return list;
     }
 }

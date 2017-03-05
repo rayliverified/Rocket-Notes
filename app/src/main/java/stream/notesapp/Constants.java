@@ -15,4 +15,5 @@ public interface Constants {
     public static final String IMAGE = "IMAGE";
     public static final String ID = "ID";
     public static final String RECEIVED = "RECEIVED";
+    public static final String FILTER = "FILTER";
 }

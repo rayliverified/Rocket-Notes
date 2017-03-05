@@ -161,10 +161,10 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return note;
     }
 
-    //Return recent text notes
+    //Return text notes
     public ArrayList<NotesItem> GetTextNotes() {
         ArrayList<NotesItem> notes = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_NOTE + " NOT NULL ORDER BY " + KEY_DATE + " DESC LIMIT 20";
+        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_NOTE + " NOT NULL ORDER BY " + KEY_DATE + " DESC";
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor c = db.rawQuery(selectQuery, null);
@@ -180,6 +180,33 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
                 }
                 if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
                     note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));
+                }
+                notes.add(note);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return notes;
+    }
+
+    //Return recent image notes
+    public ArrayList<NotesItem> GetImageNotes() {
+        ArrayList<NotesItem> notes = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_IMAGE + " NOT NULL ORDER BY " + KEY_DATE + " DESC";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c.moveToFirst()) {
+            do {
+                NotesItem note = new NotesItem();
+                if (c.getString(c.getColumnIndexOrThrow("_id")) != null) {
+                    note.setNotesID(c.getInt(c.getColumnIndexOrThrow("_id")));
+                }
+                if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
+                    note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));
+                }
+                if (c.getString(c.getColumnIndexOrThrow("image")) != null) {
+                    note.setNotesImage(c.getString(c.getColumnIndexOrThrow("image")));
                 }
                 notes.add(note);
             } while (c.moveToNext());
