@@ -11,4 +11,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dictum lorem 
     <string name="action_location">action location</string>
     <string name="action_taxi">action taxi</string>
     <string name="action_change_colors">change style</string>
+
+    <string name="msv_no_filter">No filter</string>
+    <string name="msv_search_hint">Search&#8230;</string>
 </resources>

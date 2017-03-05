@@ -2,4 +2,12 @@
 <resources>
     <declare-styleable name="CustomImageView">
     </declare-styleable>
+    <declare-styleable name="Msv">
+        <attr name="msvSearchBackground" format="reference" />
+        <attr name="msvHint" format="string"/>
+        <attr name="msvTextColor" format="color"/>
+        <attr name="msvTextColorHint" format="color"/>
+        <attr name="msvIsContainEnabled" format="boolean" />
+        <attr name="msvHideShadow" format="boolean" />
+    </declare-styleable>
 </resources>

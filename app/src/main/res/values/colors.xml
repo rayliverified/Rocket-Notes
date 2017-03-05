@@ -18,4 +18,6 @@
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+
+    <color name="windowBackgroundColor">#FFF2F2F2</color>
 </resources>

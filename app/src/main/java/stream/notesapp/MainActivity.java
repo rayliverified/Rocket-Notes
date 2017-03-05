@@ -34,6 +34,8 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollStaggeredLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
+import stream.notesapp.filter.FilterMaterialSearchView;
+import stream.notesapp.filter.model.Filter;
 
 public class MainActivity extends Activity implements AppBarLayout.OnOffsetChangedListener {
 
@@ -46,6 +48,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
     private AppBarLayout mAppBar;
     private MenuItem mActionVoice;
     private MenuItem mActionCamera;
+    FilterMaterialSearchView mFilterView;
     Context mContext;
 
     @Override
@@ -70,6 +73,10 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         mAppBar.addOnOffsetChangedListener(this);
 
         initializeRecyclerView(savedInstanceState);
+
+        FilterMaterialSearchView mFilterView = (FilterMaterialSearchView) findViewById(R.id.sv);
+        Filter filter = new Filter(1, "Images", 0, R.drawable.icon_camera, getResources().getColor(R.color.colorPrimary));
+        mFilterView.addFilter(filter);
     }
 
     private void initializeRecyclerView(Bundle savedInstanceState) {
