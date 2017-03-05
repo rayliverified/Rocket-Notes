@@ -82,7 +82,6 @@ public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholde
         final Context context = holder.itemView.getContext();
 
         Picasso.with(context).load(image).transform(ImageTransformer.getTransformation(holder.noteImage)).placeholder(R.drawable.icon_picture).into(holder.noteImage);
-        Log.d("Image Adapter", image);
 
         holder.noteImage.setOnClickListener(new View.OnClickListener() {
             @Override

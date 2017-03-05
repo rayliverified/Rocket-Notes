@@ -1,6 +1,7 @@
 package stream.notesapp;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Transformation;
@@ -13,6 +14,11 @@ public class ImageTransformer {
             @Override
             public Bitmap transform(Bitmap source) {
                 int targetWidth = imageView.getWidth();
+                Log.d("Image Transform", String.valueOf(targetWidth));
+                if (targetWidth <= 0)
+                {
+                    targetWidth = 500;
+                }
 
                 double aspectRatio = (double) source.getHeight() / (double) source.getWidth();
                 int targetHeight = (int) (targetWidth * aspectRatio);

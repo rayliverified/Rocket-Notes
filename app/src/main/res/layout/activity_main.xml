@@ -20,7 +20,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
+                android:layout_height="62dp"
                 android:background="@color/colorPrimary"
                 app:layout_scrollFlags="scroll|enterAlways"/>
             <stream.notesapp.filter.FilterMaterialSearchView
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:floatingSearch_searchBarMarginLeft="6dp"
-        app:floatingSearch_searchBarMarginTop="6dp"
+        app:floatingSearch_searchBarMarginTop="4dp"
         app:floatingSearch_searchBarMarginRight="6dp"
         app:floatingSearch_searchHint="Rocket Notes"
         app:floatingSearch_suggestionsListAnimDuration="100"
