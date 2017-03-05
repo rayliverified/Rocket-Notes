@@ -17,7 +17,7 @@
           app:showAsAction="never"
           android:icon="@drawable/ic_local_taxi_black_24dp"/>
     <item android:id="@+id/filter_text"
-        android:title="Only Texts"
+        android:title="Only Text"
         android:orderInCategory="4"
         app:showAsAction="never"
         android:icon="@drawable/ic_invert_colors_black_24dp"/>

@@ -11,14 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
 import stream.notesapp.Constants;
-import stream.notesapp.NotesItem;
 import stream.notesapp.R;
 import stream.notesapp.UpdateMainEvent;
 import stream.notesapp.filter.model.Filter;

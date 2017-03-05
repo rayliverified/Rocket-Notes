@@ -38,7 +38,7 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         Log.d("Note Size", String.valueOf(mNotesItems.size()));
         mCount = mNotesItems.size();
     }
-    //    public static ArrayList<File> lastFileModified() {
+    //    public static ArrayList<File> recentImages() {
 //
 //        return imageItems;
 //    }

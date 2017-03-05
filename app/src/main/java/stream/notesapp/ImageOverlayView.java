@@ -3,9 +3,12 @@ package stream.notesapp;
 import android.content.Context;
 import android.content.Intent;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -65,12 +68,15 @@ public class ImageOverlayView extends RelativeLayout {
 
     private void openGalleryIntent()
     {
-        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-        ArrayList<NotesItem> notesItems = dbHelper.GetRecentImages();
-        ArrayList<String> imageItems = new ArrayList<String>();
-        for (NotesItem note : notesItems)
-        {
-            imageItems.add(note.getNotesImage());
-        }
+        NotificationSender();
+        Intent galleryIntent = new Intent(getContext(), MainActivity.class);
+        galleryIntent.setAction(Constants.STICKY);
+        getContext().startActivity(galleryIntent);
+    }
+
+    public void NotificationSender()
+    {
+        EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.FILTER_IMAGES));
+        Log.d("Notification", Constants.FILTER_IMAGES);
     }
 }

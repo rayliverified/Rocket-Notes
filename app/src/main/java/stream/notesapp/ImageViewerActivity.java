@@ -1,7 +1,6 @@
 package stream.notesapp;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -13,19 +12,13 @@ import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 import frescoimageviewer.ImageViewer;
 import me.relex.photodraweeview.PhotoDraweeView;
 
 public class ImageViewerActivity extends AppCompatActivity {
 
-    private PhotoDraweeView mPhotoDraweeView;
     private ImageOverlayView overlayView;
     private ArrayList<String> recentImages;
     private Context mContext;
@@ -50,10 +43,16 @@ public class ImageViewerActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_imageviewer);
 
-        Integer position = getIntent().getIntExtra("IMAGE_PATH", 0);
-        Log.d("Received Image Path", String.valueOf(position));
-        recentImages = lastFileModified(mContext);
-
+        Integer position = getIntent().getIntExtra(Constants.IMAGE, 0);
+        Log.d("Image Position", String.valueOf(position));
+        if (getIntent().getAction().equals(Constants.OPEN_IMAGE))
+        {
+            recentImages = recentImages(mContext);
+        }
+        else if (getIntent().getAction().equals(Constants.OPEN_IMAGE_SINGLE))
+        {
+            recentImages = singleImage(mContext, position);
+        }
         showPicker(position);
     }
 
@@ -100,7 +99,7 @@ public class ImageViewerActivity extends AppCompatActivity {
         return GenericDraweeHierarchyBuilder.newInstance(getResources());
     }
 
-    public static ArrayList<String> lastFileModified(Context context) {
+    public static ArrayList<String> recentImages(Context context) {
 
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         ArrayList<NotesItem> notesItems = dbHelper.GetRecentImages();
@@ -109,6 +108,16 @@ public class ImageViewerActivity extends AppCompatActivity {
         {
             imageItems.add(note.getNotesImage());
         }
+
+        return imageItems;
+    }
+
+    public static ArrayList<String> singleImage(Context context, Integer id) {
+
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        NotesItem note = dbHelper.GetNote(id);
+        ArrayList<String> imageItems = new ArrayList<String>();
+        imageItems.add(note.getNotesImage());
 
         return imageItems;
     }

@@ -120,7 +120,8 @@ public class ImageWidget extends AppWidgetProvider {
                 if (position != -1)
                 {
                     intent = new Intent(context, ImageViewerActivity.class);
-                    intent.putExtra("IMAGE_PATH", position);
+                    intent.setAction(Constants.OPEN_IMAGE);
+                    intent.putExtra(Constants.IMAGE, position);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     context.startActivity(intent);
                 }

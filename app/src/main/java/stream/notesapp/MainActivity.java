@@ -72,7 +72,24 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         mAppBar = (AppBarLayout) findViewById(R.id.app_bar);
         mAppBar.addOnOffsetChangedListener(this);
 
+        checkVoiceRecognition();
+        setupSearchBar();
         initializeRecyclerView(savedInstanceState);
+        if (getIntent().getAction() != null)
+        {
+            if (getIntent().getAction().equals(Constants.STICKY))
+            {
+
+            }
+        }
+        else
+        {
+            UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
+            if(stickyEvent != null) {
+                EventBus.getDefault().removeStickyEvent(stickyEvent);
+            }
+        }
+        Log.d("MainActivity", "onCreate");
     }
 
     private void initializeRecyclerView(Bundle savedInstanceState) {
@@ -88,21 +105,11 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(mStaggeredLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-
-        mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
-        
-        setupSearchBar();
-        checkVoiceRecognition();
-
-        UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
-        if(stickyEvent != null) {
-            EventBus.getDefault().removeStickyEvent(stickyEvent);
-        }
-        Log.d("MainActivity", "onCreate");
     }
 
     private void setupSearchBar() {
 
+        mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
         mActionVoice = (MenuItem) findViewById(R.id.action_voice);
         mActionCamera = (MenuItem) findViewById(R.id.action_camera);
 
@@ -304,6 +311,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
             list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
         }
         mAdapter.updateDataSet(list);
+        RemoveSticky();
         Log.d("Filter", "Images");
     }
 
@@ -322,13 +330,14 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
             list.add(new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote()));
         }
         mAdapter.updateDataSet(list);
-        Log.d("Filter", "Texts");
+        Log.d("Filter", "Text");
     }
 
     public void FilterReset()
     {
         List<IFlexible> list = getDatabaseList();
         mAdapter.updateDataSet(list);
+        RemoveSticky();
         Log.d("Filter", "Reset");
     }
 
@@ -341,6 +350,10 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         else if (event.getAction().equals(Constants.FILTER))
         {
             UpdateFilter(event);
+        }
+        else if (event.getAction().equals(Constants.FILTER_IMAGES))
+        {
+            FilterImages();
         }
     }
 
@@ -362,11 +375,16 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         }
         mAdapter.addItem(0, item);
         mStaggeredLayoutManager.scrollToPosition(0);
+        RemoveSticky();
+        Log.d("Broadcast Receiver", Constants.RECEIVED);
+    }
+
+    public void RemoveSticky()
+    {
         UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
         if(stickyEvent != null) {
             EventBus.getDefault().removeStickyEvent(stickyEvent);
         }
-        Log.d("Broadcast Receiver", Constants.RECEIVED);
     }
 
     public void UpdateFilter(UpdateMainEvent event)
