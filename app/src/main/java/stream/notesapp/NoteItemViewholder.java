@@ -1,6 +1,7 @@
 package stream.notesapp;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,11 @@ import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.viewholders.FlexibleViewHolder;
+import me.xdrop.fuzzywuzzy.FuzzySearch;
 
-public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.MyViewHolder> {
+public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.MyViewHolder> implements IFilterable {
 
     private String id;
     private String title;
@@ -86,6 +89,15 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
         {
             holder.noteBody.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public boolean filter(String constraint) {
+        Integer fuzzyRatio = FuzzySearch.partialRatio(title.toLowerCase(), constraint.toLowerCase());
+        Log.d("Fuzzy Search Ratio", String.valueOf(fuzzyRatio));
+        if (fuzzyRatio >= 70 || title.toLowerCase().trim().contains(constraint))
+            return true;
+        return false;
     }
 
     /**

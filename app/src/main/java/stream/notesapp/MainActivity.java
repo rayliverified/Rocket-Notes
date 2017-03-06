@@ -72,9 +72,10 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         mAppBar = (AppBarLayout) findViewById(R.id.app_bar);
         mAppBar.addOnOffsetChangedListener(this);
 
-        checkVoiceRecognition();
-        setupSearchBar();
         initializeRecyclerView(savedInstanceState);
+        checkVoiceRecognition();
+        mFilterView = (FilterMaterialSearchView) findViewById(R.id.sv);
+        setupSearchBar();
         if (getIntent().getAction() != null)
         {
             if (getIntent().getAction().equals(Constants.STICKY))
@@ -120,30 +121,15 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 
                 if (!oldQuery.equals("") && newQuery.equals("")) {
                     mSearchView.clearSuggestions();
+                    FilterReset();
                 } else {
-
-                    //this shows the top left circular progress
-                    //you can call it where ever you want, but
-                    //it makes sense to do it when loading something in
-                    //the background.
-
-//                    //simulates a query call to a data source
-//                    //with a new query.
-//                    DataHelper.findSuggestions(getActivity(), newQuery, 5,
-//                            FIND_SUGGESTION_SIMULATED_DELAY, new DataHelper.OnFindSuggestionsListener() {
-//
-//                                @Override
-//                                public void onResults(List<ColorSuggestion> results) {
-//
-//                                    //this will swap the data and
-//                                    //render the collapse/expand animations as necessary
-//                                    mSearchView.swapSuggestions(results);
-//
-//                                    //let the users know that the background
-//                                    //process has completed
-//                                    mSearchView.hideProgress();
-//                                }
-//                            });
+                    if (mAdapter.hasNewSearchText(newQuery)) {
+                        Log.d(TAG, "onQueryTextChange newText: " + newQuery);
+                        mAdapter.setSearchText(newQuery);
+                        // Fill and Filter mItems with your custom list and automatically animate the changes
+                        // Watch out! The original list must be a copy
+                        mAdapter.filterItems(getDatabaseList(), 200);
+                    }
                 }
 
                 Log.d(TAG, "onSearchTextChanged()");
@@ -189,10 +175,9 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         mSearchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
-
 //                //show suggestions when search bar gains focus (typically history suggestions)
 //                mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
-
+                mFilterView.closeFilter();
                 Log.d(TAG, "onFocus()");
             }
 
@@ -200,7 +185,8 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
             public void onFocusCleared() {
 
 //                //set the title of the bar so that when focus is returned a new query begins
-//                mSearchView.setSearchBarTitle(mLastQuery);
+                mSearchView.setSearchBarTitle("Rocket Notes");
+                FilterReset();
 
                 //you can also set setSearchText(...) to make keep the query there when not focused and when focus returns
                 //mSearchView.setSearchText(searchSuggestion.getBody());
@@ -299,7 +285,6 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
     public void FilterImages()
     {
         Filter filter = new Filter(1, "Image", 0, R.drawable.icon_gallery_image, getResources().getColor(R.color.colorPrimary));
-        FilterMaterialSearchView mFilterView = (FilterMaterialSearchView) findViewById(R.id.sv);
         mFilterView.setVisibility(View.VISIBLE);
         mFilterView.addFilter(filter);
         List<IFlexible> list = new ArrayList<>();
@@ -318,7 +303,6 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
     public void FilterText()
     {
         Filter filter = new Filter(1, "Text", 0, R.drawable.icon_rocket_image, getResources().getColor(R.color.colorPrimary));
-        FilterMaterialSearchView mFilterView = (FilterMaterialSearchView) findViewById(R.id.sv);
         mFilterView.setVisibility(View.VISIBLE);
         mFilterView.addFilter(filter);
         List<IFlexible> list = new ArrayList<>();

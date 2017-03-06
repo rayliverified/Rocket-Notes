@@ -52,7 +52,8 @@
         app:floatingSearch_searchHint="Rocket Notes"
         app:floatingSearch_suggestionsListAnimDuration="100"
         app:floatingSearch_showSearchKey="false"
-        app:floatingSearch_leftActionMode="showHamburger"
+        app:floatingSearch_leftActionMode="noLeftAction"
         app:floatingSearch_menu="@menu/menu_search_view"
-        app:floatingSearch_close_search_on_keyboard_dismiss="true"/>
+        app:floatingSearch_close_search_on_keyboard_dismiss="true"
+        app:floatingSearch_dimBackground="false"/>
 </RelativeLayout>
