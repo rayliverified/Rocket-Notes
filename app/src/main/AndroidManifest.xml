@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="stream.notesapp">
+          package="stream.rocketnotes">
 
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="stream.rocketnotes.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -23,26 +23,26 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ResultActivity"
-            android:parentActivityName=".MainActivity"
+            android:name="stream.rocketnotes.ResultActivity"
+            android:parentActivityName="stream.rocketnotes.MainActivity"
             android:launchMode="singleTask"
             android:taskAffinity=""
             android:excludeFromRecents="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value="stream.rocketnotes.MainActivity"/>
         </activity>
-        <activity android:name=".CameraActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
+        <activity android:name="stream.rocketnotes.CameraActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
         <activity
             android:name="com.afollestad.materialcamera.CaptureActivity"
             android:theme="@style/MaterialCamera.CaptureActivity" />
         <activity
             android:name="com.afollestad.materialcamera.CaptureActivity2"
             android:theme="@style/MaterialCamera.CaptureActivity" />
-        <activity android:name=".ImageViewerActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
-        <activity android:name=".PopupActivity" android:theme="@style/Theme.TransparentFloating" android:excludeFromRecents="true"/>
+        <activity android:name="stream.rocketnotes.ImageViewerActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
+        <activity android:name="stream.rocketnotes.PopupActivity" android:theme="@style/Theme.TransparentFloating" android:excludeFromRecents="true"/>
         <!-- Widgets -->
-        <receiver android:name=".NewNoteWidget"
+        <receiver android:name="stream.rocketnotes.NewNoteWidget"
                   android:icon="@drawable/new_message_icon"
                   android:label="Note App New Note">
             <intent-filter >
@@ -54,7 +54,7 @@
                        android:resource="@xml/widget_newnote">
             </meta-data>
         </receiver>
-        <receiver android:name=".ImageWidget"
+        <receiver android:name="stream.rocketnotes.ImageWidget"
                   android:icon="@drawable/icon_camera"
                   android:label="A Image Widget">
             <intent-filter >
@@ -67,7 +67,7 @@
                        android:resource="@xml/widget_image">
             </meta-data>
         </receiver>
-        <receiver android:name=".NotesWidget"
+        <receiver android:name="stream.rocketnotes.NotesWidget"
                   android:icon="@drawable/icon_camera"
                   android:label="A Note Widget">
             <intent-filter >
@@ -89,11 +89,11 @@
             <!--</intent-filter>-->
         <!--</receiver>-->
         <!-- Services -->
-        <service android:name=".ImageWidgetService"
+        <service android:name="stream.rocketnotes.ImageWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service android:name=".NotesWidgetService"
+        <service android:name="stream.rocketnotes.NotesWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service android:name=".SaveNoteService"/>
+        <service android:name="stream.rocketnotes.SaveNoteService"/>
         <!-- Providers -->
     </application>
 </manifest>

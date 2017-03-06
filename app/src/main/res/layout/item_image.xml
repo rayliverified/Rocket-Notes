@@ -11,7 +11,7 @@
         app:cardElevation="2dp"
         android:foreground="?attr/selectableItemBackground">
 
-        <stream.notesapp.CustomImageView
+        <stream.rocketnotes.CustomImageView
             android:id="@+id/item_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -29,7 +29,7 @@ import android.widget.RelativeLayout;
 
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import frescoimageviewer.adapter.ImageViewerAdapter;
-import stream.notesapp.R;
+import stream.rocketnotes.R;
 
 import java.util.List;
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Notes App</string>
+    <string name="app_name">Rocket Notes</string>
     <string name="camera_retake">Retake</string>
     <string name="camera_save">Save</string>
     <string name="action_example_with_sliding_list">Sliding list</string>
