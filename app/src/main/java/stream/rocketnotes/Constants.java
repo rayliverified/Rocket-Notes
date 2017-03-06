@@ -6,6 +6,7 @@ public interface Constants {
     public static final String YEAR = "2017";
     public static final Integer TITLE_LENGTH = 80;
     public static final Integer RECENT_IMAGES = 8;
+    public static final String OPEN_APP = "OPEN_APP";
     public static final String NEW_NOTE = "NEW_NOTE";
     public static final String OPEN_NOTE = "OPEN_NOTE";
     public static final String ADD_IMAGE = "ADD_IMAGE";

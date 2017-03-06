@@ -51,6 +51,7 @@ public class SaveNoteService extends Service {
 
             NotesItem note = new NotesItem();
             note.setNotesID(noteID);
+            note.setNotesDate(currentTime);
             note.setNotesNote(body);
 
             DatabaseHelper dbHelper = new DatabaseHelper(mContext);

@@ -6,6 +6,8 @@
     <dimen name="search_view_inset">0dp</dimen>
     <dimen name="sliding_search_view_header_height">250dp</dimen>
 
+    <dimen name="note_widget_margin">6dp</dimen>
+
     <dimen name="msv_horizontal_margin">8dip</dimen>
 
     <dimen name="msv_icon_padding">12dp</dimen>

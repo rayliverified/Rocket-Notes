@@ -59,7 +59,7 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             rv.setTextViewText(R.id.item_note_title, note.get(0));
             if (!TextUtils.isEmpty(note.get(1)))
             {
-                rv.setTextViewText(R.id.item_note_note, note.get(1));
+                rv.setTextViewText(R.id.item_note_note, note.get(1).replaceAll("\n", " "));
                 rv.setViewVisibility(R.id.item_note_note, View.VISIBLE);
             }
             else

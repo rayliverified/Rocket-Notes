@@ -25,7 +25,7 @@ public class NotesWidget extends AppWidgetProvider {
             RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_notes_listview);
             rv.setRemoteAdapter(R.id.notes_listview, intent);
 
-            rv.setEmptyView(R.id.notes_listview, R.id.text_title);
+//            rv.setEmptyView(R.id.notes_listview, R.id.rocket_icon);
 
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
@@ -65,6 +65,11 @@ public class NotesWidget extends AppWidgetProvider {
         noteAddIntent.setAction(Constants.NEW_NOTE);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, noteAddIntent, 0);
         remoteViews.setOnClickPendingIntent(R.id.new_note, pendingIntent);
+
+        noteAddIntent = new Intent(context, NotesWidget.class);
+        noteAddIntent.setAction(Constants.OPEN_APP);
+        pendingIntent = PendingIntent.getBroadcast(context, 0, noteAddIntent, 0);
+        remoteViews.setOnClickPendingIntent(R.id.rocket_icon, pendingIntent);
 
         Intent noteOpenIntent = new Intent(context, NotesWidget.class);
         noteOpenIntent.setAction(Constants.OPEN_NOTE);
@@ -139,6 +144,12 @@ public class NotesWidget extends AppWidgetProvider {
             catch (ActivityNotFoundException e) {
 
             }
+        }
+        else if (intent.getAction().equals(Constants.OPEN_APP))
+        {
+            Intent openIntent = new Intent(context, MainActivity.class);
+            openIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(openIntent);
         }
         else {
             Log.d("onReceive", "Clicked");

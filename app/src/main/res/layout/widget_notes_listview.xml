@@ -2,34 +2,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:background="@color/white">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary">
 
+        <ImageView
+            android:id="@+id/rocket_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="@dimen/note_widget_margin"
+            android:layout_marginBottom="@dimen/note_widget_margin"
+            android:layout_marginLeft="@dimen/note_widget_margin"
+            android:layout_alignParentLeft="true"
+            android:clickable="true"
+            android:src="@drawable/icon_rocket_simple"/>
+
         <TextView
             android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:layout_marginLeft="12dp"
-            android:layout_alignParentLeft="true"
+            android:layout_marginTop="@dimen/note_widget_margin"
+            android:layout_marginBottom="@dimen/note_widget_margin"
+            android:layout_marginLeft="@dimen/note_widget_margin"
+            android:layout_toRightOf="@+id/rocket_icon"
             android:text="@string/app_name"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/white"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:layout_centerVertical="true"/>
 
         <ImageView
             android:id="@+id/new_note"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:layout_marginRight="12dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="@dimen/note_widget_margin"
+            android:layout_marginBottom="@dimen/note_widget_margin"
+            android:layout_marginRight="@dimen/note_widget_margin"
             android:layout_alignParentRight="true"
             android:clickable="true"
             android:src="@drawable/icon_edit"/>
