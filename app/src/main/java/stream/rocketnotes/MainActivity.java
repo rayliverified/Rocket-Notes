@@ -9,6 +9,7 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
+import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -34,6 +35,8 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollStaggeredLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 import stream.rocketnotes.filter.FilterMaterialSearchView;
 import stream.rocketnotes.filter.model.Filter;
 
@@ -76,6 +79,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         checkVoiceRecognition();
         mFilterView = (FilterMaterialSearchView) findViewById(R.id.sv);
         setupSearchBar();
+        setupFAB();
         if (getIntent().getAction() != null)
         {
             if (getIntent().getAction().equals(Constants.STICKY))
@@ -279,6 +283,18 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 //                textView.setText(Html.fromHtml(text));
             }
 
+        });
+    }
+
+    public void setupFAB()
+    {
+        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.main_fab);
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onPrepareMenu(NavigationMenu navigationMenu) {
+                // TODO: Do something with yout menu items, or return false if you don't want to show them
+                return true;
+            }
         });
     }
 
