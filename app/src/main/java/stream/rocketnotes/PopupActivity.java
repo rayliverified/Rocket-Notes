@@ -162,7 +162,7 @@ public class PopupActivity extends Activity {
         }
         else if (getIntent().getAction().equals(Constants.OPEN_NOTE))
         {
-            final Integer noteID = getIntent().getIntExtra("NOTEID", 0);
+            final Integer noteID = getIntent().getIntExtra(Constants.ID, 0);
             Log.d("Received Note ID", String.valueOf(noteID));
 
             DatabaseHelper dbHelper = new DatabaseHelper(this);

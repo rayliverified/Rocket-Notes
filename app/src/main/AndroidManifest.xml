@@ -81,13 +81,6 @@
                        android:resource="@xml/widget_notes">
             </meta-data>
         </receiver>
-        <!--<receiver android:name=".MainActivity" >-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.your.app.example_filter_1" />-->
-                <!--<action android:name="com.your.app.example_filter_2" />-->
-                <!--&lt;!&ndash; etc &ndash;&gt;-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
         <!-- Services -->
         <service android:name="stream.rocketnotes.ImageWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS" />

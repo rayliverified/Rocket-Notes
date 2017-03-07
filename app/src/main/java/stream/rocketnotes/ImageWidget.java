@@ -18,16 +18,25 @@ public class ImageWidget extends AppWidgetProvider {
         for (int i = 0; i < appWidgetIds.length; ++i) {
             Intent intent = new Intent(context, ImageWidgetService.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
-
-            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-            RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.activity_main);
-            rv.setRemoteAdapter(R.id.image_gridview, intent);
-
-            rv.setEmptyView(R.id.image_gridview, R.id.image_button);
-
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
-            appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_image_gallery);
+            remoteViews.setRemoteAdapter(R.id.image_gridview, intent);
+//            rv.setEmptyView(R.id.image_gridview, R.id.image_button);
+
+            //Register an onClickListener
+            Intent imageAddIntent = new Intent(context, ImageWidget.class);
+            imageAddIntent.setAction(Constants.ADD_IMAGE);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, imageAddIntent, 0);
+            remoteViews.setOnClickPendingIntent(R.id.image_button, pendingIntent);
+
+            Intent imageOpenintent = new Intent(context, ImageWidget.class);
+            imageOpenintent.setAction(Constants.OPEN_IMAGE);
+            imageOpenintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
+            pendingIntent = PendingIntent.getBroadcast(context, 0, imageOpenintent, PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setPendingIntentTemplate(R.id.image_gridview, pendingIntent);
+
+            appWidgetManager.updateAppWidget(appWidgetIds[i], remoteViews);
         }
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);
@@ -36,15 +45,15 @@ public class ImageWidget extends AppWidgetProvider {
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
 
-        // See the dimensions and
+        //See the dimensions and
         Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
 
-        // Get min width and height.
+        //Get min width and height.
         int minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
         int minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
 
+        //Add the app widget ID to the intent extras.
         Intent intent = new Intent(context, ImageWidgetService.class);
-        // Add the app widget ID to the intent extras.
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
@@ -52,18 +61,16 @@ public class ImageWidget extends AppWidgetProvider {
         remoteViews.setRemoteAdapter(R.id.image_gridview, intent);
 //        remoteViews.setEmptyView(R.id.image_gridview, R.id.image_button);
 
-//        Register an onClickListener
+        //Register an onClickListener
         Intent imageAddIntent = new Intent(context, ImageWidget.class);
         imageAddIntent.setAction(Constants.ADD_IMAGE);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, imageAddIntent, 0);
         remoteViews.setOnClickPendingIntent(R.id.image_button, pendingIntent);
 
-
         Intent imageOpenintent = new Intent(context, ImageWidget.class);
         imageOpenintent.setAction(Constants.OPEN_IMAGE);
         imageOpenintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        pendingIntent = PendingIntent.getBroadcast(context, 0, imageOpenintent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingIntent = PendingIntent.getBroadcast(context, 0, imageOpenintent, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setPendingIntentTemplate(R.id.image_gridview, pendingIntent);
 
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews);

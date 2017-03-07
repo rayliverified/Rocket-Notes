@@ -20,22 +20,31 @@ public class NotesWidget extends AppWidgetProvider {
         for (int i = 0; i < appWidgetIds.length; ++i) {
             Intent intent = new Intent(context, NotesWidgetService.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
-
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-            RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_notes_listview);
-            rv.setRemoteAdapter(R.id.notes_listview, intent);
+
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_notes_listview);
+            remoteViews.setRemoteAdapter(R.id.notes_listview, intent);
 
 //            rv.setEmptyView(R.id.notes_listview, R.id.rocket_icon);
 
-            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            //Register widget onClickListeners
+            Intent noteAddIntent = new Intent(context, NotesWidget.class);
+            noteAddIntent.setAction(Constants.NEW_NOTE);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, noteAddIntent, 0);
+            remoteViews.setOnClickPendingIntent(R.id.new_note, pendingIntent);
 
-//            // Register an onClickListener
-//            Intent noteAddIntent = new Intent(context, NotesWidget.class);
-//            noteAddIntent.setAction(NEW_NOTE);
-//            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, noteAddIntent, 0);
-//            rv.setOnClickPendingIntent(R.id.new_note, pendingIntent);
+            noteAddIntent = new Intent(context, NotesWidget.class);
+            noteAddIntent.setAction(Constants.OPEN_APP);
+            pendingIntent = PendingIntent.getBroadcast(context, 0, noteAddIntent, 0);
+            remoteViews.setOnClickPendingIntent(R.id.rocket_icon, pendingIntent);
 
-            appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
+            Intent noteOpenIntent = new Intent(context, NotesWidget.class);
+            noteOpenIntent.setAction(Constants.OPEN_NOTE);
+            noteOpenIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
+            pendingIntent = PendingIntent.getBroadcast(context, 0, noteOpenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setPendingIntentTemplate(R.id.notes_listview, pendingIntent);
+
+            appWidgetManager.updateAppWidget(appWidgetIds[i], remoteViews);
         }
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);
@@ -51,8 +60,8 @@ public class NotesWidget extends AppWidgetProvider {
         int minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
         int minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
 
-        Intent intent = new Intent(context, NotesWidgetService.class);
         //Add the app widget ID to the intent extras.
+        Intent intent = new Intent(context, NotesWidgetService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
@@ -74,8 +83,7 @@ public class NotesWidget extends AppWidgetProvider {
         Intent noteOpenIntent = new Intent(context, NotesWidget.class);
         noteOpenIntent.setAction(Constants.OPEN_NOTE);
         noteOpenIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        pendingIntent = PendingIntent.getBroadcast(context, 0, noteOpenIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingIntent = PendingIntent.getBroadcast(context, 0, noteOpenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setPendingIntentTemplate(R.id.notes_listview, pendingIntent);
 
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
@@ -129,13 +137,12 @@ public class NotesWidget extends AppWidgetProvider {
         {
             Log.d("onReceive", Constants.OPEN_NOTE);
             try {
-//                Log.d("File Path", intent.getStringExtra("EXTRA_ITEM"));
-                Integer noteID = intent.getIntExtra("EXTRA_ITEM", -1);
+                Integer noteID = intent.getIntExtra(Constants.ID, -1);
                 if (noteID != -1)
                 {
                     Log.d("Note ID", String.valueOf(noteID));
                     intent = new Intent(context, PopupActivity.class);
-                    intent.putExtra("NOTEID", noteID);
+                    intent.putExtra(Constants.ID, noteID);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.setAction(Constants.OPEN_NOTE);
                     context.startActivity(intent);

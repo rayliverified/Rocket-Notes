@@ -26,8 +26,8 @@ public class ImageWidgetService extends RemoteViewsService {
 }
 
 class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
-    private static final int mCount = 8;
-    private ArrayList<NotesItem> mNotesItem = new ArrayList<NotesItem>();
+    private static int mCount = 8;
+    private ArrayList<NotesItem> mNotesItems = new ArrayList<NotesItem>();
     private Context mContext;
     private int mAppWidgetId;
 
@@ -41,25 +41,46 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // In onCreate() you setup any connections / cursors to your data source. Heavy lifting,
         // for example downloading or creating content etc, should be deferred to onDataSetChanged()
         // or getViewAt(). Taking more than 20 seconds in this call will result in an ANR.
+        DatabaseHelper dbHelper = new DatabaseHelper(mContext);
+        mNotesItems = dbHelper.GetRecentImages();
         Log.d("Image Widget", "Created");
-        mNotesItem = recentNotes(mContext);
-//        // We sleep for 3 seconds here to show how the empty view appears in the interim.
-//        // The empty view is set in the StackWidgetProvider and should be a sibling of the
-//        // collection view.
-//        try {
-//            Thread.sleep(3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        Log.d("Image Items Size", String.valueOf(mNotesItems.size()));
     }
 
-    public static ArrayList<NotesItem> recentNotes(Context context) {
+    @Override
+    public RemoteViews getViewAt(int position) {
 
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
-        ArrayList<NotesItem> notesItems = dbHelper.GetRecentImages();
-        Log.d("Image Items", String.valueOf(notesItems.size()));
+        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_image_widget);
+        if (position < mNotesItems.size())
+        {
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inJustDecodeBounds = false;
+            bmOptions.inSampleSize = 16;
+            bmOptions.inPurgeable = false;
+            String imagePath = getImagePath(mNotesItems.get(position).getNotesImage());
+            Bitmap imageBitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
+            Matrix matrix = getOrientation(imagePath);
+            imageBitmap = crop(imageBitmap, matrix);
+            Log.d("Image Width", String.valueOf(imageBitmap.getWidth()));
+            Log.d("Image Height", String.valueOf(imageBitmap.getHeight()));
+            rv.setImageViewBitmap(R.id.item_image, imageBitmap);
+        }
+        else
+        {
+            rv.setImageViewResource(R.id.item_image, R.drawable.icon_picture);
+        }
 
-        return notesItems;
+        Bundle extras = new Bundle();
+        Intent fillInIntent = new Intent();
+        if (position < mNotesItems.size())
+        {
+            extras.putInt(Constants.ID, mNotesItems.get(position).getNotesID());
+            extras.putInt(Constants.IMAGE, position);
+            fillInIntent.putExtras(extras);
+        }
+        rv.setOnClickFillInIntent(R.id.item_image, fillInIntent);
+
+        return rv;
     }
 
     public static String getImagePath(String notesImage) {
@@ -75,53 +96,6 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         }
 
         return imagePath;
-    }
-
-    public void onDestroy() {
-        // In onDestroy() you should tear down anything that was setup for your data source,
-        // eg. cursors, connections, etc.
-//        mImageItems.clear();
-    }
-
-    public int getCount() {
-        return mCount;
-    }
-
-    @Override
-    public RemoteViews getViewAt(int position) {
-
-        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_image_widget);
-
-        if (position < mNotesItem.size())
-        {
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            bmOptions.inJustDecodeBounds = false;
-            bmOptions.inSampleSize = 16;
-            bmOptions.inPurgeable = false;
-            String imagePath = getImagePath(mNotesItem.get(position).getNotesImage());
-            Bitmap imageBitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-            Matrix matrix = getOrientation(imagePath);
-            imageBitmap = crop(imageBitmap, matrix);
-            Log.d("Image Width", String.valueOf(imageBitmap.getWidth()));
-            Log.d("Image Height", String.valueOf(imageBitmap.getHeight()));
-            rv.setImageViewBitmap(R.id.item_image, imageBitmap);
-        }
-        else
-        {
-            rv.setImageViewResource(R.id.item_image, R.drawable.icon_picture);
-        }
-
-        Bundle extras = new Bundle();
-        Intent fillInIntent = new Intent();
-        if (position < mNotesItem.size())
-        {
-            extras.putInt(Constants.ID, mNotesItem.get(position).getNotesID());
-            extras.putInt(Constants.IMAGE, position);
-            fillInIntent.putExtras(extras);
-        }
-        rv.setOnClickFillInIntent(R.id.item_image, fillInIntent);
-
-        return rv;
     }
 
     public static Matrix getOrientation(String photoPath) {
@@ -189,6 +163,16 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         return dstBmp;
     }
 
+    public void onDestroy() {
+        // In onDestroy() you should tear down anything that was setup for your data source,
+        // eg. cursors, connections, etc.
+//        mImageItems.clear();
+    }
+
+    public int getCount() {
+        return mCount;
+    }
+
     public RemoteViews getLoadingView() {
         // You can create a custom loading view (for instance when getViewAt() is slow.) If you
         // return null here, you will get the default loading view.
@@ -208,7 +192,7 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     }
 
     public void onDataSetChanged() {
-        Log.d("Widget Updated", "Data Changed");
+        Log.d("Image Widget", "Data Changed");
         onCreate();
         // This is triggered when you call AppWidgetManager notifyAppWidgetViewDataChanged
         // on the collection view corresponding to this factory. You can do heaving lifting in

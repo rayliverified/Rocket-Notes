@@ -70,7 +70,7 @@ public class SaveNoteService extends Service {
     public void NotificationSender(NotesItem note)
     {
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.RECEIVED, note.getNotesID()));
-        Log.d("Note ID", Integer.toString(note.getNotesID()));
+        Log.d("Note ID", String.valueOf(note.getNotesID()));
     }
 
     @Override
