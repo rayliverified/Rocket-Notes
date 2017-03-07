@@ -54,7 +54,7 @@ public class CameraActivity extends AppCompatActivity{
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     StartCamera();
                 } else {
-
+                    finish();
                 }
                 return;
             }

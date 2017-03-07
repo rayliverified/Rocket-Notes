@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_text"
+        android:icon="@drawable/icon_edit"
+        android:title="New Note"/>
+    <item
+        android:id="@+id/action_call"
+        android:icon="@drawable/icon_snap_simple"
+        android:title="Camera" />
+</menu>
