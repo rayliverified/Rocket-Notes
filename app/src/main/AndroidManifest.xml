@@ -42,34 +42,9 @@
         <activity android:name="stream.rocketnotes.ImageViewerActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
         <activity android:name="stream.rocketnotes.PopupActivity" android:theme="@style/Theme.TransparentFloating" android:excludeFromRecents="true"/>
         <!-- Widgets -->
-        <receiver android:name="stream.rocketnotes.NewNoteWidget"
-                  android:icon="@drawable/new_message_icon"
-                  android:label="Note App New Note">
-            <intent-filter >
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="ACTION_CLICK"/>1
-                <action android:name="OPEN_IMAGE"/>
-            </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
-                       android:resource="@xml/widget_newnote">
-            </meta-data>
-        </receiver>
-        <receiver android:name="stream.rocketnotes.ImageWidget"
-                  android:icon="@drawable/icon_camera"
-                  android:label="•Image Widget•">
-            <intent-filter >
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
-                <action android:name=".ImageWidget.ADD_IMAGE"/>
-                <action android:name=".ImageWidget.OPEN_IMAGE"/>
-            </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
-                       android:resource="@xml/widget_image">
-            </meta-data>
-        </receiver>
         <receiver android:name="stream.rocketnotes.NotesWidget"
-                  android:icon="@drawable/icon_camera"
-                  android:label="•Note Widget•">
+                  android:icon="@drawable/preview_notes"
+                  android:label="•Rocket Notes•">
             <intent-filter >
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
@@ -79,6 +54,19 @@
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                        android:resource="@xml/widget_notes">
+            </meta-data>
+        </receiver>
+        <receiver android:name="stream.rocketnotes.ImageWidget"
+                  android:icon="@drawable/preview_gallery"
+                  android:label="•Rocket Images•">
+            <intent-filter >
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
+                <action android:name=".ImageWidget.ADD_IMAGE"/>
+                <action android:name=".ImageWidget.OPEN_IMAGE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/widget_image">
             </meta-data>
         </receiver>
         <!-- Services -->
