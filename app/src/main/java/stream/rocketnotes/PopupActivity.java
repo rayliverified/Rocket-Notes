@@ -167,7 +167,7 @@ public class PopupActivity extends Activity {
 
             DatabaseHelper dbHelper = new DatabaseHelper(this);
             NotesItem note = dbHelper.GetNote(noteID);
-            String noteTime = getTimeStamp(note.getNotesDate());
+            String noteTime = stream.rocketnotes.Utils.TextUtils.getTimeStamp(note.getNotesDate());
 
             editText.setHint("Add to note...");
             editDetails.setText("Update Note • " + noteTime);
@@ -256,41 +256,5 @@ public class PopupActivity extends Activity {
 
         // Delegate everything else to Activity.
         return super.onTouchEvent(event);
-    }
-
-    private String getTimeStamp(Long time) {
-
-        String timestamp = "";
-
-        SimpleDateFormat format;
-        Calendar noteTime = Calendar.getInstance();
-        noteTime.setTimeInMillis(time);
-        Calendar now = Calendar.getInstance();
-        String timeFormatString = "h:mm aa";
-        long diff = now.getTimeInMillis() - time;
-        long minutes = diff / 60000;
-        long hours = minutes / 60;
-        if (minutes <= 1)
-            return "now";
-        else if (hours < 1)
-            return String.valueOf(minutes) + " minutes ago";
-        else if (now.get(Calendar.YEAR) == noteTime.get(Calendar.YEAR)
-                && now.get(Calendar.MONTH) == noteTime.get(Calendar.MONTH)
-                && now.get(Calendar.DATE) == noteTime.get(Calendar.DATE))
-        {
-            return "Today " + DateFormat.format(timeFormatString, noteTime);
-        }
-        else if (now.get(Calendar.YEAR) == noteTime.get(Calendar.YEAR)
-                && now.get(Calendar.MONTH) == noteTime.get(Calendar.MONTH)
-                && now.get(Calendar.DATE) - noteTime.get(Calendar.DATE) == 1)
-        {
-            return "Yesterday " + DateFormat.format(timeFormatString, noteTime);
-        }
-
-        format = new SimpleDateFormat("MMMM dd, h:mm a");
-        format.setTimeZone(TimeZone.getDefault());
-        timestamp = format.format(new Date(time));
-
-        return timestamp;
     }
 }

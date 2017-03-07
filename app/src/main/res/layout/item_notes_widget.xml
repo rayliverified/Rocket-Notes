@@ -11,17 +11,41 @@
         android:paddingBottom="@dimen/note_widget_margin"
         android:clickable="true">
 
-        <TextView
-            android:id="@+id/item_note_title"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/note_widget_margin"
-            android:layout_marginRight="@dimen/note_widget_margin"
-            android:text="Note title"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/textPrimary"
-            android:layout_marginBottom="2dp"/>
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/item_note_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/note_widget_margin"
+                android:layout_marginRight="@dimen/note_widget_margin"
+                android:layout_gravity="left"
+                android:text="Note title"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/textPrimary"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/item_note_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/note_widget_margin"
+                android:layout_marginRight="@dimen/note_widget_margin"
+                android:layout_gravity="bottom"
+                android:gravity="right"
+                android:text="2:00 AM"
+                android:textSize="12sp"
+                android:textColor="@color/textPrimary"
+                android:maxLines="1"
+                android:layout_weight="0"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/item_note_note"
@@ -29,10 +53,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/note_widget_margin"
             android:layout_marginRight="@dimen/note_widget_margin"
+            android:text="Note, text can be very long long long long. Sample text continues until it ellipsizes."
             android:textSize="12sp"
             android:textColor="@color/textSecondary"
-            android:text="Note, text can be very long long long long. Sample text continues until it ellipsizes."
             android:ellipsize="end"
-            android:maxLines="1"/>
+            android:maxLines="2"/>
     </LinearLayout>
 </RelativeLayout>
