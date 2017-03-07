@@ -5,9 +5,16 @@
               android:layout_height="match_parent">
     <ImageView
         android:id="@+id/image_button"
-        android:layout_width="match_parent"
+        android:layout_width="60dp"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="12dp"
         android:src="@drawable/icon_camera"
         android:scaleType="fitCenter"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Loading..."
+        android:textSize="16sp"
+        android:gravity="center"/>
 </LinearLayout>

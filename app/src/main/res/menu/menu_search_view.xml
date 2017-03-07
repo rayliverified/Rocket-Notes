@@ -15,10 +15,10 @@
           android:title="Only Images"
           android:orderInCategory="3"
           app:showAsAction="never"
-          android:icon="@drawable/ic_local_taxi_black_24dp"/>
+          android:icon="@drawable/icon_snap_simple"/>
     <item android:id="@+id/filter_text"
         android:title="Only Text"
         android:orderInCategory="4"
         app:showAsAction="never"
-        android:icon="@drawable/ic_invert_colors_black_24dp"/>
+        android:icon="@drawable/icon_snap_simple"/>
 </menu>

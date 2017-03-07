@@ -314,7 +314,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 
     public void FilterImages()
     {
-        Filter filter = new Filter(1, "Image", 0, R.drawable.icon_picture, getResources().getColor(R.color.colorPrimary));
+        Filter filter = new Filter(1, "Image", 0, R.drawable.icon_picture_full, getResources().getColor(R.color.colorPrimary));
         mFilterView.setVisibility(View.VISIBLE);
         mFilterView.addFilter(filter);
         List<IFlexible> list = new ArrayList<>();

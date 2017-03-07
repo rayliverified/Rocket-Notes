@@ -5,5 +5,5 @@
                     android:initialLayout="@layout/widget_notes"
                     android:resizeMode="vertical|horizontal"
                     android:widgetCategory="home_screen|keyguard"
-                    android:previewImage="@drawable/icon_camera">
+                    android:previewImage="@drawable/preview_notes">
 </appwidget-provider>

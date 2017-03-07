@@ -56,7 +56,7 @@
         </receiver>
         <receiver android:name="stream.rocketnotes.ImageWidget"
                   android:icon="@drawable/icon_camera"
-                  android:label="A Image Widget">
+                  android:label="•Image Widget•">
             <intent-filter >
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
@@ -69,7 +69,7 @@
         </receiver>
         <receiver android:name="stream.rocketnotes.NotesWidget"
                   android:icon="@drawable/icon_camera"
-                  android:label="A Note Widget">
+                  android:label="•Note Widget•">
             <intent-filter >
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
