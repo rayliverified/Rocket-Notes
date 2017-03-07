@@ -1,10 +1,13 @@
 package stream.rocketnotes;
 
+import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -78,6 +81,8 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, MyViewHolder holder, int position,
                                List payloads) {
+        final Context context = holder.itemView.getContext();
+
         ArrayList<String> note = NoteHelper.getNote(title);
         holder.noteTitle.setText(note.get(0));
         if (!TextUtils.isEmpty(note.get(1)))
@@ -89,6 +94,17 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
         {
             holder.noteBody.setVisibility(View.GONE);
         }
+
+        holder.noteLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, EditActivity.class);
+                intent.setAction(Constants.OPEN_NOTE);
+                intent.putExtra(Constants.ID, Integer.valueOf(id));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -107,11 +123,13 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
      */
     public class MyViewHolder extends FlexibleViewHolder {
 
+        public LinearLayout noteLayout;
         public TextView noteTitle;
         public TextView noteBody;
 
         public MyViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
+            noteLayout = (LinearLayout) view.findViewById(R.id.item_note);
             noteTitle = (TextView) view.findViewById(R.id.item_note_title);
             noteBody = (TextView) view.findViewById(R.id.item_note_note);
         }

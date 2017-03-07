@@ -56,7 +56,7 @@ public class SaveNoteService extends Service {
 
             DatabaseHelper dbHelper = new DatabaseHelper(mContext);
             dbHelper.UpdateNote(note);
-            NotificationSender(note);
+            UpdateSender(note);
 
             int widgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), NotesWidget.class));
             for (int id : widgetIDs) {
@@ -70,6 +70,12 @@ public class SaveNoteService extends Service {
     public void NotificationSender(NotesItem note)
     {
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.RECEIVED, note.getNotesID()));
+        Log.d("Note ID", String.valueOf(note.getNotesID()));
+    }
+
+    public void UpdateSender(NotesItem note)
+    {
+        EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.UPDATE_NOTE, note.getNotesID()));
         Log.d("Note ID", String.valueOf(note.getNotesID()));
     }
 

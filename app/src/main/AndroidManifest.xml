@@ -18,7 +18,6 @@
         <activity android:name="stream.rocketnotes.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -41,6 +40,7 @@
             android:theme="@style/MaterialCamera.CaptureActivity" />
         <activity android:name="stream.rocketnotes.ImageViewerActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
         <activity android:name="stream.rocketnotes.PopupActivity" android:theme="@style/Theme.TransparentFloating" android:excludeFromRecents="true"/>
+        <activity android:name="stream.rocketnotes.EditActivity" android:theme="@style/AppActionBar" android:parentActivityName=".MainActivity"/>
         <!-- Widgets -->
         <receiver android:name="stream.rocketnotes.NotesWidget"
                   android:icon="@drawable/preview_notes"

@@ -294,6 +294,10 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.action_text) {
                     Log.d("FAB", "Text");
+                    Intent intent = new Intent(mContext, EditActivity.class);
+                    intent.setAction(Constants.NEW_NOTE);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
                     return true;
                 }
                 else if (menuItem.getItemId() == R.id.action_camera) {
@@ -377,6 +381,27 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         Log.d("Broadcast Receiver", Constants.RECEIVED);
     }
 
+    public void UpdateOnUpdate(UpdateMainEvent event)
+    {
+        Integer noteID = event.getID();
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        NotesItem note = dbHelper.GetNote(noteID);
+        AbstractFlexibleItem item = null;
+        if (note.getNotesNote() != null)
+        {
+            Log.d("Note", "Note Item");
+            item = new NoteItemViewholder(Integer.toString(noteID), note.getNotesNote());
+        }
+        else if (note.getNotesImage() != null)
+        {
+            Log.d("Image View Holder", note.getNotesImage());
+            item = new ImageItemViewholder(Integer.toString(noteID), note.getNotesImage());
+        }
+        mAdapter.updateItem(item, null);
+        RemoveSticky();
+        Log.d("Broadcast Receiver", Constants.UPDATE_NOTE);
+    }
+
     public void UpdateOnDelete(UpdateMainEvent event)
     {
         NotesItem note = event.getNotesItem();
@@ -428,6 +453,10 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         Log.d("MainActivity", "Update Received");
         if (event.getAction().equals(Constants.RECEIVED)) {
             UpdateOnAdd(event);
+        }
+        else if (event.getAction().equals(Constants.UPDATE_NOTE))
+        {
+            UpdateOnUpdate(event);
         }
         else if (event.getAction().equals(Constants.DELETE_NOTE))
         {
