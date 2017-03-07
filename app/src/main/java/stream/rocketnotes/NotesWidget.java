@@ -44,15 +44,15 @@ public class NotesWidget extends AppWidgetProvider {
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
 
-        // See the dimensions and
+        //Get widget object details
         Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
 
-        // Get min width and height.
+        //Get min width and height.
         int minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
         int minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
 
         Intent intent = new Intent(context, NotesWidgetService.class);
-        // Add the app widget ID to the intent extras.
+        //Add the app widget ID to the intent extras.
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
@@ -60,7 +60,7 @@ public class NotesWidget extends AppWidgetProvider {
         remoteViews.setRemoteAdapter(R.id.notes_listview, intent);
 //        remoteViews.setEmptyView(R.id.image_listview, R.id.image_button);
 
-        // Register an onClickListener
+        //Register widget onClickListeners
         Intent noteAddIntent = new Intent(context, NotesWidget.class);
         noteAddIntent.setAction(Constants.NEW_NOTE);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, noteAddIntent, 0);

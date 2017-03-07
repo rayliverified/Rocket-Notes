@@ -291,8 +291,22 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.main_fab);
         fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.action_text) {
+                    Log.d("FAB", "Text");
+                    return true;
+                }
+                else if (menuItem.getItemId() == R.id.action_camera) {
+                    Log.d("FAB", "Camera");
+                    Intent intent = new Intent(mContext, CameraActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                    return true;
+                }
+                return false;
+            }
+            @Override
             public boolean onPrepareMenu(NavigationMenu navigationMenu) {
-                // TODO: Do something with yout menu items, or return false if you don't want to show them
                 return true;
             }
         });

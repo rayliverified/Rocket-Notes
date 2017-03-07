@@ -1,6 +1,7 @@
 package stream.rocketnotes;
 
 import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -24,7 +25,9 @@ public class ImageTransformer {
                 if (source.getWidth() < source.getHeight())
                 {
                     //creates and returns a square of the original bmp if the image is portrait orientation
-                    return(Bitmap.createBitmap(source, 0, 0, targetWidth, targetWidth));
+                    Bitmap result = ThumbnailUtils.extractThumbnail(source, targetWidth, targetWidth, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+                    //ThumbnailUtils.OPTIONS_RECYCLE_INPUT recycles source image. Image must always be recycled!
+                    return result;
                 }
                 else
                 {
@@ -34,7 +37,7 @@ public class ImageTransformer {
                     int targetHeight = (int) (targetWidth * aspectRatio);
                     Bitmap result = Bitmap.createScaledBitmap(source, targetWidth, targetHeight, false);
                     if (result != source) {
-                        // Same bitmap is returned if sizes are the same
+                        //Same bitmap is returned if sizes are the same
                         source.recycle();
                     }
                     return result;
@@ -47,35 +50,4 @@ public class ImageTransformer {
             }
         };
     }
-
-    /*private static Bitmap crop(Bitmap srcBmp) {
-        Bitmap dstBmp;
-        if (srcBmp.getWidth() >= srcBmp.getHeight()) {
-
-            dstBmp = Bitmap.createBitmap(
-                    srcBmp,
-                    0,
-                    0,
-                    srcBmp.getWidth(),
-                    srcBmp.getWidth(),
-                    null,
-                    true
-            );
-
-        } else {
-
-            dstBmp = Bitmap.createBitmap(
-                    srcBmp,
-                    0,
-                    srcBmp.getHeight() / 2 - srcBmp.getWidth() / 2,
-                    srcBmp.getWidth(),
-                    srcBmp.getWidth(),
-                    null,
-                    true
-            );
-        }
-        return dstBmp;
-    }
-    */
-
 }

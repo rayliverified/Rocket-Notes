@@ -49,9 +49,10 @@
             android:layout_gravity="bottom|end"
             app:fabGravity="bottom_end"
             app:fabMenu="@menu/menu_popup_view"
-            app:miniFabBackgroundTint="@android:color/white"
-            app:miniFabDrawableTint="?attr/colorPrimaryDark"
-            app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
+            app:fabBackgroundTint="@color/colorPrimary"
+            app:miniFabBackgroundTint="@color/colorPrimary"
+            app:miniFabDrawableTint="@color/white"
+            app:miniFabTitleTextColor="@color/textPrimary"/>
     </android.support.design.widget.CoordinatorLayout>
 
     <com.arlib.floatingsearchview.FloatingSearchView

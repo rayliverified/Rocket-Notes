@@ -166,7 +166,7 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
             dstBmp = Bitmap.createBitmap(
                     srcBmp,
-                    0,
+                    srcBmp.getWidth()/2 - srcBmp.getHeight()/2,
                     0,
                     srcBmp.getHeight(),
                     srcBmp.getHeight(),
@@ -179,7 +179,7 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             dstBmp = Bitmap.createBitmap(
                     srcBmp,
                     0,
-                    0,
+                    srcBmp.getHeight()/2 - srcBmp.getWidth()/2,
                     srcBmp.getWidth(),
                     srcBmp.getWidth(),
                     matrix,
