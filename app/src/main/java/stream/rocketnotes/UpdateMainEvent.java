@@ -4,6 +4,7 @@ public class UpdateMainEvent {
 
     public String action;
     public Integer id;
+    public NotesItem notesItem;
 
     public UpdateMainEvent(String action) {
         this.action = action;
@@ -14,7 +15,14 @@ public class UpdateMainEvent {
         this.id = id;
     }
 
+    public UpdateMainEvent(String action, NotesItem note) {
+        this.action = action;
+        this.notesItem = note;
+    }
+
     public String getAction() { return this.action; }
 
     public Integer getID() { return this.id; }
+
+    public NotesItem getNotesItem() { return this.notesItem; }
 }

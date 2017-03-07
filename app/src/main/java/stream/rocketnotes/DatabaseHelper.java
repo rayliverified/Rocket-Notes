@@ -104,6 +104,16 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return db.update(TABLE_NOTES, values, selection, null);
     }
 
+    //Delete note
+    public long DeleteNote(Integer id) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = KEY_ID + " = ?";
+        String[] selectionArgs = new String[] {Integer.toString(id)};
+
+        return db.delete(TABLE_NOTES, selection, selectionArgs);
+    }
+
     //Return notes sorted by last id date
     public ArrayList<NotesItem> GetNotesDate() {
         ArrayList<NotesItem> notes = new ArrayList<>();

@@ -115,13 +115,14 @@ public class ImageWidget extends AppWidgetProvider {
         {
             Log.d("onReceive", Constants.OPEN_IMAGE);
             try {
-//                Log.d("File Path", intent.getStringExtra("EXTRA_ITEM"));
-                Integer position = intent.getIntExtra("EXTRA_ITEM", -1);
+                Integer position = intent.getIntExtra(Constants.IMAGE, -1);
+                Integer noteID = intent.getIntExtra(Constants.ID, -1);
                 if (position != -1)
                 {
                     intent = new Intent(context, ImageViewerActivity.class);
                     intent.setAction(Constants.OPEN_IMAGE);
                     intent.putExtra(Constants.IMAGE, position);
+                    intent.putExtra(Constants.ID, noteID);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     context.startActivity(intent);
                 }

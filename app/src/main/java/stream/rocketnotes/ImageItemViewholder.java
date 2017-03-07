@@ -86,7 +86,7 @@ public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholde
             public void onClick(View view) {
                 Intent intent = new Intent(context, ImageViewerActivity.class);
                 intent.setAction(Constants.OPEN_IMAGE_SINGLE);
-                intent.putExtra(Constants.IMAGE, Integer.valueOf(id));
+                intent.putExtra(Constants.ID, Integer.valueOf(id));
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }

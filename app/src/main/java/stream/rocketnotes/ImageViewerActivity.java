@@ -2,6 +2,7 @@ package stream.rocketnotes;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.IntegerRes;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
@@ -12,6 +13,10 @@ import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 
 import frescoimageviewer.ImageViewer;
@@ -19,7 +24,7 @@ import frescoimageviewer.ImageViewer;
 public class ImageViewerActivity extends AppCompatActivity {
 
     private ImageOverlayView overlayView;
-    private ArrayList<String> recentImages;
+    private ArrayList<NotesItem> mNotesItem;
     private Context mContext;
 
     @Override
@@ -43,14 +48,15 @@ public class ImageViewerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_imageviewer);
 
         Integer position = getIntent().getIntExtra(Constants.IMAGE, 0);
+        Integer noteID = getIntent().getIntExtra(Constants.ID, 0);
         Log.d("Image Position", String.valueOf(position));
         if (getIntent().getAction().equals(Constants.OPEN_IMAGE))
         {
-            recentImages = recentImages(mContext);
+            mNotesItem = recentImages(mContext);
         }
         else if (getIntent().getAction().equals(Constants.OPEN_IMAGE_SINGLE))
         {
-            recentImages = singleImage(mContext, position);
+            mNotesItem = singleImage(mContext, noteID);
         }
         showPicker(position);
     }
@@ -63,7 +69,12 @@ public class ImageViewerActivity extends AppCompatActivity {
 
     private void showPicker(int startPosition) {
         overlayView = new ImageOverlayView(this);
-        new ImageViewer.Builder(this, recentImages)
+        ArrayList<String> imageItems = new ArrayList<String>();
+        for (NotesItem note : mNotesItem)
+        {
+            imageItems.add(note.getNotesImage());
+        }
+        new ImageViewer.Builder(this, imageItems)
                 .setStartPosition(startPosition)
                 //.hideStatusBar(false)
                 .setImageMargin(this, R.dimen.image_margin)
@@ -78,8 +89,9 @@ public class ImageViewerActivity extends AppCompatActivity {
         return new ImageViewer.OnImageChangeListener() {
             @Override
             public void onImageChange(int position) {
-                String url = recentImages.get(position);
+                String url = mNotesItem.get(position).getNotesImage();
                 overlayView.setShareText(url);
+                overlayView.setNoteID(mNotesItem.get(position).getNotesID());
 //                overlayView.setDescription(descriptions[position]);
             }
         };
@@ -94,30 +106,48 @@ public class ImageViewerActivity extends AppCompatActivity {
         };
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(UpdateMainEvent event) {
+        Log.d("ImageViewerActivity", "Update Received");
+        if (event.getAction().equals(Constants.DELETE_NOTE)) {
+            getDismissListener().onDismiss();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        //Listen for new messages received
+        Log.d("LocalBroadcastManager", "onResume");
+        EventBus.getDefault().register(this);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d("LocalBroadcastManager", "onPause");
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
     private GenericDraweeHierarchyBuilder getHierarchyBuilder() {
         return GenericDraweeHierarchyBuilder.newInstance(getResources());
     }
 
-    public static ArrayList<String> recentImages(Context context) {
+    public static ArrayList<NotesItem> recentImages(Context context) {
 
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         ArrayList<NotesItem> notesItems = dbHelper.GetRecentImages();
-        ArrayList<String> imageItems = new ArrayList<String>();
-        for (NotesItem note : notesItems)
-        {
-            imageItems.add(note.getNotesImage());
-        }
 
-        return imageItems;
+        return notesItems;
     }
 
-    public static ArrayList<String> singleImage(Context context, Integer id) {
+    public static ArrayList<NotesItem> singleImage(Context context, Integer id) {
 
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         NotesItem note = dbHelper.GetNote(id);
-        ArrayList<String> imageItems = new ArrayList<String>();
-        imageItems.add(note.getNotesImage());
+        ArrayList<NotesItem> notesItems = new ArrayList<NotesItem>();
+        notesItems.add(note);
 
-        return imageItems;
+        return notesItems;
     }
 }

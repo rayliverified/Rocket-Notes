@@ -27,7 +27,7 @@ public class ImageWidgetService extends RemoteViewsService {
 
 class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private static final int mCount = 8;
-    private ArrayList<String> mImageItems = new ArrayList<String>();
+    private ArrayList<NotesItem> mNotesItem = new ArrayList<NotesItem>();
     private Context mContext;
     private int mAppWidgetId;
 
@@ -42,7 +42,7 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // for example downloading or creating content etc, should be deferred to onDataSetChanged()
         // or getViewAt(). Taking more than 20 seconds in this call will result in an ANR.
         Log.d("Image Widget", "Created");
-        mImageItems = lastFileModified(mContext);
+        mNotesItem = recentNotes(mContext);
 //        // We sleep for 3 seconds here to show how the empty view appears in the interim.
 //        // The empty view is set in the StackWidgetProvider and should be a sibling of the
 //        // collection view.
@@ -53,26 +53,28 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 //        }
     }
 
-    public static ArrayList<String> lastFileModified(Context context) {
+    public static ArrayList<NotesItem> recentNotes(Context context) {
 
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         ArrayList<NotesItem> notesItems = dbHelper.GetRecentImages();
         Log.d("Image Items", String.valueOf(notesItems.size()));
 
-        ArrayList<String> imageItems = new ArrayList<String>();
-        for (NotesItem note : notesItems)
-        {
-            File imageFile = null;
-            try {
-                imageFile = new File(new URI(note.getNotesImage()));
-                imageItems.add(imageFile.getAbsolutePath());
-                Log.d("Absolute Path", imageFile.getAbsolutePath());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
+        return notesItems;
+    }
+
+    public static String getImagePath(String notesImage) {
+
+        File imageFile = null;
+        String imagePath = null;
+        try {
+            imageFile = new File(new URI(notesImage));
+            imagePath = imageFile.getAbsolutePath();
+            Log.d("Absolute Path", imagePath);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
 
-        return imageItems;
+        return imagePath;
     }
 
     public void onDestroy() {
@@ -89,23 +91,17 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     public RemoteViews getViewAt(int position) {
 
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_image_widget);
-        Log.d("Size mImageItems", String.valueOf(mImageItems.size()));
 
-        if (position < mImageItems.size())
+        if (position < mNotesItem.size())
         {
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
             bmOptions.inJustDecodeBounds = false;
             bmOptions.inSampleSize = 16;
             bmOptions.inPurgeable = false;
-            String imagePath = mImageItems.get(position);
+            String imagePath = getImagePath(mNotesItem.get(position).getNotesImage());
             Bitmap imageBitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
             Matrix matrix = getOrientation(imagePath);
             imageBitmap = crop(imageBitmap, matrix);
-//            Log.d("Image URI", String.valueOf(Uri.fromFile(mImageItems.get(position))));
-//            long id = ContentUris.parseId(Uri.fromFile(mImageItems.get(position)));
-//            Bitmap imageBitmap = MediaStore.Images.Thumbnails.getThumbnail(
-//                    mContext.getContentResolver(), id,
-//                    MediaStore.Images.Thumbnails.MICRO_KIND, null);
             Log.d("Image Width", String.valueOf(imageBitmap.getWidth()));
             Log.d("Image Height", String.valueOf(imageBitmap.getHeight()));
             rv.setImageViewBitmap(R.id.item_image, imageBitmap);
@@ -117,9 +113,10 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
         Bundle extras = new Bundle();
         Intent fillInIntent = new Intent();
-        if (position < mImageItems.size())
+        if (position < mNotesItem.size())
         {
-            extras.putInt("EXTRA_ITEM", position);
+            extras.putInt(Constants.ID, mNotesItem.get(position).getNotesID());
+            extras.putInt(Constants.IMAGE, position);
             fillInIntent.putExtras(extras);
         }
         rv.setOnClickFillInIntent(R.id.item_image, fillInIntent);

@@ -314,7 +314,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 
     public void FilterImages()
     {
-        Filter filter = new Filter(1, "Image", 0, R.drawable.icon_gallery_image, getResources().getColor(R.color.colorPrimary));
+        Filter filter = new Filter(1, "Image", 0, R.drawable.icon_picture, getResources().getColor(R.color.colorPrimary));
         mFilterView.setVisibility(View.VISIBLE);
         mFilterView.addFilter(filter);
         List<IFlexible> list = new ArrayList<>();
@@ -355,22 +355,6 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         Log.d("Filter", "Reset");
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(UpdateMainEvent event) {
-        Log.d("MainActivity", "Update Received");
-        if (event.getAction().equals(Constants.RECEIVED)) {
-            UpdateOnAdd(event);
-        }
-        else if (event.getAction().equals(Constants.FILTER))
-        {
-            UpdateFilter(event);
-        }
-        else if (event.getAction().equals(Constants.FILTER_IMAGES))
-        {
-            FilterImages();
-        }
-    }
-
     public void UpdateOnAdd(UpdateMainEvent event)
     {
         Integer noteID = event.getID();
@@ -393,6 +377,28 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         Log.d("Broadcast Receiver", Constants.RECEIVED);
     }
 
+    public void UpdateOnDelete(UpdateMainEvent event)
+    {
+        NotesItem note = event.getNotesItem();
+        AbstractFlexibleItem item = null;
+        if (note.getNotesNote() != null)
+        {
+            Log.d("Note", "Note Item");
+            item = new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote());
+        }
+        else if (note.getNotesImage() != null)
+        {
+            Log.d("Image View Holder", note.getNotesImage());
+            item = new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage());
+        }
+        Integer position = mAdapter.getGlobalPositionOf(item);
+        Log.d("Item Position", String.valueOf(position));
+        mAdapter.removeItem(position);
+        RemoveSticky();
+        Log.d("Broadcast Receiver", Constants.DELETE_NOTE);
+    }
+
+
     public void RemoveSticky()
     {
         UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
@@ -414,6 +420,26 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         if (activities.size() == 0) {
             Toast.makeText(this, "Voice recognizer not present",
                     Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(UpdateMainEvent event) {
+        Log.d("MainActivity", "Update Received");
+        if (event.getAction().equals(Constants.RECEIVED)) {
+            UpdateOnAdd(event);
+        }
+        else if (event.getAction().equals(Constants.DELETE_NOTE))
+        {
+            UpdateOnDelete(event);
+        }
+        else if (event.getAction().equals(Constants.FILTER))
+        {
+            UpdateFilter(event);
+        }
+        else if (event.getAction().equals(Constants.FILTER_IMAGES))
+        {
+            FilterImages();
         }
     }
 
