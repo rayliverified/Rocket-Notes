@@ -23,6 +23,7 @@
     <style name="AppActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:textColor">@color/white</item>
+        <item name="android:homeAsUpIndicator">@drawable/icon_save_simple</item>
     </style>
 
     <!-- Library styles. -->

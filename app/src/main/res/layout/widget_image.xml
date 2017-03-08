@@ -16,5 +16,6 @@
         android:layout_height="match_parent"
         android:text="Loading..."
         android:textSize="16sp"
+        android:textColor="@color/white"
         android:gravity="center"/>
 </LinearLayout>

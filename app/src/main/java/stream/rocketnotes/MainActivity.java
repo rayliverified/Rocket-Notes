@@ -397,7 +397,9 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
             Log.d("Image View Holder", note.getNotesImage());
             item = new ImageItemViewholder(Integer.toString(noteID), note.getNotesImage());
         }
+        Integer currentPosition = mAdapter.getGlobalPositionOf(item);
         mAdapter.updateItem(item, null);
+        mAdapter.moveItem(currentPosition, 0);
         RemoveSticky();
         Log.d("Broadcast Receiver", Constants.UPDATE_NOTE);
     }

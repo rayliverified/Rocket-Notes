@@ -48,7 +48,7 @@ public class ImageViewerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_imageviewer);
 
         Integer position = getIntent().getIntExtra(Constants.IMAGE, 0);
-        Integer noteID = getIntent().getIntExtra(Constants.ID, 0);
+        Integer noteID = getIntent().getIntExtra(Constants.ID, -1);
         Log.d("Image Position", String.valueOf(position));
         if (getIntent().getAction().equals(Constants.OPEN_IMAGE))
         {

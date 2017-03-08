@@ -59,17 +59,7 @@ public class TextUtils {
         noteTime.setTimeInMillis(time);
         Calendar now = Calendar.getInstance();
         String timeFormatString = "h:mm aa";
-        long diff = now.getTimeInMillis() - time;
-        long minutes = diff / 60000;
-        long hours = minutes / 60;
-        long days = hours/24;
-        if (minutes <= 1)
-            return "now";
-        else if (hours < 1)
-            return String.valueOf(minutes) + " mins ago";
-        else if (days < 0.5)
-            return String.valueOf(hours) + " hrs ago";
-        else if (now.get(Calendar.YEAR) == noteTime.get(Calendar.YEAR)
+        if (now.get(Calendar.YEAR) == noteTime.get(Calendar.YEAR)
                 && now.get(Calendar.MONTH) == noteTime.get(Calendar.MONTH)
                 && now.get(Calendar.DATE) == noteTime.get(Calendar.DATE))
         {

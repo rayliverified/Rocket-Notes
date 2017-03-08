@@ -156,11 +156,8 @@ public class PopupActivity extends Activity {
                         }
                         else
                         {
-                            //Save note and close activity
-                            Intent saveNote = new Intent(mContext, SaveNoteService.class);
-                            saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
-                            saveNote.setAction(Constants.NEW_NOTE);
-                            mContext.startService(saveNote);
+                            savedNote = true;
+                            saveNote();
                             finish();
                         }
                     }
@@ -169,21 +166,15 @@ public class PopupActivity extends Activity {
             editSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!TextUtils.isEmpty(editText.getText().toString().trim()))
-                    {
-                        //Save note and close activity
-                        Intent saveNote = new Intent(mContext, SaveNoteService.class);
-                        saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
-                        saveNote.setAction(Constants.NEW_NOTE);
-                        mContext.startService(saveNote);
-                    }
+                    savedNote = true;
+                    saveNote();
                     finish();
                 }
             });
         }
         else if (getIntent().getAction().equals(Constants.OPEN_NOTE))
         {
-            noteID = getIntent().getIntExtra(Constants.ID, 0);
+            noteID = getIntent().getIntExtra(Constants.ID, -1);
             Log.d("Received Note ID", String.valueOf(noteID));
 
             DatabaseHelper dbHelper = new DatabaseHelper(this);
@@ -243,12 +234,8 @@ public class PopupActivity extends Activity {
                         }
                         else
                         {
-                            //Save note and close activity
-                            Intent saveNote = new Intent(mContext, SaveNoteService.class);
-                            saveNote.putExtra(Constants.ID, noteID);
-                            saveNote.putExtra(Constants.BODY, noteTextRaw + "\n" + editText.getText().toString().trim());
-                            saveNote.setAction(Constants.UPDATE_NOTE);
-                            mContext.startService(saveNote);
+                            savedNote = true;
+                            saveNote();
                             finish();
                         }
                     }
@@ -257,15 +244,8 @@ public class PopupActivity extends Activity {
             editSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!TextUtils.isEmpty(editText.getText().toString().trim()))
-                    {
-                        //Save note and close activity
-                        Intent saveNote = new Intent(mContext, SaveNoteService.class);
-                        saveNote.putExtra(Constants.ID, noteID);
-                        saveNote.putExtra(Constants.BODY, noteTextRaw + "\n" + editText.getText().toString().trim());
-                        saveNote.setAction(Constants.UPDATE_NOTE);
-                        mContext.startService(saveNote);
-                    }
+                    savedNote = true;
+                    saveNote();
                     finish();
                 }
             });
@@ -275,7 +255,7 @@ public class PopupActivity extends Activity {
     private void saveNote()
     {
         //Save note and close activity
-        if (!TextUtils.isEmpty(editText.getText()))
+        if (!TextUtils.isEmpty(editText.getText().toString().trim()))
         {
             Intent saveNote = new Intent(mContext, SaveNoteService.class);
             if (noteStatus.equals(Constants.NEW_NOTE))
@@ -300,6 +280,7 @@ public class PopupActivity extends Activity {
         {
             //Autosave note when window loses focus
             Log.d("Popup", "Autosaved");
+            savedNote = true;
             saveNote();
         }
         super.onPause();

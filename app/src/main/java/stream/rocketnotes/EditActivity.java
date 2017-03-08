@@ -24,8 +24,10 @@ public class EditActivity extends AppCompatActivity {
     private EditText editText;
     private String noteStatus;
     private Integer noteID;
+    private String noteTextRaw;
     private boolean deletedNote = false;
     private boolean savedNote = false;
+    private boolean autoSavedNote = false;
     private Context mContext;
 
     @Override
@@ -41,10 +43,11 @@ public class EditActivity extends AppCompatActivity {
         mContext = getApplicationContext();
 
         noteStatus = getIntent().getAction();
-
         //Focus defaults to editText, set again just in case
         editText = (EditText) findViewById(R.id.edit_edit);
         editText.requestFocus();
+        noteTextRaw = "";
+        noteID = -1;
 
         if (getIntent().getAction().equals(Constants.NEW_NOTE))
         {
@@ -97,17 +100,18 @@ public class EditActivity extends AppCompatActivity {
         }
         else if (getIntent().getAction().equals(Constants.OPEN_NOTE))
         {
-            noteID = getIntent().getIntExtra(Constants.ID, 0);
+            noteID = getIntent().getIntExtra(Constants.ID, -1);
             Log.d("Received Note ID", String.valueOf(noteID));
             DatabaseHelper dbHelper = new DatabaseHelper(this);
             NotesItem note = dbHelper.GetNote(noteID);
+            noteTextRaw = note.getNotesNote();
 
             String editAdd = "";
             if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY)))
             {
                editAdd = getIntent().getStringExtra(Constants.BODY);
             }
-            editText.setText(note.getNotesNote() + "\n" + editAdd);
+            editText.setText(noteTextRaw + "\n" + editAdd);
             editText.clearFocus();
 //            editText.addTextChangedListener(new TextWatcher() {
 //
@@ -172,9 +176,20 @@ public class EditActivity extends AppCompatActivity {
             //Autosave note when window loses focus
             Log.d("Edit Text", "Autosaved");
             Log.d("onPause", String.valueOf(savedNote));
+            autoSavedNote = true;
             saveNote();
         }
         super.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        if (autoSavedNote == true)
+        {
+            //TODO If note is autosaved, delete button does not delete! Must get saved note ID
+            noteTextRaw = editText.getText().toString().trim();
+        }
+        super.onStart();
     }
 
     @Override
@@ -195,7 +210,10 @@ public class EditActivity extends AppCompatActivity {
                 break;
             case R.id.action_delete:
                 Log.d("Edit Text", "Delete");
-                openDeleteIntent();
+                if (noteID != -1)
+                {
+                    openDeleteIntent();
+                }
                 finish();
                 break;
         }
@@ -211,7 +229,7 @@ public class EditActivity extends AppCompatActivity {
     private void saveNote()
     {
         //Save note and close activity
-        if (!TextUtils.isEmpty(editText.getText()))
+        if (!TextUtils.isEmpty(editText.getText().toString().trim()) && !noteTextRaw.equals(editText.getText().toString().trim()))
         {
             Intent saveNote = new Intent(mContext, SaveNoteService.class);
             if (noteStatus.equals(Constants.NEW_NOTE))
