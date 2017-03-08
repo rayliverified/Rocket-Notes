@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +24,7 @@ public class EditActivity extends AppCompatActivity {
     private EditText editText;
     private String noteStatus;
     private Integer noteID;
+    private boolean deletedNote = false;
     private Context mContext;
 
     @Override
@@ -37,11 +39,11 @@ public class EditActivity extends AppCompatActivity {
         Window window = getWindow();
         mContext = getApplicationContext();
 
+        noteStatus = getIntent().getAction();
+
         //Focus defaults to editText, set again just in case
         editText = (EditText) findViewById(R.id.edit_edit);
         editText.requestFocus();
-
-        noteStatus = getIntent().getAction();
 
         if (getIntent().getAction().equals(Constants.NEW_NOTE))
         {
@@ -154,6 +156,17 @@ public class EditActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        if (!deletedNote)
+        {
+            //Autosave note when window loses focus
+            Log.d("Edit Text", "Autosaved");
+            saveNote();
+        }
+        super.onPause();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_edit_view, menu);
@@ -164,21 +177,7 @@ public class EditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                //Save note and close activity
-                Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
-                if (noteStatus.equals(Constants.NEW_NOTE))
-                {
-                    saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
-                    saveNote.setAction(Constants.NEW_NOTE);
-                    getApplicationContext().startService(saveNote);
-                }
-                else if (noteStatus.equals(Constants.OPEN_NOTE))
-                {
-                    saveNote.putExtra(Constants.ID, noteID);
-                    saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
-                    saveNote.setAction(Constants.UPDATE_NOTE);
-                    getApplicationContext().startService(saveNote);
-                }
+                saveNote();
                 finish();
                 break;
             case R.id.action_delete:
@@ -189,39 +188,48 @@ public class EditActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        saveNote();
+        super.onBackPressed();
+    }
+
+    private void saveNote()
+    {
+        //Save note and close activity
+        if (!TextUtils.isEmpty(editText.getText()))
+        {
+            Intent saveNote = new Intent(mContext, SaveNoteService.class);
+            if (noteStatus.equals(Constants.NEW_NOTE))
+            {
+                saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
+                saveNote.setAction(Constants.NEW_NOTE);
+                mContext.startService(saveNote);
+            }
+            else if (noteStatus.equals(Constants.OPEN_NOTE))
+            {
+                saveNote.putExtra(Constants.ID, noteID);
+                saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
+                saveNote.setAction(Constants.UPDATE_NOTE);
+                mContext.startService(saveNote);
+            }
+        }
+    }
+
     private void openDeleteIntent()
     {
         Intent deleteNote = new Intent(mContext, DeleteNoteService.class);
         deleteNote.putExtra(Constants.ID, noteID);
         deleteNote.setAction(Constants.DELETE_NOTE);
         mContext.startService(deleteNote);
+        deletedNote = true;
         NotificationDelete();
     }
 
     public void NotificationDelete()
     {
-        EventBus.getDefault().post(new UpdateMainEvent(Constants.DELETE_NOTE));
+        EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.DELETE_NOTE));
         Log.d("Notification", Constants.DELETE_NOTE);
-    }
-
-    @Override
-    public void onBackPressed() {
-        //Save note and close activity
-        Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
-        if (noteStatus.equals(Constants.NEW_NOTE))
-        {
-            saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
-            saveNote.setAction(Constants.NEW_NOTE);
-            getApplicationContext().startService(saveNote);
-        }
-        else if (noteStatus.equals(Constants.OPEN_NOTE))
-        {
-            saveNote.putExtra(Constants.ID, noteID);
-            saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
-            saveNote.setAction(Constants.UPDATE_NOTE);
-            getApplicationContext().startService(saveNote);
-        }
-        super.onBackPressed();
     }
 
     @SuppressWarnings("deprecation")
