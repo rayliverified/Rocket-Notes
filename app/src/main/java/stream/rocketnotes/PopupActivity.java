@@ -1,6 +1,7 @@
 package stream.rocketnotes;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +29,12 @@ import java.util.TimeZone;
 public class PopupActivity extends Activity {
 
     private boolean titleCreated = false;
+    private EditText editText;
+    private String noteStatus;
+    private String noteTextRaw;
+    private Integer noteID;
+    private boolean savedNote = false;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +63,15 @@ public class PopupActivity extends Activity {
         //Automatically opens keyboard for immediate input
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
+        mContext = getApplicationContext();
+        noteStatus = getIntent().getAction();
+
         //Focus defaults to editText, set again just in case
-        final EditText editText = (EditText) findViewById(R.id.edit_edit);
+        editText = (EditText) findViewById(R.id.edit_edit);
         editText.requestFocus();
         //OnEditorActionListener and OnKeyListener to detect keypresses DO NOT WORK on softkeyboards
 
-        LinearLayout editLayout = (LinearLayout) findViewById(R.id.edit_layout);
+        LinearLayout editNote = (LinearLayout) findViewById(R.id.edit_note);
         TextView editDetails = (TextView) findViewById(R.id.edit_details);
         final TextView editTitle = (TextView) findViewById(R.id.edit_title);
         final TextView editBody = (TextView) findViewById(R.id.edit_body);
@@ -73,6 +83,17 @@ public class PopupActivity extends Activity {
             editDetails.setText("New Note • now");
             editTitle.setText("Note Title");
             editBody.setText("Note Body");
+            editNote.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    savedNote = true;
+                    Intent editIntent = new Intent(mContext, EditActivity.class);
+                    editIntent.putExtra(Constants.BODY, editText.getText());
+                    editIntent.setAction(Constants.NEW_NOTE);
+                    editIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    mContext.startActivity(editIntent);
+                }
+            });
             editText.addTextChangedListener(new TextWatcher() {
 
                 public void afterTextChanged(Editable s) {
@@ -136,10 +157,10 @@ public class PopupActivity extends Activity {
                         else
                         {
                             //Save note and close activity
-                            Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
+                            Intent saveNote = new Intent(mContext, SaveNoteService.class);
                             saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
                             saveNote.setAction(Constants.NEW_NOTE);
-                            getApplicationContext().startService(saveNote);
+                            mContext.startService(saveNote);
                             finish();
                         }
                     }
@@ -151,10 +172,10 @@ public class PopupActivity extends Activity {
                     if (!TextUtils.isEmpty(editText.getText().toString().trim()))
                     {
                         //Save note and close activity
-                        Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
+                        Intent saveNote = new Intent(mContext, SaveNoteService.class);
                         saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
                         saveNote.setAction(Constants.NEW_NOTE);
-                        getApplicationContext().startService(saveNote);
+                        mContext.startService(saveNote);
                     }
                     finish();
                 }
@@ -162,7 +183,7 @@ public class PopupActivity extends Activity {
         }
         else if (getIntent().getAction().equals(Constants.OPEN_NOTE))
         {
-            final Integer noteID = getIntent().getIntExtra(Constants.ID, 0);
+            noteID = getIntent().getIntExtra(Constants.ID, 0);
             Log.d("Received Note ID", String.valueOf(noteID));
 
             DatabaseHelper dbHelper = new DatabaseHelper(this);
@@ -171,9 +192,21 @@ public class PopupActivity extends Activity {
 
             editText.setHint("Add to note...");
             editDetails.setText("Update Note • " + noteTime);
-            final String noteTextRaw = note.getNotesNote();
+            noteTextRaw = note.getNotesNote();
             ArrayList<String> noteText = NoteHelper.getNote(noteTextRaw);
             editTitle.setText(noteText.get(0));
+            editNote.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    savedNote = true;
+                    Intent editIntent = new Intent(mContext, EditActivity.class);
+                    editIntent.putExtra(Constants.ID, noteID);
+                    editIntent.putExtra(Constants.BODY, editText.getText().toString());
+                    editIntent.setAction(Constants.OPEN_NOTE);
+                    editIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    mContext.startActivity(editIntent);
+                }
+            });
             if (!TextUtils.isEmpty(noteText.get(1)))
             {
                 editBody.setText(noteText.get(1));
@@ -211,11 +244,11 @@ public class PopupActivity extends Activity {
                         else
                         {
                             //Save note and close activity
-                            Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
+                            Intent saveNote = new Intent(mContext, SaveNoteService.class);
                             saveNote.putExtra(Constants.ID, noteID);
                             saveNote.putExtra(Constants.BODY, noteTextRaw + "\n" + editText.getText().toString().trim());
                             saveNote.setAction(Constants.UPDATE_NOTE);
-                            getApplicationContext().startService(saveNote);
+                            mContext.startService(saveNote);
                             finish();
                         }
                     }
@@ -227,16 +260,49 @@ public class PopupActivity extends Activity {
                     if (!TextUtils.isEmpty(editText.getText().toString().trim()))
                     {
                         //Save note and close activity
-                        Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
+                        Intent saveNote = new Intent(mContext, SaveNoteService.class);
                         saveNote.putExtra(Constants.ID, noteID);
                         saveNote.putExtra(Constants.BODY, noteTextRaw + "\n" + editText.getText().toString().trim());
                         saveNote.setAction(Constants.UPDATE_NOTE);
-                        getApplicationContext().startService(saveNote);
+                        mContext.startService(saveNote);
                     }
                     finish();
                 }
             });
         }
+    }
+
+    private void saveNote()
+    {
+        //Save note and close activity
+        if (!TextUtils.isEmpty(editText.getText()))
+        {
+            Intent saveNote = new Intent(mContext, SaveNoteService.class);
+            if (noteStatus.equals(Constants.NEW_NOTE))
+            {
+                saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
+                saveNote.setAction(Constants.NEW_NOTE);
+                mContext.startService(saveNote);
+            }
+            else if (noteStatus.equals(Constants.OPEN_NOTE))
+            {
+                saveNote.putExtra(Constants.ID, noteID);
+                saveNote.putExtra(Constants.BODY, noteTextRaw + "\n" + editText.getText().toString().trim());
+                saveNote.setAction(Constants.UPDATE_NOTE);
+                mContext.startService(saveNote);
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (!savedNote)
+        {
+            //Autosave note when window loses focus
+            Log.d("Popup", "Autosaved");
+            saveNote();
+        }
+        super.onPause();
     }
 
     @Override

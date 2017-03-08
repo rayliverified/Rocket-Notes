@@ -25,6 +25,7 @@ public class EditActivity extends AppCompatActivity {
     private String noteStatus;
     private Integer noteID;
     private boolean deletedNote = false;
+    private boolean savedNote = false;
     private Context mContext;
 
     @Override
@@ -49,6 +50,10 @@ public class EditActivity extends AppCompatActivity {
         {
             //Automatically opens keyboard for immediate input
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY)))
+            {
+                editText.setText(getIntent().getStringExtra(Constants.BODY));
+            }
             editText.addTextChangedListener(new TextWatcher() {
 
                 public void afterTextChanged(Editable s) {
@@ -94,11 +99,16 @@ public class EditActivity extends AppCompatActivity {
         {
             noteID = getIntent().getIntExtra(Constants.ID, 0);
             Log.d("Received Note ID", String.valueOf(noteID));
-
             DatabaseHelper dbHelper = new DatabaseHelper(this);
             NotesItem note = dbHelper.GetNote(noteID);
-            editText.setText(note.getNotesNote());
-            editText.setSelection(note.getNotesNote().length());
+
+            String editAdd = "";
+            if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY)))
+            {
+               editAdd = getIntent().getStringExtra(Constants.BODY);
+            }
+            editText.setText(note.getNotesNote() + "\n" + editAdd);
+            editText.clearFocus();
 //            editText.addTextChangedListener(new TextWatcher() {
 //
 //                public void afterTextChanged(Editable s) {
@@ -157,10 +167,11 @@ public class EditActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        if (!deletedNote)
+        if (!deletedNote && !savedNote)
         {
             //Autosave note when window loses focus
             Log.d("Edit Text", "Autosaved");
+            Log.d("onPause", String.valueOf(savedNote));
             saveNote();
         }
         super.onPause();
@@ -177,10 +188,13 @@ public class EditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                Log.d("Edit Text", "Back");
+                savedNote = true;
                 saveNote();
                 finish();
                 break;
             case R.id.action_delete:
+                Log.d("Edit Text", "Delete");
                 openDeleteIntent();
                 finish();
                 break;
