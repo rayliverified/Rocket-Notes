@@ -47,6 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
+            app:layout_behavior="stream.rocketnotes.ui.FABScrollBehavior"
             app:fabGravity="bottom_end"
             app:fabMenu="@menu/menu_popup_view"
             app:fabBackgroundTint="@color/colorPrimary"

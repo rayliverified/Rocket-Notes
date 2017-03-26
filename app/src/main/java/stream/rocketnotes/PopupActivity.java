@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -20,11 +19,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 
 public class PopupActivity extends Activity {
 
@@ -179,7 +174,7 @@ public class PopupActivity extends Activity {
 
             DatabaseHelper dbHelper = new DatabaseHelper(this);
             NotesItem note = dbHelper.GetNote(noteID);
-            String noteTime = stream.rocketnotes.Utils.TextUtils.getTimeStamp(note.getNotesDate());
+            String noteTime = stream.rocketnotes.utils.TextUtils.getTimeStamp(note.getNotesDate());
 
             editText.setHint("Add to note...");
             editDetails.setText("Update Note • " + noteTime);

@@ -1,4 +1,4 @@
-package stream.rocketnotes.Utils;
+package stream.rocketnotes.utils;
 
 import android.text.format.DateFormat;
 

@@ -49,7 +49,7 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             NotesItem note = mNotesItems.get(position);
             ArrayList<String> noteText = NoteHelper.getNote(note.getNotesNote());
             rv.setTextViewText(R.id.item_note_title, noteText.get(0));
-            rv.setTextViewText(R.id.item_note_date, stream.rocketnotes.Utils.TextUtils.getTimeStampShort(note.getNotesDate()));
+            rv.setTextViewText(R.id.item_note_date, stream.rocketnotes.utils.TextUtils.getTimeStampShort(note.getNotesDate()));
             if (!TextUtils.isEmpty(noteText.get(1)))
             {
                 rv.setTextViewText(R.id.item_note_note, noteText.get(1).replaceAll("\n", " "));
