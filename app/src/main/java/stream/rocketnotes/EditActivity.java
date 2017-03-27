@@ -2,9 +2,13 @@ package stream.rocketnotes;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
@@ -13,11 +17,16 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
+
+import frescoimageviewer.ImageViewer;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -35,10 +44,7 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle("Edit Note");
-
+        ActionBar();
         Window window = getWindow();
         mContext = getApplicationContext();
 
@@ -202,12 +208,6 @@ public class EditActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                Log.d("Edit Text", "Back");
-                savedNote = true;
-                saveNote();
-                finish();
-                break;
             case R.id.action_delete:
                 Log.d("Edit Text", "Delete");
                 if (noteID != -1)
@@ -262,6 +262,32 @@ public class EditActivity extends AppCompatActivity {
     {
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.DELETE_NOTE));
         Log.d("Notification", Constants.DELETE_NOTE);
+    }
+
+    private void ActionBar() {
+        ActionBar toolBar = getSupportActionBar();
+        if (toolBar != null) {
+            toolBar.setDisplayHomeAsUpEnabled(true);
+            toolBar.setDisplayOptions(toolBar.DISPLAY_SHOW_CUSTOM);
+            toolBar.setCustomView(R.layout.toolbar_default);
+            toolBar.setElevation(0);
+            Toolbar parent = (Toolbar) toolBar.getCustomView().getParent();
+            parent.setContentInsetsAbsolute(0,0);
+        }
+
+        TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
+        toolbarTitle.setText(R.string.editpage_title);
+
+        ImageView toolbarBack = (ImageView) findViewById(R.id.toolbar_save);
+        toolbarBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Edit Text", "Back");
+                savedNote = true;
+                saveNote();
+                finish();
+            }
+        });
     }
 
     @SuppressWarnings("deprecation")
