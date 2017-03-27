@@ -83,8 +83,9 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         mFilterView = (FilterMaterialSearchView) findViewById(R.id.sv);
         setupSearchBar();
         setupFAB();
-        if (getIntent().getAction() != null)
+        if (getIntent().getAction() != null && getIntent().getAction() != Intent.ACTION_MAIN)
         {
+            Log.d("MainActivity", getIntent().getAction());
             if (getIntent().getAction().equals(Constants.STICKY))
             {
 
@@ -92,6 +93,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         }
         else
         {
+            Log.d("MainActivity", "Clear Sticky");
             UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
             if(stickyEvent != null) {
                 EventBus.getDefault().removeStickyEvent(stickyEvent);
@@ -455,7 +457,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onMessageEvent(UpdateMainEvent event) {
-        Log.d("MainActivity", "Update Received");
+        Log.d("MainActivity", event.getAction());
         if (event.getAction().equals(Constants.RECEIVED)) {
             UpdateOnAdd(event);
         }

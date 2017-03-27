@@ -71,7 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         values.put(KEY_IMAGE, note.getNotesImage());
 
         long id = db.insert(TABLE_NOTES, null, values);
-        Log.d("Saved ID", String.valueOf(id));
+        Log.d("Database Saved ID", String.valueOf(id));
         db.close();
         return id;
     }
@@ -196,6 +196,21 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         }
         c.close();
         return notes;
+    }
+
+    //Return note
+    public Integer GetLatestID() {
+        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " ORDER BY " + KEY_ID + " DESC LIMIT 1";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        Integer id = -1;
+        if (c.moveToFirst()) {
+            id = c.getInt(c.getColumnIndexOrThrow("_id"));
+        }
+        c.close();
+        return id;
     }
 
     //Return recent image notes

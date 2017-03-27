@@ -3,6 +3,12 @@
     <string name="camera_retake">Retake</string>
     <string name="camera_save">Save</string>
 
+    <!--Shortcut Titles-->
+    <string name="newnote_title_short">New Note</string>
+    <string name="newnote_title_long">Create a New Note</string>
+    <string name="newimage_title_short">New Image</string>
+    <string name="newimage_title_long">Create a New Image Note</string>
+
     <!--Toolbar Titles-->
     <string name="editpage_title">Edit Note</string>
 </resources>

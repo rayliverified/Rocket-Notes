@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:tools="http://schemas.android.com/tools"
+           xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/icon_edit_shortcut"
+        android:shortcutId="newnote"
+        android:shortcutShortLabel="@string/newnote_title_long"
+        android:shortcutLongLabel="@string/newnote_title_short"
+        tools:targetApi="n_mr1">
+        <intent
+            android:action="NEW_NOTE"
+            android:targetClass="stream.rocketnotes.EditActivity"
+            android:targetPackage="stream.rocketnotes"/>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/icon_camera_shortcut"
+        android:shortcutId="newimage"
+        android:shortcutShortLabel="@string/newimage_title_long"
+        android:shortcutLongLabel="@string/newimage_title_short"
+        tools:targetApi="n_mr1">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="stream.rocketnotes.CameraActivity"
+            android:targetPackage="stream.rocketnotes"/>
+    </shortcut>
+</shortcuts>

@@ -22,6 +22,7 @@ public class SaveNoteService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         if (intent.getAction().equals(Constants.NEW_NOTE)) {
+            Log.d("SaveNoteService", Constants.NEW_NOTE);
             Bundle extras = intent.getExtras();
             String body = extras.getString(Constants.BODY);
             String image = extras.getString(Constants.IMAGE);
@@ -43,6 +44,7 @@ public class SaveNoteService extends Service {
         }
         else if (intent.getAction().equals(Constants.UPDATE_NOTE))
         {
+            Log.d("SaveNoteService", Constants.UPDATE_NOTE);
             Bundle extras = intent.getExtras();
             Integer noteID = extras.getInt(Constants.ID);
             String body = extras.getString(Constants.BODY);
@@ -70,13 +72,13 @@ public class SaveNoteService extends Service {
     public void NotificationSender(NotesItem note)
     {
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.RECEIVED, note.getNotesID()));
-        Log.d("Note ID", String.valueOf(note.getNotesID()));
+        Log.d("SaveNoteService", String.valueOf(note.getNotesID()));
     }
 
     public void UpdateSender(NotesItem note)
     {
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.UPDATE_NOTE, note.getNotesID()));
-        Log.d("Note ID", String.valueOf(note.getNotesID()));
+        Log.d("SaveNoteService", String.valueOf(note.getNotesID()));
     }
 
     @Override

@@ -2,10 +2,7 @@ package stream.rocketnotes;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,17 +23,16 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
-import frescoimageviewer.ImageViewer;
-
 public class EditActivity extends AppCompatActivity {
 
     private EditText editText;
     private String noteStatus;
     private Integer noteID;
     private String noteTextRaw;
+    private boolean originalNew = false;
     private boolean deletedNote = false;
     private boolean savedNote = false;
-    private boolean autoSavedNote = false;
+    private boolean overrideExit = false; //Skip onPause autosave and exit cleanly.
     private Context mContext;
 
     @Override
@@ -49,62 +45,15 @@ public class EditActivity extends AppCompatActivity {
         mContext = getApplicationContext();
 
         noteStatus = getIntent().getAction();
+        Log.d("Intent Action", noteStatus);
+
         //Focus defaults to editText, set again just in case
         editText = (EditText) findViewById(R.id.edit_edit);
         editText.requestFocus();
         noteTextRaw = "";
         noteID = -1;
 
-        if (getIntent().getAction().equals(Constants.NEW_NOTE))
-        {
-            //Automatically opens keyboard for immediate input
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-            if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY)))
-            {
-                editText.setText(getIntent().getStringExtra(Constants.BODY));
-            }
-            editText.addTextChangedListener(new TextWatcher() {
-
-                public void afterTextChanged(Editable s) {
-
-//                    String[] noteText = s.toString().split("\n", 2);
-//                    if (noteText.length == 2)
-//                    {
-//                        Log.d("Note Body", noteText[1]);
-//                        if (!TextUtils.isEmpty(noteText[1]))
-//                        {
-//                            editText.setText(noteText[0] + noteText[1]);
-//                        }
-//                        else
-//                        {
-//                            editText.setText(noteText[0]);
-//                        }
-//                    }
-//                    else
-//                    {
-//                        if (!TextUtils.isEmpty(s.toString()))
-//                        {
-//                            editText.setText(noteText[0]);
-//                        }
-//                        else
-//                        {
-//                            //Reset Note Title when EditText is empty
-//                            Log.d("Note Empty", "True");
-//                            editText.setHint("Note Title");
-//                        }
-//                    }
-                }
-
-                public void beforeTextChanged(CharSequence s, int start,
-                                              int count, int after) {
-                }
-
-                public void onTextChanged(CharSequence s, int start,
-                                          int before, int count) {
-                }
-            });
-        }
-        else if (getIntent().getAction().equals(Constants.OPEN_NOTE))
+        if (getIntent().getAction().equals(Constants.OPEN_NOTE))
         {
             noteID = getIntent().getIntExtra(Constants.ID, -1);
             Log.d("Received Note ID", String.valueOf(noteID));
@@ -115,7 +64,7 @@ public class EditActivity extends AppCompatActivity {
             String editAdd = "";
             if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY)))
             {
-               editAdd = getIntent().getStringExtra(Constants.BODY);
+                editAdd = getIntent().getStringExtra(Constants.BODY);
             }
             editText.setText(noteTextRaw + "\n" + editAdd);
             editText.clearFocus();
@@ -173,28 +122,87 @@ public class EditActivity extends AppCompatActivity {
 //            }
 //        });
         }
+        else
+        {
+            originalNew = true;
+
+            //Automatically opens keyboard for immediate input
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY)))
+            {
+                editText.setText(getIntent().getStringExtra(Constants.BODY));
+            }
+            editText.addTextChangedListener(new TextWatcher() {
+
+                public void afterTextChanged(Editable s) {
+
+//                    String[] noteText = s.toString().split("\n", 2);
+//                    if (noteText.length == 2)
+//                    {
+//                        Log.d("Note Body", noteText[1]);
+//                        if (!TextUtils.isEmpty(noteText[1]))
+//                        {
+//                            editText.setText(noteText[0] + noteText[1]);
+//                        }
+//                        else
+//                        {
+//                            editText.setText(noteText[0]);
+//                        }
+//                    }
+//                    else
+//                    {
+//                        if (!TextUtils.isEmpty(s.toString()))
+//                        {
+//                            editText.setText(noteText[0]);
+//                        }
+//                        else
+//                        {
+//                            //Reset Note Title when EditText is empty
+//                            Log.d("Note Empty", "True");
+//                            editText.setHint("Note Title");
+//                        }
+//                    }
+                }
+
+                public void beforeTextChanged(CharSequence s, int start,
+                                              int count, int after) {
+                }
+
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
+                }
+            });
+        }
     }
 
     @Override
     protected void onPause() {
-        if (!deletedNote && !savedNote)
+        if (!overrideExit)
         {
-            //Autosave note when window loses focus
-            Log.d("Edit Text", "Autosaved");
-            Log.d("onPause", String.valueOf(savedNote));
-            autoSavedNote = true;
-            saveNote();
+            if (!deletedNote && !savedNote)
+            {
+                //Autosave note when window loses focus
+                Log.d("Edit Text", "Autosaved");
+                Log.d("onPause", String.valueOf(savedNote));
+                saveNote();
+            }
+            else if (!deletedNote && savedNote == true)
+            {
+                DatabaseHelper dbHelper = new DatabaseHelper(this);
+                noteStatus = Constants.OPEN_NOTE;
+                noteID = dbHelper.GetLatestID();
+                Log.d("Autosaved Note ID", String.valueOf(noteID));
+                saveNote();
+            }
         }
         super.onPause();
     }
 
     @Override
     protected void onStart() {
-        if (autoSavedNote == true)
-        {
-            //TODO If note is autosaved, delete button does not delete! Must get saved note ID
-            noteTextRaw = editText.getText().toString().trim();
-        }
+        //Update noteTextRaw to newest saved value
+        noteTextRaw = editText.getText().toString().trim();
+
         super.onStart();
     }
 
@@ -210,10 +218,8 @@ public class EditActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_delete:
                 Log.d("Edit Text", "Delete");
-                if (noteID != -1)
-                {
-                    openDeleteIntent();
-                }
+                overrideExit = true;
+                openDeleteIntent();
                 finish();
                 break;
         }
@@ -222,6 +228,7 @@ public class EditActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        overrideExit = true;
         saveNote();
         super.onBackPressed();
     }
@@ -232,34 +239,51 @@ public class EditActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(editText.getText().toString().trim()) && !noteTextRaw.equals(editText.getText().toString().trim()))
         {
             Intent saveNote = new Intent(mContext, SaveNoteService.class);
-            if (noteStatus.equals(Constants.NEW_NOTE))
+            if (noteStatus.equals(Constants.OPEN_NOTE))
             {
-                saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
-                saveNote.setAction(Constants.NEW_NOTE);
-                mContext.startService(saveNote);
-            }
-            else if (noteStatus.equals(Constants.OPEN_NOTE))
-            {
+                Log.d("Edit Activity", Constants.UPDATE_NOTE);
                 saveNote.putExtra(Constants.ID, noteID);
                 saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
                 saveNote.setAction(Constants.UPDATE_NOTE);
                 mContext.startService(saveNote);
             }
+            else
+            {
+                Log.d("Edit Activity", Constants.NEW_NOTE);
+                saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
+                saveNote.setAction(Constants.NEW_NOTE);
+                mContext.startService(saveNote);
+                savedNote = true;
+            }
+        }
+        else if (TextUtils.isEmpty(editText.getText().toString().trim()))
+        {
+            openDeleteIntent();
         }
     }
 
     private void openDeleteIntent()
+    {
+        if (savedNote == false && originalNew == true)
+        {
+            return;
+        }
+        else if (savedNote == true && originalNew == true)
+        {
+            Log.d("Edit Activity", "Delete New Note");
+            DatabaseHelper dbHelper = new DatabaseHelper(this);
+            noteID = dbHelper.GetLatestID();
+        }
+        DeleteNote();
+    }
+
+    public void DeleteNote()
     {
         Intent deleteNote = new Intent(mContext, DeleteNoteService.class);
         deleteNote.putExtra(Constants.ID, noteID);
         deleteNote.setAction(Constants.DELETE_NOTE);
         mContext.startService(deleteNote);
         deletedNote = true;
-        NotificationDelete();
-    }
-
-    public void NotificationDelete()
-    {
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.DELETE_NOTE));
         Log.d("Notification", Constants.DELETE_NOTE);
     }
@@ -283,7 +307,7 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("Edit Text", "Back");
-                savedNote = true;
+                overrideExit = true;
                 saveNote();
                 finish();
             }
