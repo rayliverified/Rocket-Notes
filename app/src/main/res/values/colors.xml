@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF7058</color>
     <color name="colorAccentSecondary">#607D8B</color>
     <color name="colorPrimaryLight">#FFCDD2</color>
+    <color name="windowBackgroundColor">#FFF2F2F2</color>
 
     <!--<color name="colorPrimary">#54C0EB</color>-->
     <!--<color name="colorPrimaryDark">#0288D1</color>-->
@@ -20,10 +21,17 @@
 
     <color name="textPrimary">#2D2D2D</color>
     <color name="textSecondary">#8C8C8C</color>
-    <color name="button_normal">#BBBBBB</color>
 
+    <color name="button_normal">#BBBBBB</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="blackTranslucent">#7c000000</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="green">#15CC87</color>
+    <color name="red">#FE5442</color>
+    <color name="yellow">#FCD007</color>
+    <color name="gray">#555555</color>
 
-    <color name="windowBackgroundColor">#FFF2F2F2</color>
+    <color name="correct">#5EA041</color>
+    <color name="incorrect">#DA0027</color>
 </resources>

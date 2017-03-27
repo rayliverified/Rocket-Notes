@@ -22,12 +22,22 @@
             android:text="Gallery"/>
 
         <ImageButton
-            android:id="@+id/button_share"
+            android:id="@+id/button_save"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:layout_toLeftOf="@+id/button_delete"
+            android:background="@drawable/icon_download"
+            android:text="Save to Device"/>
+
+        <ImageButton
+            android:id="@+id/button_share"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_toLeftOf="@+id/button_save"
             android:background="@drawable/icon_share"
             android:text="Share"/>
 

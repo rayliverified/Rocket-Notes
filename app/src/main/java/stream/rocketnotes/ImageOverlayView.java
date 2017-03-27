@@ -8,7 +8,15 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.angads25.filepicker.controller.DialogSelectionListener;
+import com.github.angads25.filepicker.model.DialogConfigs;
+import com.github.angads25.filepicker.model.DialogProperties;
+import com.github.angads25.filepicker.view.FilePickerDialog;
+
 import org.greenrobot.eventbus.EventBus;
+
+import java.io.File;
+
 import frescoimageviewer.OnDismissListener;
 
 public class ImageOverlayView extends RelativeLayout {
@@ -62,6 +70,12 @@ public class ImageOverlayView extends RelativeLayout {
                 sendShareIntent();
             }
         });
+        view.findViewById(R.id.button_save).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSaveIntent();
+            }
+        });
         view.findViewById(R.id.button_delete).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,6 +100,39 @@ public class ImageOverlayView extends RelativeLayout {
         mContext.startActivity(galleryIntent);
     }
 
+    private void openSaveIntent()
+    {
+        DialogProperties properties = new DialogProperties();
+        properties.selection_mode = DialogConfigs.SINGLE_MODE;
+        properties.selection_type = DialogConfigs.DIR_SELECT;
+        properties.root = new File(DialogConfigs.DEFAULT_DIR);
+        properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
+        properties.offset = new File(DialogConfigs.DEFAULT_DIR);
+        properties.extensions = null;
+        FilePickerDialog dialog = new FilePickerDialog(mContext, properties);
+        dialog.setTitle("Save Location");
+        dialog.setDialogSelectionListener(new DialogSelectionListener() {
+            @Override
+            public void onSelectedFilePaths(String[] files) {
+                if (files.length >= 1)
+                {
+                    DatabaseHelper dbHelper = new DatabaseHelper(mContext);
+                    NotesItem note = dbHelper.GetNote(noteID);
+                    Intent savePicture = new Intent(mContext, SaveFileService.class);
+                    savePicture.putExtra(Constants.SOURCE_PATH, note.getNotesImage());
+                    savePicture.putExtra(Constants.SAVE_PATH, files[0]);
+                    mContext.startService(savePicture);
+                }
+                //TODO Toast message if no file selected
+                for (String filePath : files)
+                {
+                    Log.d("File Path", filePath);
+                }
+            }
+        });
+        dialog.show();
+    }
+
     private void openDeleteIntent()
     {
         Intent deleteNote = new Intent(mContext, DeleteNoteService.class);
@@ -94,7 +141,6 @@ public class ImageOverlayView extends RelativeLayout {
         mContext.startService(deleteNote);
         NotificationDelete();
     }
-
 
     public void NotificationSender()
     {

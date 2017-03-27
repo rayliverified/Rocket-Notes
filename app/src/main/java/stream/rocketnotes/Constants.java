@@ -21,4 +21,6 @@ public interface Constants {
     public static final String FILTER = "FILTER";
     public static final String FILTER_IMAGES = "FILTER_IMAGES";
     public static final String STICKY = "STICKY";
+    public static final String SOURCE_PATH = "SOURCE_PATH";
+    public static final String SAVE_PATH = "SAVE_PATH";
 }

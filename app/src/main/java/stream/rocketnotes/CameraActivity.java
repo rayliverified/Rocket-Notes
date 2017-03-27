@@ -26,13 +26,14 @@ public class CameraActivity extends AppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT > 15) {
+        if (Build.VERSION.SDK_INT >= 23) {
             final String[] permissions = {
-                    Manifest.permission.CAMERA};
+                    Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
             final List<String> permissionsToRequest = new ArrayList<>();
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                    Log.d("Permission Request", permission);
                     permissionsToRequest.add(permission);
                 }
             }

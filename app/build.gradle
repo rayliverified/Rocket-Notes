@@ -46,5 +46,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'me.xdrop:fuzzywuzzy:1.1.6'
     compile 'io.github.yavski:fab-speed-dial:1.0.6'
+    compile 'com.github.angads25:filepicker:1.1.0'
+    compile 'com.github.GrenderG:Toasty:1.1.4'
 //    compile 'com.github.mthli:Knife:v1.1'
 }
