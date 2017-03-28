@@ -50,7 +50,7 @@ public class EditActivity extends AppCompatActivity {
 
         //Focus defaults to editText, set again just in case
         mEditor = (RichEditor) findViewById(R.id.editor);
-        mEditor.setPaddingRelative(12, 12, 12, 12);
+        mEditor.setPadding(12, 12, 12, 12);
         noteTextRaw = "";
         noteID = -1;
 
@@ -128,6 +128,12 @@ public class EditActivity extends AppCompatActivity {
         else
         {
             originalNew = true;
+
+            if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY)))
+            {
+                noteTextRaw = stream.rocketnotes.utils.TextUtils.Compatibility(getIntent().getStringExtra(Constants.BODY));
+                mEditor.setHtml(noteTextRaw);
+            }
 
             mEditor.focusEditor();
             //Automatically opens keyboard for immediate input

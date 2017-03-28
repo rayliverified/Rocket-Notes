@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:animateLayoutChanges="true">
 
     <LinearLayout
         android:id="@+id/edit_layout"
@@ -64,10 +65,14 @@
                 android:text="Note Body"
                 android:textSize="14sp"
                 android:textColor="@color/textPrimary"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:singleLine="false"
                 android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/edit_edit_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="12dp"
@@ -85,7 +90,7 @@
                 android:layout_marginRight="12dp"
                 android:layout_weight="1"
                 android:textSize="16sp"
-                android:hint="Enter new note..."
+                android:hint="Just start typing..."
                 android:textColorHint="@color/white"
                 android:textColor="@color/white"
                 android:inputType="textMultiLine|textAutoCorrect|textCapSentences"
@@ -102,7 +107,23 @@
                 android:layout_gravity="center_vertical"
                 android:background="@android:color/transparent"
                 android:scaleType="fitCenter"
-                android:src="@drawable/icon_send_selector"/>
+                android:src="@drawable/icon_send_selector"
+                android:visibility="gone"/>
         </LinearLayout>
+        <TextView
+            android:id="@+id/edit_helper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="6dp"
+            android:gravity="left"
+            android:background="@color/colorPrimary"
+            android:text="@string/edit_helper_default"
+            android:textColor="@color/white"
+            android:textSize="8sp"
+            android:textStyle="italic"
+            android:visibility="gone"/>
     </LinearLayout>
 </LinearLayout>

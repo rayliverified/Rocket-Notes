@@ -67,14 +67,16 @@ public class PopupActivity extends Activity {
         //OnEditorActionListener and OnKeyListener to detect keypresses DO NOT WORK on softkeyboards
 
         LinearLayout editNote = (LinearLayout) findViewById(R.id.edit_note);
+        final LinearLayout editEditLayout = (LinearLayout) findViewById(R.id.edit_edit_layout);
         TextView editDetails = (TextView) findViewById(R.id.edit_details);
         final TextView editTitle = (TextView) findViewById(R.id.edit_title);
         final TextView editBody = (TextView) findViewById(R.id.edit_body);
         ImageButton editSubmit = (ImageButton) findViewById(R.id.edit_submit);
+        final TextView editHelper = (TextView) findViewById(R.id.edit_helper);
 
         if (getIntent().getAction().equals(Constants.NEW_NOTE))
         {
-            editText.setHint("Enter new note...");
+            editText.setHint(R.string.edit_hint);
             editDetails.setText("New Note • now");
             editTitle.setText("Note Title");
             editBody.setText("Note Body");
@@ -95,8 +97,18 @@ public class PopupActivity extends Activity {
 
                     String[] noteText = s.toString().split("\n", 2);
                     Log.d("Note Length", String.valueOf(noteText.length));
+                    if (s.length() > 20 && s.length() < Constants.TITLE_LENGTH && noteText.length == 1)
+                    {
+                        String helperText = "(" + String.valueOf(Constants.TITLE_LENGTH - s.length()) + " characters remaining)";
+                        editHelper.setText(helperText);
+                    }
+                    else
+                    {
+                        editHelper.setText(R.string.edit_helper_default);
+                    }
                     if (noteText.length == 2)
                     {
+                        editHelper.setText(R.string.edit_helper_save);
                         Log.d("Note Body", noteText[1]);
                         if (!TextUtils.isEmpty(noteText[1]))
                         {
@@ -120,6 +132,10 @@ public class PopupActivity extends Activity {
                     {
                         Log.d("Note Empty", "True");
                         editTitle.setText("Note Title");
+                        editHelper.setVisibility(View.GONE);
+                        float scale = getResources().getDisplayMetrics().density;
+                        int dpAsPixels = (int) (12*scale + 0.5f);
+                        editEditLayout.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, dpAsPixels);
                     }
                     Log.d("Note Title", noteText[0]);
                 }
@@ -130,6 +146,14 @@ public class PopupActivity extends Activity {
 
                 public void onTextChanged(CharSequence s, int start,
                                           int before, int count) {
+                    if (s.length() >= 1)
+                    {
+                        float scale = getResources().getDisplayMetrics().density;
+                        int dpAsPixels = (int) (12*scale + 0.5f);
+                        editEditLayout.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, 0);
+                        editHelper.setVisibility(View.VISIBLE);
+                    }
+
                     if (s.length() < 1 || start >= s.length() || start < 0)
                     {
                         return;
@@ -179,8 +203,8 @@ public class PopupActivity extends Activity {
             editText.setHint("Add to note...");
             editDetails.setText("Update Note • " + noteTime);
             noteTextRaw = note.getNotesNote();
-            ArrayList<String> noteText = NoteHelper.getNote(noteTextRaw);
-            editTitle.setText(noteText.get(0));
+            ArrayList<String> noteText = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(noteTextRaw));
+            editTitle.setText(stream.rocketnotes.utils.TextUtils.fromHtml(noteText.get(0)));
             editNote.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -195,7 +219,7 @@ public class PopupActivity extends Activity {
             });
             if (!TextUtils.isEmpty(noteText.get(1)))
             {
-                editBody.setText(noteText.get(1));
+                editBody.setText(stream.rocketnotes.utils.TextUtils.fromHtml(noteText.get(1)));
                 editBody.setVisibility(View.VISIBLE);
             }
             else

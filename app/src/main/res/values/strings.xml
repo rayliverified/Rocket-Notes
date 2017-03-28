@@ -3,6 +3,10 @@
     <string name="camera_retake">Retake</string>
     <string name="camera_save">Save</string>
 
+    <string name="edit_hint">Just start typing…</string>
+    <string name="edit_helper_default">(press Enter on keyboard to save Note Title)</string>
+    <string name="edit_helper_save">(press Enter again to save Note)</string>
+
     <!--Shortcut Titles-->
     <string name="newnote_title_short">New Note</string>
     <string name="newnote_title_long">Create a New Note</string>
