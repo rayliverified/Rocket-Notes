@@ -48,5 +48,5 @@ dependencies {
     compile 'io.github.yavski:fab-speed-dial:1.0.6'
     compile 'com.github.angads25:filepicker:1.1.0'
     compile 'com.github.GrenderG:Toasty:1.1.4'
-    compile 'com.github.mthli:Knife:v1.1'
+    compile 'jp.wasabeef:richeditor-android:1.2.2'
 }

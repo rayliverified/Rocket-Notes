@@ -43,7 +43,7 @@
             android:theme="@style/MaterialCamera.CaptureActivity" />
         <activity android:name="stream.rocketnotes.ImageViewerActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
         <activity android:name="stream.rocketnotes.PopupActivity" android:theme="@style/Theme.TransparentFloating" android:excludeFromRecents="true"/>
-        <activity android:name="stream.rocketnotes.EditActivity" android:theme="@style/AppActionBar" android:parentActivityName=".MainActivity"/>
+        <activity android:name="stream.rocketnotes.EditActivity" android:theme="@style/AppActionBar"/>
         <!-- Widgets -->
         <receiver android:name="stream.rocketnotes.NotesWidget"
                   android:icon="@drawable/preview_notes"

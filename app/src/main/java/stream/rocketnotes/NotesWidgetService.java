@@ -47,12 +47,12 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_notes_widget);
         if (position < mNotesItems.size()) {
             NotesItem note = mNotesItems.get(position);
-            ArrayList<String> noteText = NoteHelper.getNote(note.getNotesNote());
-            rv.setTextViewText(R.id.item_note_title, noteText.get(0));
+            ArrayList<String> noteText = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(note.getNotesNote()));
+            rv.setTextViewText(R.id.item_note_title, stream.rocketnotes.utils.TextUtils.fromHtml(noteText.get(0)));
             rv.setTextViewText(R.id.item_note_date, stream.rocketnotes.utils.TextUtils.getTimeStampShort(note.getNotesDate()));
             if (!TextUtils.isEmpty(noteText.get(1)))
             {
-                rv.setTextViewText(R.id.item_note_note, noteText.get(1).replaceAll("\n", " "));
+                rv.setTextViewText(R.id.item_note_note, stream.rocketnotes.utils.TextUtils.fromHtml(noteText.get(1).replaceAll("<b>", " ")));
                 rv.setViewVisibility(R.id.item_note_note, View.VISIBLE);
             }
             else

@@ -83,11 +83,11 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
                                List payloads) {
         final Context context = holder.itemView.getContext();
 
-        ArrayList<String> note = NoteHelper.getNote(title);
-        holder.noteTitle.setText(note.get(0));
+        ArrayList<String> note = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(title));
+        holder.noteTitle.setText(stream.rocketnotes.utils.TextUtils.fromHtml(note.get(0)));
         if (!TextUtils.isEmpty(note.get(1)))
         {
-            holder.noteBody.setText(note.get(1));
+            holder.noteBody.setText(stream.rocketnotes.utils.TextUtils.fromHtml(note.get(1)));
             holder.noteBody.setVisibility(View.VISIBLE);
         }
         else

@@ -12,7 +12,7 @@ public class NoteHelper {
     public static ArrayList<String> getNote(String noteRaw)
     {
         ArrayList<String> note = new ArrayList<String>();
-        String[] noteText = noteRaw.split("\n", 2);
+        String[] noteText = noteRaw.split("<br>", 2);
         if (noteText.length == 2)
         {
             note.add(noteText[0]);

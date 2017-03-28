@@ -22,11 +22,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
-import io.github.mthli.knife.KnifeText;
+import jp.wasabeef.richeditor.RichEditor;
 
 public class EditActivity extends AppCompatActivity {
 
-    private EditText editText;
+    private RichEditor mEditor;
     private String noteStatus;
     private Integer noteID;
     private String noteTextRaw;
@@ -49,7 +49,8 @@ public class EditActivity extends AppCompatActivity {
         Log.d("Intent Action", noteStatus);
 
         //Focus defaults to editText, set again just in case
-        knife = (KnifeText) findViewById(R.id.edit_edit);
+        mEditor = (RichEditor) findViewById(R.id.editor);
+        mEditor.setPaddingRelative(12, 12, 12, 12);
         noteTextRaw = "";
         noteID = -1;
 
@@ -67,9 +68,8 @@ public class EditActivity extends AppCompatActivity {
                 editAdd = getIntent().getStringExtra(Constants.BODY);
                 editAdd = "\n" + editAdd;
             }
-            knife.fromHtml(noteTextRaw + editAdd);
-            knife.setSelection(knife.length());
-            knife.clearFocus();
+            mEditor.setHtml(noteTextRaw + editAdd);
+            mEditor.clearFocus();
 //            editText.clearFocus();
 //            editText.addTextChangedListener(new TextWatcher() {
 //
@@ -129,51 +129,57 @@ public class EditActivity extends AppCompatActivity {
         {
             originalNew = true;
 
+            mEditor.focusEditor();
             //Automatically opens keyboard for immediate input
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-            knife.addTextChangedListener(new TextWatcher() {
+            mEditor.setOnTextChangeListener(new RichEditor.OnTextChangeListener(){
 
                 @Override
-                public void afterTextChanged(Editable s) {
-
-//                    String[] noteText = s.toString().split("\n", 2);
-//                    if (noteText.length == 2)
-//                    {
-//                        Log.d("Note Body", noteText[1]);
-//                        if (!TextUtils.isEmpty(noteText[1]))
-//                        {
-//                            editText.setText(noteText[0] + noteText[1]);
-//                        }
-//                        else
-//                        {
-//                            editText.setText(noteText[0]);
-//                        }
-//                    }
-//                    else
-//                    {
-//                        if (!TextUtils.isEmpty(s.toString()))
-//                        {
-//                            editText.setText(noteText[0]);
-//                        }
-//                        else
-//                        {
-//                            //Reset Note Title when EditText is empty
-//                            Log.d("Note Empty", "True");
-//                            editText.setHint("Note Title");
-//                        }
-//                    }
-                }
-
-                @Override
-                public void beforeTextChanged(CharSequence s, int start,
-                                              int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start,
-                                          int before, int count) {
+                public void onTextChange(String text) {
 
                 }
+
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//
+////                    String[] noteText = s.toString().split("\n", 2);
+////                    if (noteText.length == 2)
+////                    {
+////                        Log.d("Note Body", noteText[1]);
+////                        if (!TextUtils.isEmpty(noteText[1]))
+////                        {
+////                            editText.setText(noteText[0] + noteText[1]);
+////                        }
+////                        else
+////                        {
+////                            editText.setText(noteText[0]);
+////                        }
+////                    }
+////                    else
+////                    {
+////                        if (!TextUtils.isEmpty(s.toString()))
+////                        {
+////                            editText.setText(noteText[0]);
+////                        }
+////                        else
+////                        {
+////                            //Reset Note Title when EditText is empty
+////                            Log.d("Note Empty", "True");
+////                            editText.setHint("Note Title");
+////                        }
+////                    }
+//                }
+//
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start,
+//                                              int count, int after) {
+//                }
+//
+//                @Override
+//                public void onTextChanged(CharSequence s, int start,
+//                                          int before, int count) {
+//
+//                }
             });
         }
     }
@@ -204,7 +210,10 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         //Update noteTextRaw to newest saved value
-        noteTextRaw = knife.getText().toString().trim();
+        if (mEditor.getHtml() != null)
+        {
+            noteTextRaw = mEditor.getHtml().trim();
+        }
 
         super.onStart();
     }
@@ -221,11 +230,11 @@ public class EditActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_undo:
                 Log.d("Edit Text", "Undo");
-                knife.undo();
+                mEditor.undo();
                 break;
             case R.id.action_redo:
                 Log.d("Edit Text", "Redo");
-                knife.redo();
+                mEditor.redo();
                 break;
             case R.id.action_delete:
                 Log.d("Edit Text", "Delete");
@@ -247,27 +256,27 @@ public class EditActivity extends AppCompatActivity {
     private void saveNote()
     {
         //Save note and close activity
-        if (!TextUtils.isEmpty(knife.getText().toString().trim()) && !noteTextRaw.equals(knife.getText().toString().trim()))
+        if (!TextUtils.isEmpty(mEditor.getHtml().trim()) && !noteTextRaw.equals(mEditor.getHtml().trim()))
         {
             Intent saveNote = new Intent(mContext, SaveNoteService.class);
             if (noteStatus.equals(Constants.OPEN_NOTE))
             {
                 Log.d("Edit Activity", Constants.UPDATE_NOTE);
                 saveNote.putExtra(Constants.ID, noteID);
-                saveNote.putExtra(Constants.BODY, knife.getText().toString().trim());
+                saveNote.putExtra(Constants.BODY, mEditor.getHtml().trim());
                 saveNote.setAction(Constants.UPDATE_NOTE);
                 mContext.startService(saveNote);
             }
             else
             {
                 Log.d("Edit Activity", Constants.NEW_NOTE);
-                saveNote.putExtra(Constants.BODY, knife.getText().toString().trim());
+                saveNote.putExtra(Constants.BODY, mEditor.getHtml().trim());
                 saveNote.setAction(Constants.NEW_NOTE);
                 mContext.startService(saveNote);
                 savedNote = true;
             }
         }
-        else if (TextUtils.isEmpty(knife.getText().toString().trim()))
+        else if (TextUtils.isEmpty(mEditor.getHtml().trim()))
         {
             openDeleteIntent();
         }
@@ -323,16 +332,5 @@ public class EditActivity extends AppCompatActivity {
                 finish();
             }
         });
-    }
-
-    @SuppressWarnings("deprecation")
-    public static Spanned fromHtml(String html){
-        Spanned result;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            result = Html.fromHtml(html,Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            result = Html.fromHtml(html);
-        }
-        return result;
     }
 }
