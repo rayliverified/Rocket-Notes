@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
+import io.github.mthli.knife.KnifeText;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -48,8 +49,7 @@ public class EditActivity extends AppCompatActivity {
         Log.d("Intent Action", noteStatus);
 
         //Focus defaults to editText, set again just in case
-        editText = (EditText) findViewById(R.id.edit_edit);
-        editText.requestFocus();
+        knife = (KnifeText) findViewById(R.id.edit_edit);
         noteTextRaw = "";
         noteID = -1;
 
@@ -59,15 +59,18 @@ public class EditActivity extends AppCompatActivity {
             Log.d("Received Note ID", String.valueOf(noteID));
             DatabaseHelper dbHelper = new DatabaseHelper(this);
             NotesItem note = dbHelper.GetNote(noteID);
-            noteTextRaw = note.getNotesNote();
+            noteTextRaw = stream.rocketnotes.utils.TextUtils.Compatibility(note.getNotesNote());
 
             String editAdd = "";
             if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY)))
             {
                 editAdd = getIntent().getStringExtra(Constants.BODY);
+                editAdd = "\n" + editAdd;
             }
-            editText.setText(noteTextRaw + "\n" + editAdd);
-            editText.clearFocus();
+            knife.fromHtml(noteTextRaw + editAdd);
+            knife.setSelection(knife.length());
+            knife.clearFocus();
+//            editText.clearFocus();
 //            editText.addTextChangedListener(new TextWatcher() {
 //
 //                public void afterTextChanged(Editable s) {
@@ -128,12 +131,9 @@ public class EditActivity extends AppCompatActivity {
 
             //Automatically opens keyboard for immediate input
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-            if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY)))
-            {
-                editText.setText(getIntent().getStringExtra(Constants.BODY));
-            }
-            editText.addTextChangedListener(new TextWatcher() {
+            knife.addTextChangedListener(new TextWatcher() {
 
+                @Override
                 public void afterTextChanged(Editable s) {
 
 //                    String[] noteText = s.toString().split("\n", 2);
@@ -164,12 +164,15 @@ public class EditActivity extends AppCompatActivity {
 //                    }
                 }
 
+                @Override
                 public void beforeTextChanged(CharSequence s, int start,
                                               int count, int after) {
                 }
 
+                @Override
                 public void onTextChanged(CharSequence s, int start,
                                           int before, int count) {
+
                 }
             });
         }
@@ -201,7 +204,7 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         //Update noteTextRaw to newest saved value
-        noteTextRaw = editText.getText().toString().trim();
+        noteTextRaw = knife.getText().toString().trim();
 
         super.onStart();
     }
@@ -216,6 +219,14 @@ public class EditActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_undo:
+                Log.d("Edit Text", "Undo");
+                knife.undo();
+                break;
+            case R.id.action_redo:
+                Log.d("Edit Text", "Redo");
+                knife.redo();
+                break;
             case R.id.action_delete:
                 Log.d("Edit Text", "Delete");
                 overrideExit = true;
@@ -236,27 +247,27 @@ public class EditActivity extends AppCompatActivity {
     private void saveNote()
     {
         //Save note and close activity
-        if (!TextUtils.isEmpty(editText.getText().toString().trim()) && !noteTextRaw.equals(editText.getText().toString().trim()))
+        if (!TextUtils.isEmpty(knife.getText().toString().trim()) && !noteTextRaw.equals(knife.getText().toString().trim()))
         {
             Intent saveNote = new Intent(mContext, SaveNoteService.class);
             if (noteStatus.equals(Constants.OPEN_NOTE))
             {
                 Log.d("Edit Activity", Constants.UPDATE_NOTE);
                 saveNote.putExtra(Constants.ID, noteID);
-                saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
+                saveNote.putExtra(Constants.BODY, knife.getText().toString().trim());
                 saveNote.setAction(Constants.UPDATE_NOTE);
                 mContext.startService(saveNote);
             }
             else
             {
                 Log.d("Edit Activity", Constants.NEW_NOTE);
-                saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
+                saveNote.putExtra(Constants.BODY, knife.getText().toString().trim());
                 saveNote.setAction(Constants.NEW_NOTE);
                 mContext.startService(saveNote);
                 savedNote = true;
             }
         }
-        else if (TextUtils.isEmpty(editText.getText().toString().trim()))
+        else if (TextUtils.isEmpty(knife.getText().toString().trim()))
         {
             openDeleteIntent();
         }

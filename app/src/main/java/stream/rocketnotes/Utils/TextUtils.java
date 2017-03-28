@@ -14,6 +14,13 @@ public class TextUtils {
 
     }
 
+    public static String Compatibility(String raw)
+    {
+        String output = "";
+        output = raw.replaceAll("\n", "<br>");
+        return output;
+    }
+
     public static String getTimeStamp(Long time) {
 
         String timestamp = "";
