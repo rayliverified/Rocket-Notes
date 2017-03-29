@@ -64,12 +64,12 @@ public class ImageOverlayView extends RelativeLayout {
                 openGalleryIntent();
             }
         });
-        view.findViewById(R.id.button_share).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendShareIntent();
-            }
-        });
+//        view.findViewById(R.id.button_share).setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                sendShareIntent();
+//            }
+//        });
         view.findViewById(R.id.button_save).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

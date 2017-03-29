@@ -12,12 +12,20 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
+import com.flurry.android.FlurryAgent;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
+import com.pyze.android.PyzeEvents;
+import com.uxcam.UXCam;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import frescoimageviewer.ImageViewer;
 
@@ -25,12 +33,15 @@ public class ImageViewerActivity extends AppCompatActivity {
 
     private ImageOverlayView overlayView;
     private ArrayList<NotesItem> mNotesItem;
+    private MixpanelAPI mixpanel;
+    private String mActivity = "ImageViewerActivity";
     private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this.getApplicationContext();
+        initializeAnalytics();
         /**
          * IMPORTANT! Enable the configuration below, if you expect to open really large images.
          * Also you can add the {@code android:largeHeap="true"} to Manifest file to avoid an OOM error.*/
@@ -149,5 +160,51 @@ public class ImageViewerActivity extends AppCompatActivity {
         notesItems.add(note);
 
         return notesItems;
+    }
+
+    public void initializeAnalytics()
+    {
+        mixpanel = MixpanelAPI.getInstance(this, Constants.MIXPANEL_API_KEY);
+        mixpanel.getPeople().identify(mixpanel.getDistinctId());
+        UXCam.startWithKey(Constants.UXCAM_API_KEY);
+        UXCam.addVerificationListener(new UXCam.OnVerificationListener() {
+            @Override
+            public void onVerificationSuccess() {
+                //Tag Mixpanel events with UXCam recording URLS. Example:
+                JSONObject eventProperties = new JSONObject();
+                try {
+                    eventProperties.put("UXCam: Session Recording link", UXCam.urlForCurrentSession());
+                } catch (JSONException exception) {
+                }
+                mixpanel.track("UXCam Session URL", eventProperties);
+                //Tag Mixpanel profile with UXCam user URLS. Example:
+                mixpanel.getPeople().set("UXCam User URL", UXCam.urlForCurrentUser());
+            }
+            @Override
+            public void onVerificationFailed(String errorMessage) {
+            }
+        });
+        UXCam.occludeSensitiveScreen(true);
+    }
+
+    public void AnalyticEvent(String object, String value)
+    {
+        try {
+            JSONObject mixObject = new JSONObject();
+            mixObject.put(object, value);
+            mixpanel.track(mActivity, mixObject);
+        } catch (JSONException e) {
+            Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
+        }
+        //Flurry
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(object, value);
+        FlurryAgent.logEvent(mActivity, params);
+        //UXCam
+        UXCam.addTagWithProperties(mActivity, params);
+        //Pyze
+        HashMap <String, String> attributes = new HashMap<String, String>();
+        attributes.put(object, String.valueOf(value));
+        PyzeEvents.postCustomEventWithAttributes(mActivity, attributes);
     }
 }

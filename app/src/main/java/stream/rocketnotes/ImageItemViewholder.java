@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+import com.uxcam.UXCam;
 
 import java.util.List;
 
@@ -78,6 +79,7 @@ public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholde
     public void bindViewHolder(FlexibleAdapter adapter, ImageViewHolder holder, final int position,
                                List payloads) {
         final Context context = holder.itemView.getContext();
+        UXCam.occludeSensitiveView(holder.noteImage);
 
         Picasso.with(context).load(image).transform(ImageTransformer.getTransformation(holder.noteImage)).placeholder(R.drawable.icon_picture_full).into(holder.noteImage);
 

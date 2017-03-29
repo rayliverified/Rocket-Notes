@@ -25,7 +25,11 @@ import android.widget.Toast;
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
+import com.flurry.android.FlurryAgent;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
+import com.pyze.android.Pyze;
+import com.pyze.android.PyzeEvents;
+import com.uxcam.UXCam;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -34,7 +38,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollStaggeredLayoutManager;
@@ -60,6 +66,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
     private MixpanelAPI mixpanel;
     private Integer mNoteCount;
     private Integer mImageCount;
+    private String mActivity = "MainActivity";
     Context mContext;
 
     @Override
@@ -85,7 +92,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         mAppBar.addOnOffsetChangedListener(this);
 
         initializeRecyclerView(savedInstanceState);
-        checkVoiceRecognition();
+//        checkVoiceRecognition();
         mFilterView = (FilterMaterialSearchView) findViewById(R.id.sv);
         setupSearchBar();
         setupFAB();
@@ -127,7 +134,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
     private void setupSearchBar() {
 
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
-        mActionVoice = (MenuItem) findViewById(R.id.action_voice);
+//        mActionVoice = (MenuItem) findViewById(R.id.action_voice);
         mActionCamera = (MenuItem) findViewById(R.id.action_camera);
 
         mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
@@ -193,6 +200,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
             public void onFocus() {
 //                //show suggestions when search bar gains focus (typically history suggestions)
 //                mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
+                AnalyticEvent("Click", "Search");
                 mFilterView.setVisibility(View.GONE);
                 Log.d(TAG, "onFocus()");
             }
@@ -218,26 +226,29 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
             @Override
             public void onActionMenuItemSelected(MenuItem item) {
 
-                if (item.getItemId() == R.id.action_voice)
+//                if (item.getItemId() == R.id.action_voice)
+//                {
+//                    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+//                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+//                            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+//                    //... put other settings in the Intent
+//                    startActivityForResult(intent, 0);
+//                }
+                if (item.getItemId() == R.id.action_camera)
                 {
-                    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                    //... put other settings in the Intent
-                    startActivityForResult(intent, 0);
-                }
-                else if (item.getItemId() == R.id.action_camera)
-                {
+                    AnalyticEvent("Click", "Camera");
                     Intent intent = new Intent(mContext, CameraActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
                 }
                 else if (item.getItemId() == R.id.filter_image)
                 {
+                    AnalyticEvent("Click", "Filter Image");
                     FilterImages();
                 }
                 else if (item.getItemId() == R.id.filter_text)
                 {
+                    AnalyticEvent("Click", "Filter Text");
                     FilterText();
                 }
                 else
@@ -306,7 +317,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.action_text) {
                     Log.d("FAB", "Text");
-                    mixAnalytic("Click", "New Note");
+                    AnalyticEvent("Click", "New Note");
                     Intent intent = new Intent(mContext, EditActivity.class);
                     intent.setAction(Constants.NEW_NOTE);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -315,7 +326,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
                 }
                 else if (menuItem.getItemId() == R.id.action_camera) {
                     Log.d("FAB", "Camera");
-                    mixAnalytic("Click", "New Image");
+                    AnalyticEvent("Click", "New Image");
                     Intent intent = new Intent(mContext, CameraActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
@@ -414,6 +425,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         Integer currentPosition = mAdapter.getGlobalPositionOf(item);
         mAdapter.updateItem(item, null);
         mAdapter.moveItem(currentPosition, 0);
+        mStaggeredLayoutManager.scrollToPosition(1);
         RemoveSticky();
         Log.d("Broadcast Receiver", Constants.UPDATE_NOTE);
     }
@@ -549,63 +561,134 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 
     public void sessionDetails()
     {
+        Map<String, String> params = new HashMap<String, String>();
+        HashMap <String, String> attributes = new HashMap<String, String>();
         try {
             JSONObject mixObject = new JSONObject();
             int ids[] = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, ImageWidget.class));
             if (ids.length > 0) {
                 mixObject.put("Image Widget", true);
+                params.put("Image Widget", String.valueOf(true));
+                attributes.put("Image Widget", String.valueOf(true));
             } else {
                 mixObject.put("Image Widget", false);
+                params.put("Image Widget", String.valueOf(false));
+                attributes.put("Image Widget", String.valueOf(false));
             }
             ids = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, NotesWidget.class));
             if (ids.length > 0) {
                 mixObject.put("Notes Widget", true);
+                params.put("Notes Widget", String.valueOf(true));
+                attributes.put("Notes Widget", String.valueOf(true));
             } else {
                 mixObject.put("Notes Widget", false);
+                params.put("Notes Widget", String.valueOf(false));
+                attributes.put("Notes Widget", String.valueOf(false));
             }
             mixObject.put("Note Count", mNoteCount);
             mixObject.put("Image Count", mImageCount);
-            mixpanel.track("MainActivity", mixObject);
+            mixpanel.track(mActivity, mixObject);
         } catch (JSONException e) {
             Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
         }
+        //Flurry
+        params.put("Note Count", String.valueOf(mNoteCount));
+        params.put("Image Count", String.valueOf(mImageCount));
+        FlurryAgent.logEvent(mActivity, params);
+        //Pyze
+        attributes.put("Note Count", String.valueOf(mNoteCount));
+        attributes.put("Image Count", String.valueOf(mImageCount));
+        PyzeEvents.postCustomEventWithAttributes(mActivity, attributes);
     }
 
     public void initializeAnalytics()
     {
+        new FlurryAgent.Builder()
+                .withLogEnabled(true)
+                .build(this, Constants.FLURRY_API_KEY);
         mixpanel = MixpanelAPI.getInstance(this, Constants.MIXPANEL_API_KEY);
+        mixpanel.getPeople().identify(mixpanel.getDistinctId());
+        Pyze.initialize(getApplication());
+        UXCam.startWithKey(Constants.UXCAM_API_KEY);
+        UXCam.addVerificationListener(new UXCam.OnVerificationListener() {
+            @Override
+            public void onVerificationSuccess() {
+                //Tag Mixpanel events with UXCam recording URLS. Example:
+                JSONObject eventProperties = new JSONObject();
+                try {
+                    eventProperties.put("UXCam: Session Recording link", UXCam.urlForCurrentSession());
+                } catch (JSONException exception) {
+                }
+                mixpanel.track("UXCam Session URL", eventProperties);
+                //Tag Mixpanel profile with UXCam user URLS. Example:
+                mixpanel.getPeople().set("UXCam User URL", UXCam.urlForCurrentUser());
+            }
+            @Override
+            public void onVerificationFailed(String errorMessage) {
+            }
+        });
     }
 
-    public void mixAnalytic(String object, String value)
+    public void AnalyticEvent(String object, String value)
     {
         try {
             JSONObject mixObject = new JSONObject();
             mixObject.put(object, value);
-            mixpanel.track("MainActivity", mixObject);
+            mixpanel.track(mActivity, mixObject);
         } catch (JSONException e) {
             Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
         }
+        //Flurry
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(object, value);
+        FlurryAgent.logEvent(mActivity, params);
+        //UXCam
+        UXCam.addTagWithProperties(mActivity, params);
+        //Pyze
+        HashMap <String, String> attributes = new HashMap<String, String>();
+        attributes.put(object, value);
+        PyzeEvents.postCustomEventWithAttributes(mActivity, attributes);
     }
 
-    public void mixAnalytic(String object, Boolean value)
+    public void AnalyticEvent(String object, Boolean value)
     {
         try {
             JSONObject mixObject = new JSONObject();
             mixObject.put(object, value);
-            mixpanel.track("MainActivity", mixObject);
+            mixpanel.track(mActivity, mixObject);
         } catch (JSONException e) {
             Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
         }
+        //Flurry
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(object, String.valueOf(value));
+        FlurryAgent.logEvent(mActivity, params);
+        //UXCam
+        UXCam.addTagWithProperties(mActivity, params);
+        //Pyze
+        HashMap <String, String> attributes = new HashMap<String, String>();
+        attributes.put(object, String.valueOf(value));
+        PyzeEvents.postCustomEventWithAttributes(mActivity, attributes);
     }
 
-    public void mixAnalytic(String object, int value)
+    public void AnalyticEvent(String object, int value)
     {
         try {
             JSONObject mixObject = new JSONObject();
             mixObject.put(object, value);
-            mixpanel.track("MainActivity", mixObject);
+            mixpanel.track(mActivity, mixObject);
         } catch (JSONException e) {
             Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
         }
+        //Flurry
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(object, String.valueOf(value));
+        FlurryAgent.logEvent(mActivity, params);
+        //UXCam
+        UXCam.addTagWithProperties(mActivity, params);
+        //Pyze
+        HashMap <String, String> attributes = new HashMap<String, String>();
+        attributes.put(object, String.valueOf(value));
+        PyzeEvents.postCustomEventWithAttributes(mActivity, attributes);
     }
 }

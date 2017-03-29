@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.uxcam.UXCam;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,6 +84,7 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
     public void bindViewHolder(FlexibleAdapter adapter, MyViewHolder holder, int position,
                                List payloads) {
         final Context context = holder.itemView.getContext();
+        UXCam.occludeSensitiveView(holder.noteLayout);
 
         ArrayList<String> note = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(title));
         holder.noteTitle.setText(stream.rocketnotes.utils.TextUtils.fromHtml(note.get(0)));

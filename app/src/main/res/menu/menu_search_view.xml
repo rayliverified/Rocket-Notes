@@ -1,11 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/action_voice"
-        android:title="Voice"
-        android:orderInCategory="1"
-        app:showAsAction="always"
-        android:icon="@drawable/icon_mic_simple"/>
+    <!--<item android:id="@+id/action_voice"-->
+        <!--android:title="Voice"-->
+        <!--android:orderInCategory="1"-->
+        <!--app:showAsAction="always"-->
+        <!--android:icon="@drawable/icon_mic_simple"/>-->
     <item android:id="@+id/action_camera"
           android:title="Camera"
           android:orderInCategory="2"
@@ -15,10 +15,10 @@
           android:title="Only Images"
           android:orderInCategory="3"
           app:showAsAction="never"
-          android:icon="@drawable/icon_snap_simple"/>
+          android:icon="@drawable/icon_picture_full"/>
     <item android:id="@+id/filter_text"
         android:title="Only Text"
         android:orderInCategory="4"
         app:showAsAction="never"
-        android:icon="@drawable/icon_snap_simple"/>
+        android:icon="@drawable/icon_rocket_image"/>
 </menu>

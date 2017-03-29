@@ -23,7 +23,7 @@ public interface Constants {
     public static final String STICKY = "STICKY";
     public static final String SOURCE_PATH = "SOURCE_PATH";
     public static final String SAVE_PATH = "SAVE_PATH";
-    public final static String FLURRY_API_KEY = "";
-    public final static String MIXPANEL_API_KEY = "";
-    public final static String UXCAM_API_KEY = "";
+    public final static String FLURRY_API_KEY = "4WWY6JK2X4CR4P7K2FFJ";
+    public final static String MIXPANEL_API_KEY = "2215bfc2bef2407807741b005a971e5f";
+    public final static String UXCAM_API_KEY = "199daf32af5efce";
 }
