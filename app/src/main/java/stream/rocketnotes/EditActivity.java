@@ -56,6 +56,7 @@ public class EditActivity extends AppCompatActivity {
 
         if (getIntent().getAction().equals(Constants.OPEN_NOTE))
         {
+            mEditor.clearFocus();
             noteID = getIntent().getIntExtra(Constants.ID, -1);
             Log.d("Received Note ID", String.valueOf(noteID));
             DatabaseHelper dbHelper = new DatabaseHelper(this);
@@ -66,10 +67,17 @@ public class EditActivity extends AppCompatActivity {
             if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY)))
             {
                 editAdd = getIntent().getStringExtra(Constants.BODY);
-                editAdd = "\n" + editAdd;
+                editAdd = "<br>" + editAdd;
+                mEditor.setHtml(noteTextRaw + editAdd);
+                //Automatically opens keyboard for immediate input
+                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                mEditor.focusEditor();
             }
-            mEditor.setHtml(noteTextRaw + editAdd);
-            mEditor.clearFocus();
+            else
+            {
+                mEditor.setHtml(noteTextRaw + editAdd);
+            }
+
 //            editText.clearFocus();
 //            editText.addTextChangedListener(new TextWatcher() {
 //
@@ -135,9 +143,9 @@ public class EditActivity extends AppCompatActivity {
                 mEditor.setHtml(noteTextRaw);
             }
 
-            mEditor.focusEditor();
             //Automatically opens keyboard for immediate input
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            mEditor.focusEditor();
             mEditor.setOnTextChangeListener(new RichEditor.OnTextChangeListener(){
 
                 @Override
@@ -218,7 +226,7 @@ public class EditActivity extends AppCompatActivity {
         //Update noteTextRaw to newest saved value
         if (mEditor.getHtml() != null)
         {
-            noteTextRaw = mEditor.getHtml().trim();
+            noteTextRaw = mEditor.getHtml();
         }
 
         super.onStart();
@@ -262,27 +270,27 @@ public class EditActivity extends AppCompatActivity {
     private void saveNote()
     {
         //Save note and close activity
-        if (!TextUtils.isEmpty(mEditor.getHtml().trim()) && !noteTextRaw.equals(mEditor.getHtml().trim()))
+        if (!TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml())) && !noteTextRaw.equals(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml())))
         {
             Intent saveNote = new Intent(mContext, SaveNoteService.class);
             if (noteStatus.equals(Constants.OPEN_NOTE))
             {
                 Log.d("Edit Activity", Constants.UPDATE_NOTE);
                 saveNote.putExtra(Constants.ID, noteID);
-                saveNote.putExtra(Constants.BODY, mEditor.getHtml().trim());
+                saveNote.putExtra(Constants.BODY, stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()));
                 saveNote.setAction(Constants.UPDATE_NOTE);
                 mContext.startService(saveNote);
             }
             else
             {
                 Log.d("Edit Activity", Constants.NEW_NOTE);
-                saveNote.putExtra(Constants.BODY, mEditor.getHtml().trim());
+                saveNote.putExtra(Constants.BODY, stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()));
                 saveNote.setAction(Constants.NEW_NOTE);
                 mContext.startService(saveNote);
                 savedNote = true;
             }
         }
-        else if (TextUtils.isEmpty(mEditor.getHtml().trim()))
+        else if (TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml())))
         {
             openDeleteIntent();
         }

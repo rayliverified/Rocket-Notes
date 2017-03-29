@@ -85,7 +85,7 @@ public class PopupActivity extends Activity {
                 public void onClick(View view) {
                     savedNote = true;
                     Intent editIntent = new Intent(mContext, EditActivity.class);
-                    editIntent.putExtra(Constants.BODY, editText.getText());
+                    editIntent.putExtra(Constants.BODY, editText.getText().toString());
                     editIntent.setAction(Constants.NEW_NOTE);
                     editIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     mContext.startActivity(editIntent);

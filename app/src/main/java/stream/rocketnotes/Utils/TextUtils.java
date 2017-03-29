@@ -3,10 +3,12 @@ package stream.rocketnotes.utils;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.TimeZone;
 
 public class TextUtils {
@@ -21,6 +23,30 @@ public class TextUtils {
         String output = "";
         output = raw.replaceAll("\n", "<br>");
         return output;
+    }
+
+    public static String Clean(String raw)
+    {
+        if (raw == null || raw == "")
+        {
+            return null;
+        }
+        String output = "";
+        output = raw.trim();
+        Log.d("Beginning", output.substring(0, 4));
+        Log.d("End", output.substring(output.length() - 4, output.length()));
+        if (output.substring(0, 4).equals("<br>"))
+        {
+            Log.d("Trimed", "Beginning");
+            output = output.substring(4, output.length());
+        }
+        if (output.substring(output.length() - 8, output.length()).equals("<br><br>"))
+        {
+            Log.d("Trimed", "End");
+            output = output.substring(0, output.length() - 8);
+        }
+        Log.d("Output", output);
+        return output.trim();
     }
 
     @SuppressWarnings("deprecation")
