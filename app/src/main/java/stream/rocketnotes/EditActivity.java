@@ -6,22 +6,22 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.Html;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
+
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import jp.wasabeef.richeditor.RichEditor;
 
 public class EditActivity extends AppCompatActivity {
@@ -34,6 +34,7 @@ public class EditActivity extends AppCompatActivity {
     private boolean deletedNote = false;
     private boolean savedNote = false;
     private boolean overrideExit = false; //Skip onPause autosave and exit cleanly.
+    private MixpanelAPI mixpanel;
     private Context mContext;
 
     @Override
@@ -44,7 +45,7 @@ public class EditActivity extends AppCompatActivity {
         ActionBar();
         Window window = getWindow();
         mContext = getApplicationContext();
-
+        initializeAnalytics();
         noteStatus = getIntent().getAction();
         Log.d("Intent Action", noteStatus);
 
@@ -56,6 +57,8 @@ public class EditActivity extends AppCompatActivity {
 
         if (getIntent().getAction().equals(Constants.OPEN_NOTE))
         {
+            mixAnalytic("Note Type", Constants.OPEN_NOTE);
+
             mEditor.clearFocus();
             noteID = getIntent().getIntExtra(Constants.ID, -1);
             Log.d("Received Note ID", String.valueOf(noteID));
@@ -77,64 +80,11 @@ public class EditActivity extends AppCompatActivity {
             {
                 mEditor.setHtml(noteTextRaw + editAdd);
             }
-
-//            editText.clearFocus();
-//            editText.addTextChangedListener(new TextWatcher() {
-//
-//                public void afterTextChanged(Editable s) {
-//
-//                }
-//
-//                public void beforeTextChanged(CharSequence s, int start,
-//                                              int count, int after) {
-//                }
-//
-//                public void onTextChanged(CharSequence s, int start,
-//                                          int before, int count) {
-//                    if (s.length() < 1 || start >= s.length() || start < 0)
-//                    {
-//                        return;
-//                    }
-//
-//                    //Detect enter key presses
-//                    if (s.subSequence(start, start + 1).toString().equalsIgnoreCase("\n")) {
-//                        Log.d("Key", "Enter");
-//
-//                        if (start == 0)
-//                        {
-//                            finish();
-//                        }
-//                        else
-//                        {
-//                            //Save note and close activity
-////                        Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
-////                        saveNote.putExtra(Constants.ID, noteID);
-////                        saveNote.putExtra(Constants.BODY, noteTextRaw + "\n" + editText.getText().toString().trim());
-////                        saveNote.setAction(Constants.UPDATE_NOTE);
-////                        getApplicationContext().startService(saveNote);
-////                        finish();
-//                        }
-//                    }
-//                }
-//            });
-//        editSubmit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (!TextUtils.isEmpty(editText.getText().toString().trim()))
-//                {
-//                    //Save note and close activity
-//                    Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
-//                    saveNote.putExtra(Constants.ID, noteID);
-//                    saveNote.putExtra(Constants.BODY, noteTextRaw + "\n" + editText.getText().toString().trim());
-//                    saveNote.setAction(Constants.UPDATE_NOTE);
-//                    getApplicationContext().startService(saveNote);
-//                }
-//                finish();
-//            }
-//        });
         }
         else
         {
+            mixAnalytic("Note Type", Constants.NEW_NOTE);
+
             originalNew = true;
 
             if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY)))
@@ -152,48 +102,6 @@ public class EditActivity extends AppCompatActivity {
                 public void onTextChange(String text) {
 
                 }
-
-//                @Override
-//                public void afterTextChanged(Editable s) {
-//
-////                    String[] noteText = s.toString().split("\n", 2);
-////                    if (noteText.length == 2)
-////                    {
-////                        Log.d("Note Body", noteText[1]);
-////                        if (!TextUtils.isEmpty(noteText[1]))
-////                        {
-////                            editText.setText(noteText[0] + noteText[1]);
-////                        }
-////                        else
-////                        {
-////                            editText.setText(noteText[0]);
-////                        }
-////                    }
-////                    else
-////                    {
-////                        if (!TextUtils.isEmpty(s.toString()))
-////                        {
-////                            editText.setText(noteText[0]);
-////                        }
-////                        else
-////                        {
-////                            //Reset Note Title when EditText is empty
-////                            Log.d("Note Empty", "True");
-////                            editText.setHint("Note Title");
-////                        }
-////                    }
-//                }
-//
-//                @Override
-//                public void beforeTextChanged(CharSequence s, int start,
-//                                              int count, int after) {
-//                }
-//
-//                @Override
-//                public void onTextChanged(CharSequence s, int start,
-//                                          int before, int count) {
-//
-//                }
             });
         }
     }
@@ -346,5 +254,21 @@ public class EditActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    public void initializeAnalytics()
+    {
+        mixpanel = MixpanelAPI.getInstance(this, Constants.MIXPANEL_API_KEY);
+    }
+
+    public void mixAnalytic(String object, String value)
+    {
+        try {
+            JSONObject mixObject = new JSONObject();
+            mixObject.put(object, value);
+            mixpanel.track("EditActivity", mixObject);
+        } catch (JSONException e) {
+            Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
+        }
     }
 }

@@ -19,6 +19,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class PopupActivity extends Activity {
@@ -29,6 +34,7 @@ public class PopupActivity extends Activity {
     private String noteTextRaw;
     private Integer noteID;
     private boolean savedNote = false;
+    private MixpanelAPI mixpanel;
     private Context mContext;
 
     @Override
@@ -59,6 +65,7 @@ public class PopupActivity extends Activity {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
         mContext = getApplicationContext();
+        initializeAnalytics();
         noteStatus = getIntent().getAction();
 
         //Focus defaults to editText, set again just in case
@@ -76,6 +83,8 @@ public class PopupActivity extends Activity {
 
         if (getIntent().getAction().equals(Constants.NEW_NOTE))
         {
+            mixAnalytic("Note Type", Constants.NEW_NOTE);
+
             editText.setHint(R.string.edit_hint);
             editDetails.setText("New Note • now");
             editTitle.setText("Note Title");
@@ -193,6 +202,8 @@ public class PopupActivity extends Activity {
         }
         else if (getIntent().getAction().equals(Constants.OPEN_NOTE))
         {
+            mixAnalytic("Note Type", Constants.OPEN_NOTE);
+
             noteID = getIntent().getIntExtra(Constants.ID, -1);
             Log.d("Received Note ID", String.valueOf(noteID));
 
@@ -322,5 +333,21 @@ public class PopupActivity extends Activity {
 
         // Delegate everything else to Activity.
         return super.onTouchEvent(event);
+    }
+
+    public void initializeAnalytics()
+    {
+        mixpanel = MixpanelAPI.getInstance(this, Constants.MIXPANEL_API_KEY);
+    }
+
+    public void mixAnalytic(String object, String value)
+    {
+        try {
+            JSONObject mixObject = new JSONObject();
+            mixObject.put(object, value);
+            mixpanel.track("PopupActivity", mixObject);
+        } catch (JSONException e) {
+            Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
+        }
     }
 }

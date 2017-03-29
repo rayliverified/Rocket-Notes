@@ -12,6 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.afollestad.materialcamera.MaterialCamera;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CameraActivity extends AppCompatActivity{
+
+    private MixpanelAPI mixpanel;
 
     private static final int REQUEST_CAMERA_PERMISSIONS = 931;
     private final static int CAMERA_RQ = 6969;
@@ -33,6 +39,7 @@ public class CameraActivity extends AppCompatActivity{
             final List<String> permissionsToRequest = new ArrayList<>();
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                    mixAnalytic("Permission", "Request");
                     Log.d("Permission Request", permission);
                     permissionsToRequest.add(permission);
                 }
@@ -53,8 +60,10 @@ public class CameraActivity extends AppCompatActivity{
             case REQUEST_CAMERA_PERMISSIONS: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mixAnalytic("Permission", "Granted");
                     StartCamera();
                 } else {
+                    mixAnalytic("Permission", "Denied");
                     finish();
                 }
                 return;
@@ -66,6 +75,9 @@ public class CameraActivity extends AppCompatActivity{
     }
 
     public void StartCamera() {
+
+        mixAnalytic("Camera", "Start");
+
         File dir = new File(getFilesDir() + "/.Pictures");
         if (!dir.exists()) {
             dir.mkdirs();
@@ -128,5 +140,21 @@ public class CameraActivity extends AppCompatActivity{
         File imagePath = new File(getFilesDir(), ".Pictures");
         File noMediaFile = new File(imagePath, ".nomedia");
         noMediaFile.createNewFile();
+    }
+
+    public void initializeAnalytics()
+    {
+        mixpanel = MixpanelAPI.getInstance(this, Constants.MIXPANEL_API_KEY);
+    }
+
+    public void mixAnalytic(String object, String value)
+    {
+        try {
+            JSONObject mixObject = new JSONObject();
+            mixObject.put(object, value);
+            mixpanel.track("CameraActivity", mixObject);
+        } catch (JSONException e) {
+            Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
+        }
     }
 }

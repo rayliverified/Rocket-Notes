@@ -1,19 +1,18 @@
 package stream.rocketnotes;
 
-import android.Manifest;
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -26,10 +25,13 @@ import android.widget.Toast;
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,9 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
     private MenuItem mActionVoice;
     private MenuItem mActionCamera;
     FilterMaterialSearchView mFilterView;
+    private MixpanelAPI mixpanel;
+    private Integer mNoteCount;
+    private Integer mImageCount;
     Context mContext;
 
     @Override
@@ -63,6 +68,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         setContentView(R.layout.activity_main);
 
         mContext = getApplicationContext();
+        initializeAnalytics();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         //Checks for first launch
         if (sharedPref.getBoolean("prefs_first_start", true)) {
@@ -99,6 +105,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
                 EventBus.getDefault().removeStickyEvent(stickyEvent);
             }
         }
+        sessionDetails();
         Log.d("MainActivity", "onCreate");
     }
 
@@ -299,6 +306,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.action_text) {
                     Log.d("FAB", "Text");
+                    mixAnalytic("Click", "New Note");
                     Intent intent = new Intent(mContext, EditActivity.class);
                     intent.setAction(Constants.NEW_NOTE);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -307,6 +315,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
                 }
                 else if (menuItem.getItemId() == R.id.action_camera) {
                     Log.d("FAB", "Camera");
+                    mixAnalytic("Click", "New Image");
                     Intent intent = new Intent(mContext, CameraActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
@@ -519,20 +528,84 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         List<IFlexible> list = new ArrayList<>();
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         ArrayList<NotesItem> notesItems = dbHelper.GetNotesDate();
+        mNoteCount = 0;
+        mImageCount = 0;
         Log.d("NotesItem Size", String.valueOf(notesItems.size()));
         for (NotesItem note : notesItems)
         {
             if (note.getNotesNote() != null)
             {
-                Log.d("Note", "Note Item");
+                mNoteCount += 1;
                 list.add(new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote()));
             }
             else if (note.getNotesImage() != null)
             {
-                Log.d("Image View Holder", note.getNotesImage());
+                mImageCount += 1;
                 list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
             }
         }
         return list;
+    }
+
+    public void sessionDetails()
+    {
+        try {
+            JSONObject mixObject = new JSONObject();
+            int ids[] = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, ImageWidget.class));
+            if (ids.length > 0) {
+                mixObject.put("Image Widget", true);
+            } else {
+                mixObject.put("Image Widget", false);
+            }
+            ids = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, NotesWidget.class));
+            if (ids.length > 0) {
+                mixObject.put("Notes Widget", true);
+            } else {
+                mixObject.put("Notes Widget", false);
+            }
+            mixObject.put("Note Count", mNoteCount);
+            mixObject.put("Image Count", mImageCount);
+            mixpanel.track("MainActivity", mixObject);
+        } catch (JSONException e) {
+            Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
+        }
+    }
+
+    public void initializeAnalytics()
+    {
+        mixpanel = MixpanelAPI.getInstance(this, Constants.MIXPANEL_API_KEY);
+    }
+
+    public void mixAnalytic(String object, String value)
+    {
+        try {
+            JSONObject mixObject = new JSONObject();
+            mixObject.put(object, value);
+            mixpanel.track("MainActivity", mixObject);
+        } catch (JSONException e) {
+            Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
+        }
+    }
+
+    public void mixAnalytic(String object, Boolean value)
+    {
+        try {
+            JSONObject mixObject = new JSONObject();
+            mixObject.put(object, value);
+            mixpanel.track("MainActivity", mixObject);
+        } catch (JSONException e) {
+            Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
+        }
+    }
+
+    public void mixAnalytic(String object, int value)
+    {
+        try {
+            JSONObject mixObject = new JSONObject();
+            mixObject.put(object, value);
+            mixpanel.track("MainActivity", mixObject);
+        } catch (JSONException e) {
+            Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
+        }
     }
 }
