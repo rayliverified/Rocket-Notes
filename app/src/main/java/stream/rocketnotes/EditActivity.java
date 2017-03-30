@@ -60,7 +60,6 @@ public class EditActivity extends AppCompatActivity {
         //Focus defaults to editText, set again just in case
         mEditor = (RichEditor) findViewById(R.id.editor);
         mEditor.setPadding(12, 12, 12, 12);
-        UXCam.occludeSensitiveView(mEditor);
         noteTextRaw = "";
         noteID = -1;
 
@@ -277,23 +276,7 @@ public class EditActivity extends AppCompatActivity {
         mixpanel.getPeople().identify(mixpanel.getDistinctId());
         Pyze.initialize(getApplication());
         UXCam.startWithKey(Constants.UXCAM_API_KEY);
-        UXCam.addVerificationListener(new UXCam.OnVerificationListener() {
-            @Override
-            public void onVerificationSuccess() {
-                //Tag Mixpanel events with UXCam recording URLS. Example:
-                JSONObject eventProperties = new JSONObject();
-                try {
-                    eventProperties.put("UXCam: Session Recording link", UXCam.urlForCurrentSession());
-                } catch (JSONException exception) {
-                }
-                mixpanel.track("UXCam Session URL", eventProperties);
-                //Tag Mixpanel profile with UXCam user URLS. Example:
-                mixpanel.getPeople().set("UXCam User URL", UXCam.urlForCurrentUser());
-            }
-            @Override
-            public void onVerificationFailed(String errorMessage) {
-            }
-        });
+        UXCam.occludeSensitiveScreen(true);
     }
 
     public void AnalyticEvent(String object, String value)
