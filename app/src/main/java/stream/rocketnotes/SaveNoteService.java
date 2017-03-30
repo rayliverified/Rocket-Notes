@@ -7,11 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
+
+import es.dmoral.toasty.Toasty;
 
 public class SaveNoteService extends Service {
     private final String TAG = "SaveNoteService";
@@ -71,12 +75,14 @@ public class SaveNoteService extends Service {
 
     public void NotificationSender(NotesItem note)
     {
+        Toasty.custom(mContext, "Saved", null, ContextCompat.getColor(mContext, R.color.white), ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, true).show();
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.RECEIVED, note.getNotesID()));
         Log.d("SaveNoteService", String.valueOf(note.getNotesID()));
     }
 
     public void UpdateSender(NotesItem note)
     {
+        Toasty.custom(mContext, "Saved", null, ContextCompat.getColor(mContext, R.color.white), ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, true).show();
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.UPDATE_NOTE, note.getNotesID()));
         Log.d("SaveNoteService", String.valueOf(note.getNotesID()));
     }

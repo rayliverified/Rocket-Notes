@@ -2,11 +2,13 @@ package stream.rocketnotes;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.angads25.filepicker.controller.DialogSelectionListener;
 import com.github.angads25.filepicker.model.DialogConfigs;
@@ -17,6 +19,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 
+import es.dmoral.toasty.Toasty;
 import frescoimageviewer.OnDismissListener;
 
 public class ImageOverlayView extends RelativeLayout {
@@ -123,7 +126,10 @@ public class ImageOverlayView extends RelativeLayout {
                     savePicture.putExtra(Constants.SAVE_PATH, files[0]);
                     mContext.startService(savePicture);
                 }
-                //TODO Toast message if no file selected
+                else
+                {
+                    Toasty.custom(mContext, "No Location Selected", null, ContextCompat.getColor(mContext, R.color.white), ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, true).show();
+                }
                 for (String filePath : files)
                 {
                     Log.d("File Path", filePath);
