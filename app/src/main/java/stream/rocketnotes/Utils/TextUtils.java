@@ -33,17 +33,21 @@ public class TextUtils {
         }
         String output = "";
         output = raw.trim();
-        Log.d("Beginning", output.substring(0, 4));
-        Log.d("End", output.substring(output.length() - 4, output.length()));
-        if (output.substring(0, 4).equals("<br>"))
+        if (output.length() >= 4)
         {
-            Log.d("Trimed", "Beginning");
-            output = output.substring(4, output.length());
+            if (output.substring(0, 4).equals("<br>"))
+            {
+                Log.d("Trimed", "Beginning");
+                output = output.substring(4, output.length());
+            }
         }
-        if (output.substring(output.length() - 8, output.length()).equals("<br><br>"))
+        if (output.length() >= 8)
         {
-            Log.d("Trimed", "End");
-            output = output.substring(0, output.length() - 8);
+            if (output.substring(output.length() - 8, output.length()).equals("<br><br>"))
+            {
+                Log.d("Trimed", "End");
+                output = output.substring(0, output.length() - 8);
+            }
         }
         Log.d("Output", output);
         return output.trim();

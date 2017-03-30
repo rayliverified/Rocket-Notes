@@ -13,6 +13,7 @@ import android.util.Log;
 import com.afollestad.materialcamera.MaterialCamera;
 import com.flurry.android.FlurryAgent;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
+import com.pyze.android.Pyze;
 import com.pyze.android.PyzeEvents;
 import com.uxcam.UXCam;
 
@@ -150,8 +151,15 @@ public class CameraActivity extends AppCompatActivity{
 
     public void initializeAnalytics()
     {
+        if (FlurryAgent.isSessionActive() == false)
+        {
+            new FlurryAgent.Builder()
+                    .withLogEnabled(true)
+                    .build(this, Constants.FLURRY_API_KEY);
+        }
         mixpanel = MixpanelAPI.getInstance(this, Constants.MIXPANEL_API_KEY);
         mixpanel.getPeople().identify(mixpanel.getDistinctId());
+        Pyze.initialize(getApplication());
         UXCam.startWithKey(Constants.UXCAM_API_KEY);
         UXCam.addVerificationListener(new UXCam.OnVerificationListener() {
             @Override

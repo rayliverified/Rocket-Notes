@@ -603,9 +603,12 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 
     public void initializeAnalytics()
     {
-        new FlurryAgent.Builder()
-                .withLogEnabled(true)
-                .build(this, Constants.FLURRY_API_KEY);
+        if (FlurryAgent.isSessionActive() == false)
+        {
+            new FlurryAgent.Builder()
+                    .withLogEnabled(true)
+                    .build(this, Constants.FLURRY_API_KEY);
+        }
         mixpanel = MixpanelAPI.getInstance(this, Constants.MIXPANEL_API_KEY);
         mixpanel.getPeople().identify(mixpanel.getDistinctId());
         Pyze.initialize(getApplication());
