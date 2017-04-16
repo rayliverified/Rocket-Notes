@@ -85,6 +85,7 @@ public class ImageViewerActivity extends AppCompatActivity {
         for (NotesItem note : mNotesItem)
         {
             imageItems.add(note.getNotesImage());
+            Log.d("Image URL", note.getNotesImage());
         }
         new ImageViewer.Builder(this, imageItems)
                 .setStartPosition(startPosition)

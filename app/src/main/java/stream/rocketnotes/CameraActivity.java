@@ -115,9 +115,6 @@ public class CameraActivity extends AppCompatActivity{
                 .labelRetry(R.string.camera_retake)
                 .labelConfirm(R.string.camera_save)
                 .start(CAMERA_RQ);
-
-        Intent notification = new Intent(Constants.RECEIVED);
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(notification);
     }
 
     @Override
