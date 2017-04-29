@@ -3,7 +3,6 @@
                     android:minWidth="36dp"
                     android:minHeight="36dp"
                     android:initialLayout="@layout/widget_newnote"
-                    android:resizeMode="horizontal|vertical"
                     android:widgetCategory="home_screen|keyguard"
                     android:previewImage="@drawable/icon_rocket_image_round">
 </appwidget-provider>
