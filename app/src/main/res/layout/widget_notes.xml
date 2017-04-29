@@ -4,6 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/white">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,8 +18,8 @@
             android:layout_marginBottom="@dimen/note_widget_margin"
             android:layout_marginLeft="@dimen/note_widget_margin"
             android:layout_alignParentLeft="true"
-            android:clickable="true"
-            android:src="@drawable/icon_rocket_simple"/>
+            android:src="@drawable/icon_rocket_simple"
+            android:clickable="true"/>
 
         <TextView
             android:id="@+id/text_title"
@@ -28,13 +29,13 @@
             android:layout_marginBottom="@dimen/note_widget_margin"
             android:layout_marginLeft="@dimen/note_widget_margin"
             android:layout_toRightOf="@+id/rocket_icon"
+            android:layout_centerVertical="true"
             android:text="@string/app_name"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:ellipsize="end"
             android:maxLines="1"
-            android:layout_centerVertical="true"/>
+            android:ellipsize="end"/>
 
         <ImageView
             android:id="@+id/new_note"
@@ -44,15 +45,15 @@
             android:layout_marginBottom="@dimen/note_widget_margin"
             android:layout_marginRight="@dimen/note_widget_margin"
             android:layout_alignParentRight="true"
-            android:clickable="true"
-            android:src="@drawable/icon_edit"/>
+            android:src="@drawable/icon_edit"
+            android:clickable="true"/>
     </RelativeLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:text="Loading..."
-        android:textColor="@color/textPrimary"
         android:textSize="16sp"
-        android:gravity="center"/>
+        android:textColor="@color/textPrimary"/>
 </LinearLayout>

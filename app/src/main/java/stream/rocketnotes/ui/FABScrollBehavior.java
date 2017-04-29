@@ -12,6 +12,8 @@ import android.view.animation.LinearInterpolator;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.FabSpeedDialBehaviour;
 
+//Scroll behavior code from https://github.com/yavski/fab-speed-dial/issues/59
+
 public class FABScrollBehavior extends FabSpeedDialBehaviour {
 
     int scrollDist = 0;

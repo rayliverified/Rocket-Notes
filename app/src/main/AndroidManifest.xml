@@ -46,7 +46,19 @@
         <activity android:name="stream.rocketnotes.ImageViewerActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
         <activity android:name="stream.rocketnotes.PopupActivity" android:theme="@style/Theme.TransparentFloating" android:excludeFromRecents="true"/>
         <activity android:name="stream.rocketnotes.EditActivity" android:theme="@style/AppActionBar" android:screenOrientation="portrait"  android:configChanges="orientation"/>
+        <activity android:name="stream.rocketnotes.ShareActivity" android:theme="@style/Theme.TransparentFloating" android:excludeFromRecents="true"/>
         <!-- Widgets -->
+        <receiver android:name="stream.rocketnotes.NewNoteWidget"
+                  android:icon="@drawable/icon_rocket_image_round"
+                  android:label="•Quick Note•">
+            <intent-filter >
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name=".NewNoteWidget.QUICK_NOTE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/widget_newnote">
+            </meta-data>
+        </receiver>
         <receiver android:name="stream.rocketnotes.NotesWidget"
                   android:icon="@drawable/preview_notes"
                   android:label="•Rocket Notes•">

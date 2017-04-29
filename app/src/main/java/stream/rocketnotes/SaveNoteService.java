@@ -75,14 +75,14 @@ public class SaveNoteService extends Service {
 
     public void NotificationSender(NotesItem note)
     {
-        Toasty.custom(mContext, "Saved", null, ContextCompat.getColor(mContext, R.color.white), ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, true).show();
+        Toasty.custom(mContext, "Saved", null, ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, false).show();
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.RECEIVED, note.getNotesID()));
         Log.d("SaveNoteService", String.valueOf(note.getNotesID()));
     }
 
     public void UpdateSender(NotesItem note)
     {
-        Toasty.custom(mContext, "Saved", null, ContextCompat.getColor(mContext, R.color.white), ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, true).show();
+        Toasty.custom(mContext, "Saved", null, ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, false).show();
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.UPDATE_NOTE, note.getNotesID()));
         Log.d("SaveNoteService", String.valueOf(note.getNotesID()));
     }

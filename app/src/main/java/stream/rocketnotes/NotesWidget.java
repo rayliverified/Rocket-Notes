@@ -13,8 +13,6 @@ import android.widget.RemoteViews;
 
 public class NotesWidget extends AppWidgetProvider {
 
-    private static String KEY_TEXT_REPLY = "key_text_reply";
-
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int i = 0; i < appWidgetIds.length; ++i) {

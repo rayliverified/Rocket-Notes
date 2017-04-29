@@ -7,8 +7,8 @@ android {
         applicationId "stream.rocketnotes"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 4
-        versionName "1.0.3"
+        versionCode 5
+        versionName "1.0.4"
         multiDexEnabled true
     }
     buildTypes {
@@ -38,22 +38,24 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.android.support:cardview-v7:25.3.1'
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.afollestad:material-camera:0.4.4'
+    compile 'com.afollestad:material-camera:0.4.4' //https://github.com/afollestad/material-camera
     compile 'com.facebook.fresco:fresco:1.0.1'
     compile 'me.relex:photodraweeview:1.1.2'
-    compile 'eu.davidea:flexible-adapter:5.0.0-rc1'
-    compile 'com.github.arimorty:floatingsearchview:2.0.3'
+    compile 'eu.davidea:flexible-adapter:5.0.0-rc1' //https://github.com/davideas/FlexibleAdapter
+    compile 'com.github.arimorty:floatingsearchview:2.0.4' //https://github.com/arimorty/floatingsearchview
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'de.hdodenhof:circleimageview:2.1.0'
-    compile 'me.xdrop:fuzzywuzzy:1.1.6'
-    compile 'io.github.yavski:fab-speed-dial:1.0.6'
-    compile 'com.github.angads25:filepicker:1.1.0'
-    compile 'com.github.GrenderG:Toasty:1.1.4'
-    compile 'jp.wasabeef:richeditor-android:1.2.2'
+    compile 'org.greenrobot:eventbus:3.0.0' //https://github.com/greenrobot/EventBus
+    compile 'de.hdodenhof:circleimageview:2.1.0' //https://github.com/hdodenhof/CircleImageView
+    compile 'me.xdrop:fuzzywuzzy:1.1.6' //https://github.com/xdrop/fuzzywuzzy
+    compile 'io.github.yavski:fab-speed-dial:1.0.6' //https://github.com/yavski/fab-speed-dial
+    compile 'com.github.angads25:filepicker:1.1.0' //https://github.com/Angads25/android-filepicker
+    compile 'com.github.GrenderG:Toasty:1.2.3' //https://github.com/GrenderG/Toasty
+    compile 'jp.wasabeef:richeditor-android:1.2.2' //https://github.com/wasabeef/richeditor-android
     compile "com.mixpanel.android:mixpanel-android:4.9.8"
     compile "com.google.android.gms:play-services:10.2.1"
     compile 'com.flurry.android:analytics:6.9.2'
     compile 'com.uxcam:uxcam:2.5.7@aar'
     compile 'com.pyze:PyzeLibrary:2.12.0'
+    //Custom filter chips from https://github.com/claudiodegio/MsvSearch
+    //Image viewer from https://github.com/stfalcon-studio/FrescoImageViewer
 }

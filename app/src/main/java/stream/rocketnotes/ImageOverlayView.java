@@ -128,7 +128,7 @@ public class ImageOverlayView extends RelativeLayout {
                 }
                 else
                 {
-                    Toasty.custom(mContext, "No Location Selected", null, ContextCompat.getColor(mContext, R.color.white), ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, true).show();
+                    Toasty.custom(mContext, "No Location Selected", null, ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, false).show();
                 }
                 for (String filePath : files)
                 {

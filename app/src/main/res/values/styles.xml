@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/colorPrimary</item>
     </style>
     <style name="Theme.Transparent" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>

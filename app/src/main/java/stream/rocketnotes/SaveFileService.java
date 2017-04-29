@@ -46,7 +46,7 @@ public class SaveFileService extends Service {
             mHandler = new Handler(Looper.getMainLooper()) {
                 @Override
                 public void handleMessage(Message message) {
-                    Toasty.custom(context, message.obj.toString(), null, ContextCompat.getColor(context, R.color.white), ContextCompat.getColor(context, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, true).show();
+                    Toasty.custom(context, message.obj.toString(), null, ContextCompat.getColor(context, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, false).show();
                 }
             };
         }
