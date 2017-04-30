@@ -34,7 +34,7 @@ public class NewNoteWidget extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Constants.QUICK_NOTE)) {
             Log.d("onReceive", Constants.QUICK_NOTE);
-            intent = new Intent(context, EditActivity.class);
+            intent = new Intent(context, ShareActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.setAction(Constants.NEW_NOTE);
             context.startActivity(intent);

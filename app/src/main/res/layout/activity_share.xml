@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:fitsSystemWindows="true"
-              android:animateLayoutChanges="true">
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical"
+             android:fitsSystemWindows="true"
+             android:animateLayoutChanges="true">
 
     <RelativeLayout
         android:id="@+id/edit_layout"
@@ -14,57 +15,69 @@
         android:layout_marginRight="20dp"
         android:background="@drawable/rect_round">
 
-            <ImageView
-                android:id="@+id/edit_icon"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="12dp"
-                android:src="@drawable/new_message_icon"/>
+        <ImageView
+            android:id="@+id/edit_icon"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="12dp"
+            android:src="@drawable/new_message_icon"/>
 
-            <TextView
-                android:id="@+id/edit_details"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="6dp"
-                android:layout_toRightOf="@id/edit_icon"
-                android:text="Share to Note • now"
-                android:textSize="12sp"
-                android:fontFamily="sans-serif-medium"
-                android:textColor="@color/textSecondary"
-                android:layout_gravity="center_vertical"/>
+        <TextView
+            android:id="@+id/edit_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="6dp"
+            android:layout_toRightOf="@id/edit_icon"
+            android:text="Share to Note • now"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/textSecondary"
+            android:layout_gravity="center_vertical"/>
 
-            <ImageButton
-                android:id="@+id/edit_submit"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:padding="5dp"
-                android:layout_marginRight="6dp"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="center_vertical"
-                android:background="@android:color/transparent"
-                android:scaleType="fitCenter"
-                android:src="@drawable/icon_send_selector"/>
+        <ImageButton
+            android:id="@+id/edit_submit"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="5dp"
+            android:layout_marginRight="6dp"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_send_selector"/>
 
-            <EditText
-                android:id="@+id/edit_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/edit_submit"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:textSize="14sp"
-                android:hint="Share to Note"
-                android:textColorHint="@color/textSecondary"
-                android:textColor="@color/textPrimary"
-                android:inputType="textMultiLine|textAutoCorrect|textCapSentences"
-                android:autoText="true"
-                android:maxLines="10"
-                android:scrollbars="vertical"
-                android:cursorVisible="false"
-                android:background="@null"/>
+        <EditText
+            android:id="@+id/edit_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edit_submit"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:textSize="14sp"
+            android:hint="Share to Note"
+            android:textColorHint="@color/textSecondary"
+            android:textColor="@color/textPrimary"
+            android:inputType="textMultiLine|textAutoCorrect|textCapSentences"
+            android:autoText="true"
+            android:maxLines="10"
+            android:clickable="true"
+            android:scrollbars="vertical"
+            android:cursorVisible="false"
+            android:background="@null"/>
+
+        <stream.rocketnotes.ui.CustomImageView
+            android:id="@+id/edit_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edit_edit"
+            android:background="@android:color/transparent"
+            android:src="@drawable/icon_picture_full"
+            android:scaleType="fitCenter"
+            app:bottomLeftRadius="40"
+            app:bottomRightRadius="40"/>
     </RelativeLayout>
 </FrameLayout>

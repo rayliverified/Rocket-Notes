@@ -60,13 +60,11 @@ public class CameraActivity extends AppCompatActivity{
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         Log.d("Request Code", String.valueOf(requestCode));
         switch (requestCode) {
             case REQUEST_CAMERA_PERMISSIONS: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     AnalyticEvent("Permission", "Granted");
                     StartCamera();
                 } else {

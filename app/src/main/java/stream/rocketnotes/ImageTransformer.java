@@ -9,7 +9,7 @@ import com.squareup.picasso.Transformation;
 
 public class ImageTransformer {
 
-    public static Transformation getTransformation(final ImageView imageView) {
+    public static Transformation getSquare(final ImageView imageView) {
         return new Transformation() {
 
             @Override

@@ -1,4 +1,4 @@
-package stream.rocketnotes;
+package stream.rocketnotes.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,7 +7,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-public class CustomImageView extends ImageView {
+public class ProportionalImageView extends ImageView {
 
     private Context context;
 
@@ -19,17 +19,17 @@ public class CustomImageView extends ImageView {
     private Path path;
     private RectF rect;
 
-    public CustomImageView(Context context) {
+    public ProportionalImageView(Context context) {
         super(context);
         init(context, null, 0);
     }
 
-    public CustomImageView(Context context, AttributeSet attrs) {
+    public ProportionalImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
         init(context, attrs, 0);
     }
 
-    public CustomImageView(Context context, AttributeSet attrs, int defStyle) {
+    public ProportionalImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context, attrs, defStyle);
     }

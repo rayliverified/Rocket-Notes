@@ -81,7 +81,7 @@ public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholde
         final Context context = holder.itemView.getContext();
         UXCam.occludeSensitiveView(holder.noteImage);
 
-        Picasso.with(context).load(image).transform(ImageTransformer.getTransformation(holder.noteImage)).placeholder(R.drawable.icon_picture_full).into(holder.noteImage);
+        Picasso.with(context).load(image).transform(ImageTransformer.getSquare(holder.noteImage)).placeholder(R.drawable.icon_picture_full).into(holder.noteImage);
 
         holder.noteImage.setOnClickListener(new View.OnClickListener() {
             @Override

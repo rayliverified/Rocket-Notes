@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="ProportionalImageView">
+    </declare-styleable>
     <declare-styleable name="CustomImageView">
+        <attr name="topLeftRadius" format="integer"/>
+        <attr name="topRightRadius" format="integer"/>
+        <attr name="bottomLeftRadius" format="integer"/>
+        <attr name="bottomRightRadius" format="integer"/>
     </declare-styleable>
     <declare-styleable name="Msv">
         <attr name="msvSearchBackground" format="reference" />
