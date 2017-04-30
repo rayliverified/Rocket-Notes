@@ -18,8 +18,12 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowIsFloating">true</item>
+        <item name="android:windowFullscreen">false</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowActivityTransitions" tools:targetApi="lollipop">true</item>
+    </style>
+    <style name="Theme.Share" parent="Theme.TransparentFloating">
+        <item name="android:backgroundDimEnabled">true</item>
     </style>
     <style name="AppActionBar" parent="AppTheme">
         <item name="android:windowActionBarOverlay">true</item>
