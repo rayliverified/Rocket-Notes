@@ -155,26 +155,6 @@ public class SaveImageService extends Service {
         }
     }
 
-    private boolean copyFile(File sourceFile, File destFile) throws IOException {
-
-        FileChannel source = null;
-        FileChannel destination = null;
-        source = new FileInputStream(sourceFile).getChannel();
-        destination = new FileOutputStream(destFile).getChannel();
-        if (destination != null && source != null) {
-            destination.transferFrom(source, 0, source.size());
-        }
-        if (source != null) {
-            source.close();
-        }
-        if (destination != null) {
-            destination.close();
-        }
-        Log.d("Save File", "File Saved");
-
-        return true;
-    }
-
     @Override
     public IBinder onBind(Intent intent) {
         return null;

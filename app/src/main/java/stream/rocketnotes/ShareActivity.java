@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
 import com.github.ybq.android.spinkit.style.Wave;
+import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.ProgressCallback;
@@ -43,12 +44,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,10 +69,14 @@ public class ShareActivity extends Activity {
     private Uri imageUri;
     private String imageName;
     private ProgressBar progressBar;
+    private Future<File> downloading;
     private MixpanelAPI mixpanel;
     private String mActivity = "ShareActivity";
     private Context mContext;
 
+    private boolean saveNote = false;
+    private boolean submitEnabled = false;
+    private boolean fileDownloaded = false;
     private static final int REQUEST_STORAGE_PERMISSIONS = 23;
 
     @Override
@@ -123,6 +125,14 @@ public class ShareActivity extends Activity {
         editSubmit = (ImageButton) findViewById(R.id.edit_submit);
         editImage = (CustomImageView) findViewById(R.id.edit_image);
         progressBar = (ProgressBar) findViewById(R.id.edit_progress);
+
+        if (!PermissionUtils.IsPermissionEnabled(mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        {
+            //Notify user that permission is not enabled via editText
+            editText.setText("Storage permission required to save notes.");
+            editText.setFocusable(false);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSIONS);
+        }
 
         //Get data shared to app
         shareIntent = getIntent();
@@ -175,13 +185,33 @@ public class ShareActivity extends Activity {
             case REQUEST_STORAGE_PERMISSIONS: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     AnalyticEvent("Permission", "Granted");
-                    //Relaunch sharedIntent to access image
-                    shareImage(shareIntent);
+                    recreate();
                 } else {
                     AnalyticEvent("Permission", "Denied");
                     Toasty.error(mContext, "Permission Denied", Toast.LENGTH_SHORT, true).show();
                 }
                 return;
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("ShareActivity", "OnPause");
+        //Share attempt has been canceled by user. Delete any remnants
+        if (!saveNote && downloading != null)
+        {
+            Log.d("Download", "Cancel");
+            //Cancel pending download if not completed
+            downloading.cancel();
+            downloading = null;
+            //If download has been saved, delete download.
+            if (fileDownloaded == true && imageUri != null)
+            {
+                File imageFile = new File(imageUri.getPath());
+                imageFile.delete();
+                Log.d("Download", "Delete");
             }
         }
     }
@@ -221,7 +251,7 @@ public class ShareActivity extends Activity {
                     wave.setColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
                     progressBar.setIndeterminateDrawable(wave);
                     //Download image with Ion
-                    Ion.with(mContext)
+                    downloading = Ion.with(mContext)
                             .load(shareText)
                             .progressBar(progressBar)
                             .progress(new ProgressCallback() {
@@ -246,6 +276,7 @@ public class ShareActivity extends Activity {
                                         //Set imageURI to File scheme where image has been saved.
                                         imageUri = Uri.parse("file://" + file.getAbsolutePath());
                                         Log.d("ImageURI", String.valueOf(imageUri));
+                                        fileDownloaded = true;
                                     }
                                     else
                                     {
@@ -253,18 +284,23 @@ public class ShareActivity extends Activity {
                                         progressBar.setVisibility(View.GONE);
                                         editImage.setVisibility(View.GONE);
                                         editText.setEnabled(true);
+                                        //Set editDetails text to Text Note
+                                        editDetails.setText("New Text Note • now");
                                     }
+                                    submitEnabled = true;
                                 }
                             });
                 }
                 else
                 {
                     editText.setText(shareText);
+                    submitEnabled = true;
                 }
             }
             else
             {
                 editText.setText(shareText);
+                submitEnabled = true;
             }
         }
     }
@@ -276,77 +312,77 @@ public class ShareActivity extends Activity {
         imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (imageUri != null) {
             Log.d("Image URI", String.valueOf(imageUri));
-            //Loading image requires Storage permission on Marshmallow and above
-            if (PermissionUtils.IsPermissionEnabled(mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE))
-            {
-                setImageName();
-                //Enable imageView and display shared image.
-                editImage.setVisibility(View.VISIBLE);
-                Picasso.with(mContext).load(imageUri).into(editImage);
-                //Create Pictures folder to prepare to copy file into folder on saveNote clicked.
-                FileUtils.InitializePicturesFolder(mContext);
-            }
-            else
-            {
-                //Notify user that permission is not enabled via editText
-                editText.setText("Storage permission required to access images.");
-                editText.setFocusable(false);
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSIONS);
-            }
+            setImageName();
+            //Enable imageView and display shared image.
+            editImage.setVisibility(View.VISIBLE);
+            Picasso.with(mContext).load(imageUri).into(editImage);
+            //Create Pictures folder to prepare to copy file into folder on saveNote clicked.
+            FileUtils.InitializePicturesFolder(mContext);
+            submitEnabled = true;
         }
     }
 
     private void saveNote()
     {
-        //Save note and close activity
-        //Multiple content may be sent to Rocket Notes. Force refresh of main feed.
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(Constants.REFRESH, true);
-        editor.apply();
-
-        if ("text/plain".equals(noteType))
+        //Set save attempt flag to true. Do not delete downloaded image file.
+        saveNote = true;
+        //Wait for images to load before allowing user to save.
+        if (submitEnabled == true)
         {
-            //Shared text may be Image URL.
-            if (imageUri != null)
+            //Save note and close activity
+            //Multiple content may be sent to Rocket Notes. Force refresh of main feed.
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(Constants.REFRESH, true);
+            editor.apply();
+
+            if ("text/plain".equals(noteType))
             {
-                Intent saveNote = new Intent(mContext, SaveNoteService.class);
-                saveNote.putExtra(Constants.IMAGE, imageUri.toString());
-                saveNote.setAction(Constants.NEW_NOTE);
-                mContext.startService(saveNote);
-                finish();
+                //Shared text may be Image URL.
+                if (imageUri != null)
+                {
+                    Intent saveNote = new Intent(mContext, SaveNoteService.class);
+                    saveNote.putExtra(Constants.IMAGE, imageUri.toString());
+                    saveNote.setAction(Constants.NEW_NOTE);
+                    mContext.startService(saveNote);
+                    finish();
+                }
+                else if (!TextUtils.isEmpty(editText.getText().toString().trim())) {
+                    AnalyticEvent("SaveNote", "Text");
+                    Intent saveNote = new Intent(mContext, SaveNoteService.class);
+                    saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
+                    saveNote.setAction(Constants.NEW_NOTE);
+                    mContext.startService(saveNote);
+                    finish();
+                }
+                else
+                {
+                    Toasty.warning(mContext, "Note Empty", Toast.LENGTH_SHORT, true).show();
+                }
             }
-            else if (!TextUtils.isEmpty(editText.getText().toString().trim())) {
-                AnalyticEvent("SaveNote", "Text");
-                Intent saveNote = new Intent(mContext, SaveNoteService.class);
-                saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
-                saveNote.setAction(Constants.NEW_NOTE);
-                mContext.startService(saveNote);
-                finish();
-            }
-            else
+            else if (noteType.startsWith("image/"))
             {
-                Toasty.warning(mContext, "Note Empty", Toast.LENGTH_SHORT, true).show();
+                if (imageUri != null)
+                {
+                    //Sometimes Content URI is obtained if file is shared from file manager. Get usable File URI.
+                    Log.d("Image URI", String.valueOf(imageUri));
+                    AnalyticEvent("SaveImage", "Image");
+                    String savePath = getFilesDir() + "/.Pictures";
+                    Intent savePicture = new Intent(mContext, SaveImageService.class);
+                    savePicture.putExtra(Constants.SOURCE_PATH, imageUri.toString());
+                    savePicture.putExtra(Constants.SAVE_PATH, savePath);
+                    mContext.startService(savePicture);
+                    finish();
+                }
+                else
+                {
+                    Toasty.error(mContext, "Image Unsupported", Toast.LENGTH_SHORT, true).show();
+                }
             }
         }
-        else if (noteType.startsWith("image/"))
+        else
         {
-            if (imageUri != null)
-            {
-                //Sometimes Content URI is obtained if file is shared from file manager. Get usable File URI.
-                Log.d("Image URI", String.valueOf(imageUri));
-                AnalyticEvent("SaveImage", "Image");
-                String savePath = getFilesDir() + "/.Pictures";
-                Intent savePicture = new Intent(mContext, SaveImageService.class);
-                savePicture.putExtra(Constants.SOURCE_PATH, imageUri.toString());
-                savePicture.putExtra(Constants.SAVE_PATH, savePath);
-                mContext.startService(savePicture);
-                finish();
-            }
-            else
-            {
-                Toasty.error(mContext, "Image Unsupported", Toast.LENGTH_SHORT, true).show();
-            }
+            Toasty.warning(mContext, "Please wait", Toast.LENGTH_SHORT, true).show();
         }
     }
 

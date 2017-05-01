@@ -510,7 +510,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
             if (mAdapter != null)
             {
                 Log.d("MainActivity", "Refresh");
-                mAdapter.notifyDataSetChanged();
+                FilterReset();
             }
             //Reset REFRESH flag
             SharedPreferences.Editor editor = sharedPref.edit();
