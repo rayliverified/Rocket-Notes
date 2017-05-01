@@ -1,6 +1,8 @@
 package stream.rocketnotes.utils;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
 import java.io.File;
@@ -51,5 +53,20 @@ public class FileUtils {
         {
             Log.d("No Media", "Exists");
         }
+    }
+
+    public static String GetFileUriFromContentUri(Context context, Uri uri)
+    {
+        String fileUri = null;
+        if (uri != null && "content".equals(uri.getScheme())) {
+            Cursor cursor = context.getContentResolver().query(uri, new String[] { android.provider.MediaStore.Images.ImageColumns.DATA }, null, null, null);
+            cursor.moveToFirst();
+            fileUri = "file://" + cursor.getString(0);
+            cursor.close();
+        } else {
+            fileUri = uri.toString();
+        }
+
+        return fileUri;
     }
 }

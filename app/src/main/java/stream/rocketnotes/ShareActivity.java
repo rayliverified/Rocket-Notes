@@ -25,6 +25,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
@@ -63,6 +64,7 @@ import stream.rocketnotes.utils.PermissionUtils;
 public class ShareActivity extends Activity {
 
     private EditText editText;
+    private TextView editDetails;
     private ImageButton editSubmit;
     private CustomImageView editImage;
     private Intent shareIntent;
@@ -118,6 +120,7 @@ public class ShareActivity extends Activity {
         editText = (EditText) findViewById(R.id.edit_edit);
         editText.clearFocus();
 
+        editDetails = (TextView) findViewById(R.id.edit_details);
         editSubmit = (ImageButton) findViewById(R.id.edit_submit);
         editImage = (CustomImageView) findViewById(R.id.edit_image);
         progressBar = (ProgressBar) findViewById(R.id.edit_progress);
@@ -193,44 +196,61 @@ public class ShareActivity extends Activity {
             if (android.util.Patterns.WEB_URL.matcher(shareText).matches())
             {
                 Log.d("ShareURL", shareText);
+                //Detect if shared URL is an Image
                 String imageType = shareText.substring(shareText.lastIndexOf(".") + 1);
                 if ("png".equals(imageType) || "jpg".equals(imageType) ||
                         "jpeg".equals(imageType) || "bmp".equals(imageType))
                 {
+                    //Set editDetails text to Image Note
+                    editDetails.setText("New Image Note • now");
+                    //Passed URL must start with http:// to be accepted by image loader
+                    if(!shareText.startsWith("http"))
+                    {
+                        shareText = "http://" + shareText;
+                    }
+                    Log.d("ParsedURL", shareText);
+                    Log.d("ShareImage", imageType);
+                    //Load image name into editText
                     imageName = shareText.substring(shareText.lastIndexOf("/") + 1);
                     editText.setText(imageName);
                     editText.setEnabled(false);
+                    //Display ImageView and ProgressBar
                     editImage.setVisibility(View.VISIBLE);
-//                    Ion.with(mContext)
-//                            .load(shareText)
-//                            .progressBar(progressBar)
-//                            .progress(new ProgressCallback() {
-//                                @Override
-//                                public void onProgress(long downloaded, long total) {
-//                                    Log.d("Downloaded", downloaded + " / " + total);
-//                                }
-//                            })
-//                            .write(new File(getFilesDir() + "/.Pictures/" + imageName))
-//                            .setCallback(new FutureCallback<File>() {
-//                                @Override
-//                                public void onCompleted(Exception e, File file) {
-//                                    Log.d("Ion", "onCompleted");
-//                                    Ion.with(mContext)
-//                                            .load(file)
-//                                            .withBitmap()
-//                                            .placeholder(R.drawable.icon_picture_full)
-//                                            .intoImageView(editImage);
-//                                }
-//                            });
-
-                    // This is the "long" way to do build an ImageView request... it allows you to set headers, etc.
+                    progressBar.setVisibility(View.VISIBLE);
                     Ion.with(mContext)
                             .load(shareText)
-                            .withBitmap()
-                            .placeholder(R.drawable.icon_picture_full)
-                            .intoImageView(editImage);
-
-//                Picasso.with(mContext).load(shareText).into(editImage);
+                            .progressBar(progressBar)
+                            .progress(new ProgressCallback() {
+                                @Override
+                                public void onProgress(long downloaded, long total) {
+                                    //Download progress
+                                    Log.d("Downloaded", downloaded + " / " + total);
+                                }
+                            })
+                            .write(new File(getFilesDir() + "/.Pictures/" + imageName))
+                            .setCallback(new FutureCallback<File>() {
+                                @Override
+                                public void onCompleted(Exception e, File file) {
+                                    Log.d("Ion", "onCompleted");
+                                    if (file != null)
+                                    {
+                                        Ion.with(mContext)
+                                                .load(file)
+                                                .withBitmap()
+                                                .intoImageView(editImage);
+                                        //Set imageURI to File scheme where image has been saved.
+                                        imageUri = Uri.parse("file://" + file.getAbsolutePath());
+                                        Log.d("ImageURI", String.valueOf(imageUri));
+                                    }
+                                    else
+                                    {
+                                        //Image URL is invalid, display editText instead.
+                                        progressBar.setVisibility(View.GONE);
+                                        editImage.setVisibility(View.GONE);
+                                        editText.setEnabled(true);
+                                    }
+                                }
+                            });
                 }
                 else
                 {
@@ -246,6 +266,8 @@ public class ShareActivity extends Activity {
 
     public void shareImage(Intent intent)
     {
+        //Set editDetails text to Image Note
+        editDetails.setText("New Image Note • now");
         imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (imageUri != null) {
             Log.d("Image URI", String.valueOf(imageUri));
@@ -280,7 +302,16 @@ public class ShareActivity extends Activity {
 
         if ("text/plain".equals(noteType))
         {
-            if (!TextUtils.isEmpty(editText.getText().toString().trim())) {
+            //Shared text may be Image URL.
+            if (imageUri != null)
+            {
+                Intent saveNote = new Intent(mContext, SaveNoteService.class);
+                saveNote.putExtra(Constants.IMAGE, imageUri.toString());
+                saveNote.setAction(Constants.NEW_NOTE);
+                mContext.startService(saveNote);
+                finish();
+            }
+            else if (!TextUtils.isEmpty(editText.getText().toString().trim())) {
                 AnalyticEvent("SaveNote", "Text");
                 Intent saveNote = new Intent(mContext, SaveNoteService.class);
                 saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
@@ -297,10 +328,12 @@ public class ShareActivity extends Activity {
         {
             if (imageUri != null)
             {
+                //Sometimes Content URI is obtained if file is shared from file manager. Get usable File URI.
+                Log.d("File URI", FileUtils.GetFileUriFromContentUri(mContext, imageUri));
                 AnalyticEvent("SaveImage", "Image");
                 String savePath = getFilesDir() + "/.Pictures";
                 Intent savePicture = new Intent(mContext, SaveImageService.class);
-                savePicture.putExtra(Constants.SOURCE_PATH, imageUri.toString());
+                savePicture.putExtra(Constants.SOURCE_PATH, FileUtils.GetFileUriFromContentUri(mContext, imageUri));
                 savePicture.putExtra(Constants.SAVE_PATH, savePath);
                 mContext.startService(savePicture);
                 finish();
