@@ -3,6 +3,7 @@ package stream.rocketnotes.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,10 +16,15 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.nio.channels.FileChannel;
 
 import es.dmoral.toasty.Toasty;
@@ -62,18 +68,21 @@ public class SaveImageService extends Service {
 
             Bundle extras = params[0].getExtras();
             String sourcePath = extras.getString(Constants.SOURCE_PATH);
-            String savePath = extras.getString(Constants.SAVE_PATH);
             String sourceName = "";
-            File imageFile = null;
-            try {
-                imageFile = new File(new URI(sourcePath));
-                sourcePath = imageFile.getAbsolutePath();
-                sourceName = imageFile.getName();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
+            //Create name for saved image
+            if (sourcePath != null)
+            {
+                //Format file name with proper encoding so image locations are stored correctly
+                try {
+                    sourceName = URLDecoder.decode(sourcePath.substring(sourcePath.lastIndexOf("/") + 1), "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    sourceName = "Image_" + System.currentTimeMillis();
+                }
             }
 
-            File dir = new File(savePath);
+            //Verify that Pictures directory exists
+            File dir = new File(getFilesDir() + "/.Pictures/");
             if (!dir.exists()) {
                 dir.mkdirs();
                 Log.d("Directory", "Created");
@@ -83,16 +92,34 @@ public class SaveImageService extends Service {
                 Log.d("Directory", "Exists");
             }
 
-            Log.d("Source Path", sourcePath);
-            savePath = savePath + "/" + sourceName;
-            Log.d("Save Path", savePath);
-            File f = new File(savePath);
+            //Use InputStream method for file saving to ensure compatibility with all content schemes.
+            InputStream inputStream = null;
+            try {
+                inputStream = getContentResolver().openInputStream(Uri.parse(sourcePath));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            //Save file in Pictures folder.
+            String outputfile = getFilesDir() + "/.Pictures/" + sourceName;
+            Log.d("OutputFile", outputfile);
+            File f = new File(outputfile);
             if (!f.exists())
             {
                 try {
-                    f.createNewFile();
-                    copyFile(new File(sourcePath), f);
-                    return savePath;
+                    f.setWritable(true, false);
+                    OutputStream outputStream = new FileOutputStream(f);
+                    byte buffer[] = new byte[1024];
+                    int length = 0;
+
+                    while((length = inputStream.read(buffer)) > 0) {
+                        outputStream.write(buffer,0,length);
+                    }
+
+                    outputStream.close();
+                    inputStream.close();
+
+                    return outputfile;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -103,6 +130,7 @@ public class SaveImageService extends Service {
                 Message message = mHandler.obtainMessage(0, "Already Saved");
                 message.sendToTarget();
             }
+
             return null;
         }
 

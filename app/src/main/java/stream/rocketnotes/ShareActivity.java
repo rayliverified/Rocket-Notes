@@ -334,11 +334,11 @@ public class ShareActivity extends Activity {
             if (imageUri != null)
             {
                 //Sometimes Content URI is obtained if file is shared from file manager. Get usable File URI.
-                Log.d("File URI", FileUtils.GetFileUriFromContentUri(mContext, imageUri));
+                Log.d("Image URI", String.valueOf(imageUri));
                 AnalyticEvent("SaveImage", "Image");
                 String savePath = getFilesDir() + "/.Pictures";
                 Intent savePicture = new Intent(mContext, SaveImageService.class);
-                savePicture.putExtra(Constants.SOURCE_PATH, FileUtils.GetFileUriFromContentUri(mContext, imageUri));
+                savePicture.putExtra(Constants.SOURCE_PATH, imageUri.toString());
                 savePicture.putExtra(Constants.SAVE_PATH, savePath);
                 mContext.startService(savePicture);
                 finish();
@@ -364,40 +364,6 @@ public class ShareActivity extends Activity {
             editText.setText(imageName);
             editText.setEnabled(false);
         }
-    }
-
-    private File createFileFromInputStream() {
-
-        String outputfile = getFilesDir() + "/.Pictures/" + imageName;
-        Log.d("OutputFile", outputfile);
-        InputStream inputStream = null;
-        try {
-            inputStream = getContentResolver().openInputStream(imageUri);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        try{
-            File f = new File(outputfile);
-            f.setWritable(true, false);
-            OutputStream outputStream = new FileOutputStream(f);
-            byte buffer[] = new byte[1024];
-            int length = 0;
-
-            while((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer,0,length);
-            }
-
-            outputStream.close();
-            inputStream.close();
-
-            return f;
-        }catch (IOException e) {
-            System.out.println("error creating file");
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     public static Point getDisplayDimensions(Context context )
