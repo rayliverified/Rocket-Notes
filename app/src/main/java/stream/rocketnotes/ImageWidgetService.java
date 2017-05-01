@@ -14,8 +14,10 @@ import android.widget.RemoteViewsService;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 
 public class ImageWidgetService extends RemoteViewsService {
@@ -57,9 +59,18 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             bmOptions.inJustDecodeBounds = false;
             bmOptions.inSampleSize = 16;
             bmOptions.inPurgeable = false;
-            String imagePath = getImagePath(mNotesItems.get(position).getNotesImage());
-            File file = new File(imagePath);
-            if(file.exists())
+            String imageURI = mNotesItems.get(position).getNotesImage();
+            Log.d("ImagePath", imageURI);
+            File imageFile = null;
+            String imagePath = "";
+            try {
+                imageFile = new File(new URI(imageURI));
+                imagePath = imageFile.getAbsolutePath();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+                imageFile = null;
+            }
+            if(imageFile != null)
             {
                 Bitmap imageBitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
                 Matrix matrix = getOrientation(imagePath);

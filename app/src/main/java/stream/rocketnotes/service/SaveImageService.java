@@ -75,6 +75,7 @@ public class SaveImageService extends Service {
                 //Format file name with proper encoding so image locations are stored correctly
                 try {
                     sourceName = URLDecoder.decode(sourcePath.substring(sourcePath.lastIndexOf("/") + 1), "UTF-8");
+                    sourceName = sourceName.replaceAll(" ", "_").trim();
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                     sourceName = "Image_" + System.currentTimeMillis();
