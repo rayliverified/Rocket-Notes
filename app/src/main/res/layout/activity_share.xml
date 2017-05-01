@@ -68,6 +68,15 @@
             android:cursorVisible="false"
             android:background="@null"/>
 
+        <ProgressBar
+            android:id="@+id/edit_progress"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edit_edit"
+            android:layout_marginBottom="5dp"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+
         <stream.rocketnotes.ui.CustomImageView
             android:id="@+id/edit_image"
             android:layout_width="match_parent"

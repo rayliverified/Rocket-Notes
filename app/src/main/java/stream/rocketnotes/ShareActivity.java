@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.ActivityCompat;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -23,9 +24,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.ProgressCallback;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.pyze.android.Pyze;
 import com.pyze.android.PyzeEvents;
@@ -45,6 +50,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import es.dmoral.toasty.Toasty;
 import stream.rocketnotes.service.SaveImageService;
@@ -62,6 +69,7 @@ public class ShareActivity extends Activity {
     private String noteType;
     private Uri imageUri;
     private String imageName;
+    private ProgressBar progressBar;
     private MixpanelAPI mixpanel;
     private String mActivity = "ShareActivity";
     private Context mContext;
@@ -112,6 +120,7 @@ public class ShareActivity extends Activity {
 
         editSubmit = (ImageButton) findViewById(R.id.edit_submit);
         editImage = (CustomImageView) findViewById(R.id.edit_image);
+        progressBar = (ProgressBar) findViewById(R.id.edit_progress);
 
         //Get data shared to app
         shareIntent = getIntent();
@@ -140,7 +149,6 @@ public class ShareActivity extends Activity {
             @Override
             public void onClick(View view) {
                 saveNote();
-                finish();
             }
         });
     }
@@ -180,7 +188,59 @@ public class ShareActivity extends Activity {
     {
         String shareText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (shareText != null) {
-            editText.setText(shareText);
+            Log.d("ShareText", "Not Null");
+            //Detect if sharedText is URL link
+            if (android.util.Patterns.WEB_URL.matcher(shareText).matches())
+            {
+                Log.d("ShareURL", shareText);
+                String imageType = shareText.substring(shareText.lastIndexOf(".") + 1);
+                if ("png".equals(imageType) || "jpg".equals(imageType) ||
+                        "jpeg".equals(imageType) || "bmp".equals(imageType))
+                {
+                    imageName = shareText.substring(shareText.lastIndexOf("/") + 1);
+                    editText.setText(imageName);
+                    editText.setEnabled(false);
+                    editImage.setVisibility(View.VISIBLE);
+//                    Ion.with(mContext)
+//                            .load(shareText)
+//                            .progressBar(progressBar)
+//                            .progress(new ProgressCallback() {
+//                                @Override
+//                                public void onProgress(long downloaded, long total) {
+//                                    Log.d("Downloaded", downloaded + " / " + total);
+//                                }
+//                            })
+//                            .write(new File(getFilesDir() + "/.Pictures/" + imageName))
+//                            .setCallback(new FutureCallback<File>() {
+//                                @Override
+//                                public void onCompleted(Exception e, File file) {
+//                                    Log.d("Ion", "onCompleted");
+//                                    Ion.with(mContext)
+//                                            .load(file)
+//                                            .withBitmap()
+//                                            .placeholder(R.drawable.icon_picture_full)
+//                                            .intoImageView(editImage);
+//                                }
+//                            });
+
+                    // This is the "long" way to do build an ImageView request... it allows you to set headers, etc.
+                    Ion.with(mContext)
+                            .load(shareText)
+                            .withBitmap()
+                            .placeholder(R.drawable.icon_picture_full)
+                            .intoImageView(editImage);
+
+//                Picasso.with(mContext).load(shareText).into(editImage);
+                }
+                else
+                {
+                    editText.setText(shareText);
+                }
+            }
+            else
+            {
+                editText.setText(shareText);
+            }
         }
     }
 
@@ -192,18 +252,7 @@ public class ShareActivity extends Activity {
             //Loading image requires Storage permission on Marshmallow and above
             if (PermissionUtils.IsPermissionEnabled(mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE))
             {
-                //Use editText to display image name.
-                try {
-                    //Get File Name from URI and encode into readable format
-                    imageName = URLDecoder.decode(String.valueOf(imageUri).substring(String.valueOf(imageUri).lastIndexOf("/")+1), "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                if (imageName != null)
-                {
-                    editText.setText(imageName);
-                    editText.setEnabled(false);
-                }
+                setImageName();
                 //Enable imageView and display shared image.
                 editImage.setVisibility(View.VISIBLE);
                 Picasso.with(mContext).load(imageUri).into(editImage);
@@ -223,34 +272,59 @@ public class ShareActivity extends Activity {
     private void saveNote()
     {
         //Save note and close activity
-        if (!TextUtils.isEmpty(editText.getText().toString().trim()))
-        {
-            //Multiple content may be sent to Rocket Notes. Force refresh of main feed.
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(Constants.REFRESH, true);
-            editor.apply();
+        //Multiple content may be sent to Rocket Notes. Force refresh of main feed.
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(Constants.REFRESH, true);
+        editor.apply();
 
-            Intent saveNote = new Intent(mContext, SaveNoteService.class);
-            if ("text/plain".equals(noteType))
-            {
+        if ("text/plain".equals(noteType))
+        {
+            if (!TextUtils.isEmpty(editText.getText().toString().trim())) {
                 AnalyticEvent("SaveNote", "Text");
+                Intent saveNote = new Intent(mContext, SaveNoteService.class);
                 saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
                 saveNote.setAction(Constants.NEW_NOTE);
                 mContext.startService(saveNote);
+                finish();
             }
-            else if (noteType.startsWith("image/"))
+            else
             {
-                if (imageUri != null)
-                {
-                    AnalyticEvent("SaveImage", "Image");
-                    String savePath = getFilesDir() + "/.Pictures";
-                    Intent savePicture = new Intent(mContext, SaveImageService.class);
-                    savePicture.putExtra(Constants.SOURCE_PATH, imageUri.toString());
-                    savePicture.putExtra(Constants.SAVE_PATH, savePath);
-                    mContext.startService(savePicture);
-                }
+                Toasty.warning(mContext, "Note Empty", Toast.LENGTH_SHORT, true).show();
             }
+        }
+        else if (noteType.startsWith("image/"))
+        {
+            if (imageUri != null)
+            {
+                AnalyticEvent("SaveImage", "Image");
+                String savePath = getFilesDir() + "/.Pictures";
+                Intent savePicture = new Intent(mContext, SaveImageService.class);
+                savePicture.putExtra(Constants.SOURCE_PATH, imageUri.toString());
+                savePicture.putExtra(Constants.SAVE_PATH, savePath);
+                mContext.startService(savePicture);
+                finish();
+            }
+            else
+            {
+                Toasty.error(mContext, "Image Unsupported", Toast.LENGTH_SHORT, true).show();
+            }
+        }
+    }
+
+    private void setImageName()
+    {
+        //Use editText to display image name.
+        try {
+            //Get File Name from URI and encode into readable format
+            imageName = URLDecoder.decode(String.valueOf(imageUri).substring(String.valueOf(imageUri).lastIndexOf("/")+1), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        if (imageName != null)
+        {
+            editText.setText(imageName);
+            editText.setEnabled(false);
         }
     }
 
