@@ -1,16 +1,16 @@
 package stream.rocketnotes;
 
-import android.*;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.preference.PreferenceManager;
 import android.support.v13.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -35,14 +35,22 @@ import com.uxcam.UXCam;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
+import stream.rocketnotes.service.SaveImageService;
+import stream.rocketnotes.service.SaveNoteService;
 import stream.rocketnotes.ui.CustomImageView;
+import stream.rocketnotes.utils.FileUtils;
 import stream.rocketnotes.utils.PermissionUtils;
 
 public class ShareActivity extends Activity {
@@ -52,6 +60,8 @@ public class ShareActivity extends Activity {
     private CustomImageView editImage;
     private Intent shareIntent;
     private String noteType;
+    private Uri imageUri;
+    private String imageName;
     private MixpanelAPI mixpanel;
     private String mActivity = "ShareActivity";
     private Context mContext;
@@ -176,14 +186,13 @@ public class ShareActivity extends Activity {
 
     public void shareImage(Intent intent)
     {
-        Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (imageUri != null) {
             Log.d("Image URI", String.valueOf(imageUri));
             //Loading image requires Storage permission on Marshmallow and above
             if (PermissionUtils.IsPermissionEnabled(mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE))
             {
                 //Use editText to display image name.
-                String imageName = null;
                 try {
                     //Get File Name from URI and encode into readable format
                     imageName = URLDecoder.decode(String.valueOf(imageUri).substring(String.valueOf(imageUri).lastIndexOf("/")+1), "UTF-8");
@@ -198,6 +207,8 @@ public class ShareActivity extends Activity {
                 //Enable imageView and display shared image.
                 editImage.setVisibility(View.VISIBLE);
                 Picasso.with(mContext).load(imageUri).into(editImage);
+                //Create Pictures folder to prepare to copy file into folder on saveNote clicked.
+                FileUtils.InitializePicturesFolder(mContext);
             }
             else
             {
@@ -214,6 +225,12 @@ public class ShareActivity extends Activity {
         //Save note and close activity
         if (!TextUtils.isEmpty(editText.getText().toString().trim()))
         {
+            //Multiple content may be sent to Rocket Notes. Force refresh of main feed.
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(Constants.REFRESH, true);
+            editor.apply();
+
             Intent saveNote = new Intent(mContext, SaveNoteService.class);
             if ("text/plain".equals(noteType))
             {
@@ -224,10 +241,51 @@ public class ShareActivity extends Activity {
             }
             else if (noteType.startsWith("image/"))
             {
-                AnalyticEvent("SaveNote", "Image");
-                //TODO: Share Image to Rocket Notes
+                if (imageUri != null)
+                {
+                    AnalyticEvent("SaveImage", "Image");
+                    String savePath = getFilesDir() + "/.Pictures";
+                    Intent savePicture = new Intent(mContext, SaveImageService.class);
+                    savePicture.putExtra(Constants.SOURCE_PATH, imageUri.toString());
+                    savePicture.putExtra(Constants.SAVE_PATH, savePath);
+                    mContext.startService(savePicture);
+                }
             }
         }
+    }
+
+    private File createFileFromInputStream() {
+
+        String outputfile = getFilesDir() + "/.Pictures/" + imageName;
+        Log.d("OutputFile", outputfile);
+        InputStream inputStream = null;
+        try {
+            inputStream = getContentResolver().openInputStream(imageUri);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        try{
+            File f = new File(outputfile);
+            f.setWritable(true, false);
+            OutputStream outputStream = new FileOutputStream(f);
+            byte buffer[] = new byte[1024];
+            int length = 0;
+
+            while((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer,0,length);
+            }
+
+            outputStream.close();
+            inputStream.close();
+
+            return f;
+        }catch (IOException e) {
+            System.out.println("error creating file");
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public static Point getDisplayDimensions(Context context )

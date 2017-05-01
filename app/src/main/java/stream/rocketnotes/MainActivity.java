@@ -390,15 +390,15 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         NotesItem note = dbHelper.GetNote(noteID);
         AbstractFlexibleItem item = null;
-        if (note.getNotesNote() != null)
-        {
-            Log.d("Note", "Note Item");
-            item = new NoteItemViewholder(Integer.toString(noteID), note.getNotesNote());
-        }
-        else if (note.getNotesImage() != null)
+        if (note.getNotesImage() != null)
         {
             Log.d("Image View Holder", note.getNotesImage());
             item = new ImageItemViewholder(Integer.toString(noteID), note.getNotesImage());
+        }
+        else if (note.getNotesNote() != null)
+        {
+            Log.d("Note", "Note Item");
+            item = new NoteItemViewholder(Integer.toString(noteID), note.getNotesNote());
         }
         mAdapter.addItem(0, item);
         mStaggeredLayoutManager.scrollToPosition(0);
@@ -412,15 +412,15 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         NotesItem note = dbHelper.GetNote(noteID);
         AbstractFlexibleItem item = null;
-        if (note.getNotesNote() != null)
-        {
-            Log.d("Note", "Note Item");
-            item = new NoteItemViewholder(Integer.toString(noteID), note.getNotesNote());
-        }
-        else if (note.getNotesImage() != null)
+        if (note.getNotesImage() != null)
         {
             Log.d("Image View Holder", note.getNotesImage());
             item = new ImageItemViewholder(Integer.toString(noteID), note.getNotesImage());
+        }
+        else if (note.getNotesNote() != null)
+        {
+            Log.d("Note", "Note Item");
+            item = new NoteItemViewholder(Integer.toString(noteID), note.getNotesNote());
         }
         Integer currentPosition = mAdapter.getGlobalPositionOf(item);
         mAdapter.updateItem(item, null);
@@ -434,15 +434,15 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
     {
         NotesItem note = event.getNotesItem();
         AbstractFlexibleItem item = null;
-        if (note.getNotesNote() != null)
-        {
-            Log.d("Note", "Note Item");
-            item = new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote());
-        }
-        else if (note.getNotesImage() != null)
+        if (note.getNotesImage() != null)
         {
             Log.d("Image View Holder", note.getNotesImage());
             item = new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage());
+        }
+        else if (note.getNotesNote() != null)
+        {
+            Log.d("Note", "Note Item");
+            item = new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote());
         }
         Integer position = mAdapter.getGlobalPositionOf(item);
         Log.d("Item Position", String.valueOf(position));
@@ -505,6 +505,18 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         //Listen for new messages received
         Log.d("LocalBroadcastManager", "onResume");
         EventBus.getDefault().register(this);
+        //Sometimes, multiple changes are made to mAdapter and the entire view should be refreshed.
+        if (sharedPref.getBoolean(Constants.REFRESH, false)) {
+            if (mAdapter != null)
+            {
+                Log.d("MainActivity", "Refresh");
+                mAdapter.notifyDataSetChanged();
+            }
+            //Reset REFRESH flag
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(Constants.REFRESH, false);
+            editor.apply();
+        }
         super.onResume();
     }
 

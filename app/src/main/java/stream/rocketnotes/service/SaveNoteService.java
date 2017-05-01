@@ -1,4 +1,4 @@
-package stream.rocketnotes;
+package stream.rocketnotes.service;
 
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
@@ -16,6 +16,13 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.Calendar;
 
 import es.dmoral.toasty.Toasty;
+import stream.rocketnotes.Constants;
+import stream.rocketnotes.DatabaseHelper;
+import stream.rocketnotes.ImageWidget;
+import stream.rocketnotes.NotesItem;
+import stream.rocketnotes.NotesWidget;
+import stream.rocketnotes.R;
+import stream.rocketnotes.UpdateMainEvent;
 
 public class SaveNoteService extends Service {
     private final String TAG = "SaveNoteService";

@@ -64,7 +64,6 @@
             android:inputType="textMultiLine|textAutoCorrect|textCapSentences"
             android:autoText="true"
             android:maxLines="10"
-            android:clickable="true"
             android:scrollbars="vertical"
             android:cursorVisible="false"
             android:background="@null"/>
@@ -78,6 +77,7 @@
             android:src="@drawable/icon_picture_full"
             android:scaleType="fitCenter"
             app:bottomLeftRadius="40"
-            app:bottomRightRadius="40"/>
+            app:bottomRightRadius="40"
+            android:visibility="gone"/>
     </RelativeLayout>
 </FrameLayout>

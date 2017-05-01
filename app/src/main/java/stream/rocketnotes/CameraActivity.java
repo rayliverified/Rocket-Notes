@@ -1,12 +1,12 @@
 package stream.rocketnotes;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -21,16 +21,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import stream.rocketnotes.service.SaveNoteService;
+import stream.rocketnotes.utils.FileUtils;
+
 public class CameraActivity extends AppCompatActivity{
 
     private MixpanelAPI mixpanel;
     private String mActivity = "CameraActivity";
+    private Context mContext;
 
     private static final int REQUEST_CAMERA_PERMISSIONS = 931;
     private final static int CAMERA_RQ = 6969;
@@ -38,6 +41,7 @@ public class CameraActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getApplicationContext();
         initializeAnalytics();
         if (Build.VERSION.SDK_INT >= 23) {
             final String[] permissions = {
@@ -83,28 +87,7 @@ public class CameraActivity extends AppCompatActivity{
 
         AnalyticEvent("Camera", "Start");
 
-        File dir = new File(getFilesDir() + "/.Pictures");
-        if (!dir.exists()) {
-            dir.mkdirs();
-            Log.d("Directory", "Created");
-        }
-        else
-        {
-            Log.d("Directory", "Exists");
-        }
-        if (!noMediaExists())
-        {
-            try {
-                createNoMediaFile();
-                Log.d("No Media", "Created");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        else
-        {
-            Log.d("No Media", "Exists");
-        }
+        FileUtils.InitializePicturesFolder(mContext);
         File storageDir = new File(getFilesDir(), ".Pictures");
         new MaterialCamera(this)
                 /** all the previous methods can be called, but video ones would be ignored */
@@ -126,22 +109,6 @@ public class CameraActivity extends AppCompatActivity{
             getApplicationContext().startService(saveNote);
         }
         finish();
-    }
-
-    boolean noMediaExists() {
-        File imagePath = new File(getFilesDir(), ".Pictures");
-        File file = new File(imagePath, ".nomedia");
-        if (file != null) {
-            return file.exists();
-        }
-        return false;
-    }
-
-    private void createNoMediaFile() throws IOException
-    {
-        File imagePath = new File(getFilesDir(), ".Pictures");
-        File noMediaFile = new File(imagePath, ".nomedia");
-        noMediaFile.createNewFile();
     }
 
     public void initializeAnalytics()

@@ -58,12 +58,20 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             bmOptions.inSampleSize = 16;
             bmOptions.inPurgeable = false;
             String imagePath = getImagePath(mNotesItems.get(position).getNotesImage());
-            Bitmap imageBitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-            Matrix matrix = getOrientation(imagePath);
-            imageBitmap = crop(imageBitmap, matrix);
-            Log.d("Image Width", String.valueOf(imageBitmap.getWidth()));
-            Log.d("Image Height", String.valueOf(imageBitmap.getHeight()));
-            rv.setImageViewBitmap(R.id.item_image, imageBitmap);
+            File file = new File(imagePath);
+            if(file.exists())
+            {
+                Bitmap imageBitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
+                Matrix matrix = getOrientation(imagePath);
+                imageBitmap = crop(imageBitmap, matrix);
+                Log.d("Image Width", String.valueOf(imageBitmap.getWidth()));
+                Log.d("Image Height", String.valueOf(imageBitmap.getHeight()));
+                rv.setImageViewBitmap(R.id.item_image, imageBitmap);
+            }
+            else
+            {
+                rv.setImageViewResource(R.id.item_image, R.drawable.icon_picture);
+            }
         }
         else
         {

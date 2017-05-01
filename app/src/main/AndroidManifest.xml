@@ -106,9 +106,10 @@
                  android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service android:name="stream.rocketnotes.NotesWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service android:name="stream.rocketnotes.SaveNoteService"/>
-        <service android:name="stream.rocketnotes.DeleteNoteService"/>
-        <service android:name="stream.rocketnotes.SaveFileService"/>
+        <service android:name="stream.rocketnotes.service.SaveNoteService"/>
+        <service android:name="stream.rocketnotes.service.DeleteNoteService"/>
+        <service android:name="stream.rocketnotes.service.SaveFileService"/>
+        <service android:name="stream.rocketnotes.service.SaveImageService"/>
         <!-- Providers -->
     </application>
 </manifest>

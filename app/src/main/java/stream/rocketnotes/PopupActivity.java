@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import stream.rocketnotes.service.SaveNoteService;
+
 public class PopupActivity extends Activity {
 
     private boolean titleCreated = false;

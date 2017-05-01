@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jp.wasabeef.richeditor.RichEditor;
+import stream.rocketnotes.service.DeleteNoteService;
+import stream.rocketnotes.service.SaveNoteService;
 
 public class EditActivity extends AppCompatActivity {
 

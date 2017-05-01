@@ -1,4 +1,4 @@
-package stream.rocketnotes;
+package stream.rocketnotes.service;
 
 import android.app.Service;
 import android.content.Context;
@@ -22,8 +22,10 @@ import java.net.URISyntaxException;
 import java.nio.channels.FileChannel;
 
 import es.dmoral.toasty.Toasty;
+import stream.rocketnotes.Constants;
+import stream.rocketnotes.R;
 
-public class SaveFileService extends Service {
+public class SaveImageService extends Service {
 
     private Context context = this;
 
@@ -35,7 +37,7 @@ public class SaveFileService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private class SaveFileTask extends AsyncTask<Intent, Void, Void> {
+    private class SaveFileTask extends AsyncTask<Intent, Void, String> {
         final Context mContext;
         final Intent mIntent;
         final Handler mHandler;
@@ -56,7 +58,7 @@ public class SaveFileService extends Service {
         }
 
         @Override
-        protected Void doInBackground(Intent... params) {
+        protected String doInBackground(Intent... params) {
 
             Bundle extras = params[0].getExtras();
             String sourcePath = extras.getString(Constants.SOURCE_PATH);
@@ -89,7 +91,8 @@ public class SaveFileService extends Service {
             {
                 try {
                     f.createNewFile();
-                    copyFile(mHandler, new File(sourcePath), f);
+                    copyFile(new File(sourcePath), f);
+                    return savePath;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -104,8 +107,17 @@ public class SaveFileService extends Service {
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(String savedImagePath) {
+            super.onPostExecute(savedImagePath);
+
+            if (savedImagePath != null)
+            {
+                savedImagePath = "file://" + savedImagePath;
+                Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
+                saveNote.putExtra(Constants.IMAGE, savedImagePath);
+                saveNote.setAction(Constants.NEW_NOTE);
+                getApplicationContext().startService(saveNote);
+            }
         }
 
         @Override
@@ -114,7 +126,7 @@ public class SaveFileService extends Service {
         }
     }
 
-    private void copyFile(Handler handler, File sourceFile, File destFile) throws IOException {
+    private boolean copyFile(File sourceFile, File destFile) throws IOException {
 
         FileChannel source = null;
         FileChannel destination = null;
@@ -130,8 +142,8 @@ public class SaveFileService extends Service {
             destination.close();
         }
         Log.d("Save File", "File Saved");
-        Message message = handler.obtainMessage(0, "Saved");
-        message.sendToTarget();
+
+        return true;
     }
 
     @Override

@@ -20,7 +20,8 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.File;
 
 import es.dmoral.toasty.Toasty;
-import frescoimageviewer.OnDismissListener;
+import stream.rocketnotes.service.DeleteNoteService;
+import stream.rocketnotes.service.SaveFileService;
 
 public class ImageOverlayView extends RelativeLayout {
 
