@@ -52,6 +52,7 @@ dependencies {
     compile 'com.github.GrenderG:Toasty:1.2.3' //https://github.com/GrenderG/Toasty
     compile 'jp.wasabeef:richeditor-android:1.2.2' //https://github.com/wasabeef/richeditor-android
     compile 'com.koushikdutta.ion:ion:2.1.9' //https://github.com/koush/ion
+    compile 'com.github.ybq:Android-SpinKit:1.1.0' //https://github.com/ybq/Android-SpinKit
     compile "com.mixpanel.android:mixpanel-android:4.9.8"
     compile "com.google.android.gms:play-services:10.2.1"
     compile 'com.flurry.android:analytics:6.9.2'

@@ -12,7 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.ActivityCompat;
-import android.text.SpannableStringBuilder;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
+import com.github.ybq.android.spinkit.style.Wave;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.ProgressCallback;
@@ -51,8 +52,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import es.dmoral.toasty.Toasty;
 import stream.rocketnotes.service.SaveImageService;
@@ -217,6 +216,11 @@ public class ShareActivity extends Activity {
                     //Display ImageView and ProgressBar
                     editImage.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.VISIBLE);
+                    //Set progress bar loader
+                    Wave wave = new Wave();
+                    wave.setColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
+                    progressBar.setIndeterminateDrawable(wave);
+                    //Download image with Ion
                     Ion.with(mContext)
                             .load(shareText)
                             .progressBar(progressBar)
@@ -234,6 +238,7 @@ public class ShareActivity extends Activity {
                                     Log.d("Ion", "onCompleted");
                                     if (file != null)
                                     {
+                                        //Load downloaded file into ImageView
                                         Ion.with(mContext)
                                                 .load(file)
                                                 .withBitmap()
