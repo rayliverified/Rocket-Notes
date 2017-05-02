@@ -2,7 +2,7 @@ package stream.rocketnotes;
 
 public interface Constants {
     public static final String APP_NAME = "Rocket Note";
-    public static final String APP_VERSION = "1.0.1";
+    public static final String APP_VERSION = "1.0.4";
     public static final String YEAR = "2017";
     public static final Integer TITLE_LENGTH = 40;
     public static final Integer RECENT_IMAGES = 8;
@@ -26,6 +26,5 @@ public interface Constants {
     public static final String SOURCE_PATH = "SOURCE_PATH";
     public static final String SAVE_PATH = "SAVE_PATH";
     public final static String FLURRY_API_KEY = "FQY6KKKN77CZYWWB9KPV";
-    public final static String MIXPANEL_API_KEY = "2215bfc2bef2407807741b005a971e5f";
     public final static String UXCAM_API_KEY = "199daf32af5efce";
 }

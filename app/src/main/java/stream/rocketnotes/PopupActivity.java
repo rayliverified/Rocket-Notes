@@ -20,19 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.flurry.android.FlurryAgent;
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.pyze.android.Pyze;
-import com.pyze.android.PyzeEvents;
 import com.uxcam.UXCam;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import stream.rocketnotes.service.SaveNoteService;
+import stream.rocketnotes.utils.AnalyticsUtils;
 
 public class PopupActivity extends Activity {
 
@@ -42,7 +36,6 @@ public class PopupActivity extends Activity {
     private String noteTextRaw;
     private Integer noteID;
     private boolean savedNote = false;
-    private MixpanelAPI mixpanel;
     private String mActivity = "PopupActivity";
     private Context mContext;
 
@@ -95,7 +88,7 @@ public class PopupActivity extends Activity {
 
         if (getIntent().getAction().equals(Constants.NEW_NOTE))
         {
-            AnalyticEvent("Note Type", Constants.NEW_NOTE);
+            AnalyticsUtils.AnalyticEvent(mActivity, "Note Type", Constants.NEW_NOTE);
 
             editText.setHint(R.string.edit_hint);
             editDetails.setText("New Note • now");
@@ -214,7 +207,7 @@ public class PopupActivity extends Activity {
         }
         else if (getIntent().getAction().equals(Constants.OPEN_NOTE))
         {
-            AnalyticEvent("Note Type", Constants.OPEN_NOTE);
+            AnalyticsUtils.AnalyticEvent(mActivity, "Note Type", Constants.OPEN_NOTE);
 
             noteID = getIntent().getIntExtra(Constants.ID, -1);
             Log.d("Received Note ID", String.valueOf(noteID));
@@ -355,47 +348,7 @@ public class PopupActivity extends Activity {
                     .withLogEnabled(true)
                     .build(this, Constants.FLURRY_API_KEY);
         }
-        mixpanel = MixpanelAPI.getInstance(this, Constants.MIXPANEL_API_KEY);
-        mixpanel.getPeople().identify(mixpanel.getDistinctId());
         Pyze.initialize(getApplication());
         UXCam.startWithKey(Constants.UXCAM_API_KEY);
-        UXCam.addVerificationListener(new UXCam.OnVerificationListener() {
-            @Override
-            public void onVerificationSuccess() {
-                //Tag Mixpanel events with UXCam recording URLS. Example:
-                JSONObject eventProperties = new JSONObject();
-                try {
-                    eventProperties.put("UXCam: Session Recording link", UXCam.urlForCurrentSession());
-                } catch (JSONException exception) {
-                }
-                mixpanel.track("UXCam Session URL", eventProperties);
-                //Tag Mixpanel profile with UXCam user URLS. Example:
-                mixpanel.getPeople().set("UXCam User URL", UXCam.urlForCurrentUser());
-            }
-            @Override
-            public void onVerificationFailed(String errorMessage) {
-            }
-        });
-    }
-
-    public void AnalyticEvent(String object, String value)
-    {
-        try {
-            JSONObject mixObject = new JSONObject();
-            mixObject.put(object, value);
-            mixpanel.track(mActivity, mixObject);
-        } catch (JSONException e) {
-            Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
-        }
-        //Flurry
-        Map<String, String> params = new HashMap<String, String>();
-        params.put(object, value);
-        FlurryAgent.logEvent(mActivity, params);
-        //UXCam
-        UXCam.addTagWithProperties(mActivity, params);
-        //Pyze
-        HashMap <String, String> attributes = new HashMap<String, String>();
-        attributes.put(object, String.valueOf(value));
-        PyzeEvents.postCustomEventWithAttributes(mActivity, attributes);
     }
 }

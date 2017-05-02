@@ -17,21 +17,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.flurry.android.FlurryAgent;
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.pyze.android.Pyze;
-import com.pyze.android.PyzeEvents;
 import com.uxcam.UXCam;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import jp.wasabeef.richeditor.RichEditor;
 import stream.rocketnotes.service.DeleteNoteService;
 import stream.rocketnotes.service.SaveNoteService;
+import stream.rocketnotes.utils.AnalyticsUtils;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -43,7 +37,6 @@ public class EditActivity extends AppCompatActivity {
     private boolean deletedNote = false;
     private boolean savedNote = false;
     private boolean overrideExit = false; //Skip onPause autosave and exit cleanly.
-    private MixpanelAPI mixpanel;
     private String mActivity = "EditActivity";
     private Context mContext;
 
@@ -67,7 +60,7 @@ public class EditActivity extends AppCompatActivity {
 
         if (getIntent().getAction().equals(Constants.OPEN_NOTE))
         {
-            AnalyticEvent("Note Type", Constants.OPEN_NOTE);
+            AnalyticsUtils.AnalyticEvent(mActivity, "Note Type", Constants.OPEN_NOTE);
 
             mEditor.clearFocus();
             noteID = getIntent().getIntExtra(Constants.ID, -1);
@@ -93,7 +86,7 @@ public class EditActivity extends AppCompatActivity {
         }
         else
         {
-            AnalyticEvent("Note Type", Constants.NEW_NOTE);
+            AnalyticsUtils.AnalyticEvent(mActivity, "Note Type", Constants.NEW_NOTE);
 
             originalNew = true;
 
@@ -274,31 +267,8 @@ public class EditActivity extends AppCompatActivity {
                     .withLogEnabled(true)
                     .build(this, Constants.FLURRY_API_KEY);
         }
-        mixpanel = MixpanelAPI.getInstance(this, Constants.MIXPANEL_API_KEY);
-        mixpanel.getPeople().identify(mixpanel.getDistinctId());
         Pyze.initialize(getApplication());
         UXCam.startWithKey(Constants.UXCAM_API_KEY);
         UXCam.occludeSensitiveScreen(true);
-    }
-
-    public void AnalyticEvent(String object, String value)
-    {
-        try {
-            JSONObject mixObject = new JSONObject();
-            mixObject.put(object, value);
-            mixpanel.track(mActivity, mixObject);
-        } catch (JSONException e) {
-            Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
-        }
-        //Flurry
-        Map<String, String> params = new HashMap<String, String>();
-        params.put(object, value);
-        FlurryAgent.logEvent(mActivity, params);
-        //UXCam
-        UXCam.addTagWithProperties(mActivity, params);
-        //Pyze
-        HashMap <String, String> attributes = new HashMap<String, String>();
-        attributes.put(object, String.valueOf(value));
-        PyzeEvents.postCustomEventWithAttributes(mActivity, attributes);
     }
 }

@@ -34,27 +34,19 @@ import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.ProgressCallback;
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.pyze.android.Pyze;
-import com.pyze.android.PyzeEvents;
 import com.squareup.picasso.Picasso;
 import com.uxcam.UXCam;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 import stream.rocketnotes.service.SaveImageService;
 import stream.rocketnotes.service.SaveNoteService;
 import stream.rocketnotes.ui.CustomImageView;
+import stream.rocketnotes.utils.AnalyticsUtils;
 import stream.rocketnotes.utils.FileUtils;
 import stream.rocketnotes.utils.PermissionUtils;
 
@@ -70,7 +62,6 @@ public class ShareActivity extends Activity {
     private String imageName;
     private ProgressBar progressBar;
     private Future<File> downloading;
-    private MixpanelAPI mixpanel;
     private String mActivity = "ShareActivity";
     private Context mContext;
 
@@ -184,10 +175,10 @@ public class ShareActivity extends Activity {
         switch (requestCode) {
             case REQUEST_STORAGE_PERMISSIONS: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    AnalyticEvent("Permission", "Granted");
+                    AnalyticsUtils.AnalyticEvent(mActivity, "Permission", "Granted");
                     recreate();
                 } else {
-                    AnalyticEvent("Permission", "Denied");
+                    AnalyticsUtils.AnalyticEvent(mActivity, "Permission", "Denied");
                     Toasty.error(mContext, "Permission Denied", Toast.LENGTH_SHORT, true).show();
                 }
                 return;
@@ -348,7 +339,7 @@ public class ShareActivity extends Activity {
                     finish();
                 }
                 else if (!TextUtils.isEmpty(editText.getText().toString().trim())) {
-                    AnalyticEvent("SaveNote", "Text");
+                    AnalyticsUtils.AnalyticEvent(mActivity, "SaveNote", "Text");
                     Intent saveNote = new Intent(mContext, SaveNoteService.class);
                     saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
                     saveNote.setAction(Constants.NEW_NOTE);
@@ -366,7 +357,7 @@ public class ShareActivity extends Activity {
                 {
                     //Sometimes Content URI is obtained if file is shared from file manager. Get usable File URI.
                     Log.d("Image URI", String.valueOf(imageUri));
-                    AnalyticEvent("SaveImage", "Image");
+                    AnalyticsUtils.AnalyticEvent(mActivity, "SaveImage", "Image");
                     String savePath = getFilesDir() + "/.Pictures";
                     Intent savePicture = new Intent(mContext, SaveImageService.class);
                     savePicture.putExtra(Constants.SOURCE_PATH, imageUri.toString());
@@ -448,47 +439,8 @@ public class ShareActivity extends Activity {
                     .withLogEnabled(true)
                     .build(this, Constants.FLURRY_API_KEY);
         }
-        mixpanel = MixpanelAPI.getInstance(this, Constants.MIXPANEL_API_KEY);
-        mixpanel.getPeople().identify(mixpanel.getDistinctId());
         Pyze.initialize(getApplication());
         UXCam.startWithKey(Constants.UXCAM_API_KEY);
-        UXCam.addVerificationListener(new UXCam.OnVerificationListener() {
-            @Override
-            public void onVerificationSuccess() {
-                //Tag Mixpanel events with UXCam recording URLS. Example:
-                JSONObject eventProperties = new JSONObject();
-                try {
-                    eventProperties.put("UXCam: Session Recording link", UXCam.urlForCurrentSession());
-                } catch (JSONException exception) {
-                }
-                mixpanel.track("UXCam Session URL", eventProperties);
-                //Tag Mixpanel profile with UXCam user URLS. Example:
-                mixpanel.getPeople().set("UXCam User URL", UXCam.urlForCurrentUser());
-            }
-            @Override
-            public void onVerificationFailed(String errorMessage) {
-            }
-        });
-    }
-
-    public void AnalyticEvent(String object, String value)
-    {
-        try {
-            JSONObject mixObject = new JSONObject();
-            mixObject.put(object, value);
-            mixpanel.track(mActivity, mixObject);
-        } catch (JSONException e) {
-            Log.e(Constants.APP_NAME, "Unable to add properties to JSONObject", e);
-        }
-        //Flurry
-        Map<String, String> params = new HashMap<String, String>();
-        params.put(object, value);
-        FlurryAgent.logEvent(mActivity, params);
-        //UXCam
-        UXCam.addTagWithProperties(mActivity, params);
-        //Pyze
-        HashMap <String, String> attributes = new HashMap<String, String>();
-        attributes.put(object, String.valueOf(value));
-        PyzeEvents.postCustomEventWithAttributes(mActivity, attributes);
+        UXCam.occludeSensitiveScreen(true);
     }
 }
