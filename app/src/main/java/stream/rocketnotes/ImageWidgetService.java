@@ -57,7 +57,7 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         {
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
             bmOptions.inJustDecodeBounds = false;
-            bmOptions.inSampleSize = 16;
+            bmOptions.inSampleSize = 8;
             bmOptions.inPurgeable = false;
             String imageURI = mNotesItems.get(position).getNotesImage();
             Log.d("ImagePath", imageURI);

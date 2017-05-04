@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,9 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.v13.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -221,6 +217,8 @@ public class ShareActivity extends Activity {
                 if ("png".equals(imageType) || "jpg".equals(imageType) ||
                         "jpeg".equals(imageType) || "bmp".equals(imageType))
                 {
+                    //Create location to save image
+                    FileUtils.InitializePicturesFolder(mContext);
                     //Set editDetails text to Image Note
                     editDetails.setText("New Image Note • now");
                     //Passed URL must start with http:// to be accepted by image loader
@@ -391,44 +389,6 @@ public class ShareActivity extends Activity {
             editText.setText(imageName);
             editText.setEnabled(false);
         }
-    }
-
-    public static Point getDisplayDimensions(Context context )
-    {
-        WindowManager wm = ( WindowManager ) context.getSystemService( Context.WINDOW_SERVICE );
-        Display display = wm.getDefaultDisplay();
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        display.getMetrics( metrics );
-        int screenWidth = metrics.widthPixels;
-        int screenHeight = metrics.heightPixels;
-
-        // find out if status bar has already been subtracted from screenHeight
-        display.getRealMetrics( metrics );
-        int physicalHeight = metrics.heightPixels;
-        int statusBarHeight = getStatusBarHeight( context );
-        int navigationBarHeight = getNavigationBarHeight( context );
-        int heightDelta = physicalHeight - screenHeight;
-        if ( heightDelta == 0 || heightDelta == navigationBarHeight )
-        {
-            screenHeight -= statusBarHeight;
-        }
-
-        return new Point( screenWidth, screenHeight );
-    }
-
-    public static int getStatusBarHeight( Context context )
-    {
-        Resources resources = context.getResources();
-        int resourceId = resources.getIdentifier( "status_bar_height", "dimen", "android" );
-        return ( resourceId > 0 ) ? resources.getDimensionPixelSize( resourceId ) : 0;
-    }
-
-    public static int getNavigationBarHeight( Context context )
-    {
-        Resources resources = context.getResources();
-        int resourceId = resources.getIdentifier( "navigation_bar_height", "dimen", "android" );
-        return ( resourceId > 0 ) ? resources.getDimensionPixelSize( resourceId ) : 0;
     }
 
     public void initializeAnalytics()

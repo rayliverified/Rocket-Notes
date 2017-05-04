@@ -48,8 +48,7 @@
         <activity android:name="stream.rocketnotes.ShareActivity"
                   android:label="Rocket Notes"
                   android:theme="@style/Theme.Share"
-                  android:excludeFromRecents="true"
-                  android:windowSoftInputMode="adjustResize">
+                  android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
                 <category android:name="android.intent.category.DEFAULT"/>
