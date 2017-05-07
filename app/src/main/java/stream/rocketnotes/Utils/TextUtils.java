@@ -20,6 +20,10 @@ public class TextUtils {
 
     public static String Compatibility(String raw)
     {
+        if (raw == null || raw == "")
+        {
+            return null;
+        }
         String output = "";
         output = raw.replaceAll("\n", "<br>");
         return output;
@@ -33,6 +37,7 @@ public class TextUtils {
         }
         String output = "";
         output = raw.trim();
+        output = output.replaceAll("&nbsp;", " ");
         if (output.length() >= 4)
         {
             if (output.substring(0, 4).equals("<br>"))

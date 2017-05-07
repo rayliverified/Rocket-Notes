@@ -57,7 +57,7 @@
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:textSize="14sp"
-            android:hint="Share to Note"
+            android:hint="Text is Empty"
             android:textColorHint="@color/textSecondary"
             android:textColor="@color/textPrimary"
             android:inputType="textMultiLine|textAutoCorrect|textCapSentences"
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/edit_edit"
             android:background="@android:color/transparent"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
             app:bottomLeftRadius="40"
             app:bottomRightRadius="40"
             android:visibility="gone"/>

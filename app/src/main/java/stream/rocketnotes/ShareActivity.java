@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -45,6 +47,7 @@ import stream.rocketnotes.ui.CustomImageView;
 import stream.rocketnotes.utils.AnalyticsUtils;
 import stream.rocketnotes.utils.FileUtils;
 import stream.rocketnotes.utils.PermissionUtils;
+import stream.rocketnotes.utils.Units;
 
 public class ShareActivity extends Activity {
 
@@ -62,7 +65,7 @@ public class ShareActivity extends Activity {
     private Context mContext;
 
     private boolean saveNote = false;
-    private boolean submitEnabled = false;
+    private boolean fileDownloading = false;
     private boolean fileDownloaded = false;
     private static final int REQUEST_STORAGE_PERMISSIONS = 23;
 
@@ -81,7 +84,7 @@ public class ShareActivity extends Activity {
         lp.copyFrom(window.getAttributes()); //Inherit transparent window attributes
         lp.width = WindowManager.LayoutParams.MATCH_PARENT; //Floating window WRAPS_CONTENT by default. Force fullscreen
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.y = 150; // top margin
+        lp.y = Units.dpToPx(mContext, 50); // top margin
         lp.gravity = (Gravity.TOP);
         window.setAttributes(lp);
         // set right and bottom margin implicitly by calculating width and height of dialog
@@ -143,7 +146,6 @@ public class ShareActivity extends Activity {
                 editText.setCursorVisible(true);
             }
         });
-
         editSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -199,6 +201,7 @@ public class ShareActivity extends Activity {
                 File imageFile = new File(imageUri.getPath());
                 imageFile.delete();
                 Log.d("Download", "Delete");
+                finish();
             }
         }
     }
@@ -217,6 +220,7 @@ public class ShareActivity extends Activity {
                 if ("png".equals(imageType) || "jpg".equals(imageType) ||
                         "jpeg".equals(imageType) || "bmp".equals(imageType))
                 {
+                    fileDownloading = true;
                     //Create location to save image
                     FileUtils.InitializePicturesFolder(mContext);
                     //Set editDetails text to Image Note
@@ -255,6 +259,7 @@ public class ShareActivity extends Activity {
                                 @Override
                                 public void onCompleted(Exception e, File file) {
                                     Log.d("Ion", "onCompleted");
+                                    fileDownloading = false;
                                     if (file != null)
                                     {
                                         //Load downloaded file into ImageView
@@ -276,20 +281,17 @@ public class ShareActivity extends Activity {
                                         //Set editDetails text to Text Note
                                         editDetails.setText("New Text Note • now");
                                     }
-                                    submitEnabled = true;
                                 }
                             });
                 }
                 else
                 {
                     editText.setText(shareText);
-                    submitEnabled = true;
                 }
             }
             else
             {
                 editText.setText(shareText);
-                submitEnabled = true;
             }
         }
     }
@@ -307,7 +309,6 @@ public class ShareActivity extends Activity {
             Picasso.with(mContext).load(imageUri).into(editImage);
             //Create Pictures folder to prepare to copy file into folder on saveNote clicked.
             FileUtils.InitializePicturesFolder(mContext);
-            submitEnabled = true;
         }
     }
 
@@ -316,7 +317,7 @@ public class ShareActivity extends Activity {
         //Set save attempt flag to true. Do not delete downloaded image file.
         saveNote = true;
         //Wait for images to load before allowing user to save.
-        if (submitEnabled == true)
+        if (!fileDownloading)
         {
             //Save note and close activity
             //Multiple content may be sent to Rocket Notes. Force refresh of main feed.
@@ -327,7 +328,7 @@ public class ShareActivity extends Activity {
 
             if ("text/plain".equals(noteType))
             {
-                //Shared text may be Image URL.
+                //Shared text may have originated as an Image URL
                 if (imageUri != null)
                 {
                     Intent saveNote = new Intent(mContext, SaveNoteService.class);

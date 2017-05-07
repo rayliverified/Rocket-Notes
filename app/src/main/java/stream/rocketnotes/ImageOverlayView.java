@@ -45,18 +45,6 @@ public class ImageOverlayView extends RelativeLayout {
         init();
     }
 
-    public void setDescription(String description) {
-        tvDescription.setText(description);
-    }
-
-    public void setShareText(String text) {
-        this.sharingText = text;
-    }
-
-    public void setNoteID(Integer noteID) {
-        this.noteID = noteID;
-    }
-
     private void init() {
 
         mContext = getContext();
@@ -86,6 +74,14 @@ public class ImageOverlayView extends RelativeLayout {
                 openDeleteIntent();
             }
         });
+    }
+
+    public void setDescription(String description) {
+        tvDescription.setText(description);
+    }
+    public void setShareText(String text) { this.sharingText = text; }
+    public void setNoteID(Integer noteID) {
+        this.noteID = noteID;
     }
 
     private void sendShareIntent() {

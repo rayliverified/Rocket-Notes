@@ -26,5 +26,5 @@ public interface Constants {
     public static final String SOURCE_PATH = "SOURCE_PATH";
     public static final String SAVE_PATH = "SAVE_PATH";
     public final static String FLURRY_API_KEY = "FQY6KKKN77CZYWWB9KPV";
-    public final static String UXCAM_API_KEY = "199daf32af5efce";
+    public final static String UXCAM_API_KEY = "0cbfb20ca44be10";
 }

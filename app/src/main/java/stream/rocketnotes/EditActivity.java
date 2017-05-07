@@ -3,6 +3,8 @@ package stream.rocketnotes;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ShareCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
 import com.pyze.android.Pyze;
@@ -22,6 +25,7 @@ import com.uxcam.UXCam;
 
 import org.greenrobot.eventbus.EventBus;
 
+import es.dmoral.toasty.Toasty;
 import jp.wasabeef.richeditor.RichEditor;
 import stream.rocketnotes.service.DeleteNoteService;
 import stream.rocketnotes.service.SaveNoteService;
@@ -33,9 +37,9 @@ public class EditActivity extends AppCompatActivity {
     private String noteStatus;
     private Integer noteID;
     private String noteTextRaw;
-    private boolean originalNew = false;
+    private boolean originalNew = false; //Current note is new and just created
     private boolean deletedNote = false;
-    private boolean savedNote = false;
+    private boolean savedNote = false; //Has note already been saved? If so, treat as OPEN_NOTE
     private boolean overrideExit = false; //Skip onPause autosave and exit cleanly.
     private String mActivity = "EditActivity";
     private Context mContext;
@@ -122,9 +126,10 @@ public class EditActivity extends AppCompatActivity {
             }
             else if (!deletedNote && savedNote == true)
             {
+                //This code only runs when a new note has been saved and is being resaved.
                 DatabaseHelper dbHelper = new DatabaseHelper(this);
                 noteStatus = Constants.OPEN_NOTE;
-                noteID = dbHelper.GetLatestID();
+                noteID = dbHelper.GetLatestID(); //New note always has the latest ID.
                 Log.d("Autosaved Note ID", String.valueOf(noteID));
                 saveNote();
             }
@@ -160,6 +165,10 @@ public class EditActivity extends AppCompatActivity {
             case R.id.action_redo:
                 Log.d("Edit Text", "Redo");
                 mEditor.redo();
+                break;
+            case R.id.action_share:
+                Log.d("Edit Text", "Share");
+                openShareIntent();
                 break;
             case R.id.action_delete:
                 Log.d("Edit Text", "Delete");
@@ -207,14 +216,32 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
+    private void openShareIntent()
+    {
+        if (!TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml())))
+        {
+            ShareCompat.IntentBuilder.from(this)
+                    .setText(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()))
+                    .setType("text/plain")
+                    .setChooserTitle("Share Note")
+                    .startChooser();
+        }
+        else
+        {
+            Toasty.error(mContext, "Note Empty", Toast.LENGTH_SHORT, true).show();
+        }
+    }
+
     private void openDeleteIntent()
     {
         if (savedNote == false && originalNew == true)
         {
+            //Note has not been saved and no database methods need to be called. Finish activity.
             return;
         }
         else if (savedNote == true && originalNew == true)
         {
+            //New note has been saved. Must get saved ID and pass to DeleteNote.
             Log.d("Edit Activity", "Delete New Note");
             DatabaseHelper dbHelper = new DatabaseHelper(this);
             noteID = dbHelper.GetLatestID();

@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -143,7 +144,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 
                 if (!oldQuery.equals("") && newQuery.equals("")) {
                     mSearchView.clearSuggestions();
-                    FilterReset();
+                    FilterReset(true);
                 } else {
                     if (mAdapter.hasNewSearchText(newQuery)) {
                         Log.d(TAG, "onQueryTextChange newText: " + newQuery);
@@ -209,7 +210,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 
 //                //set the title of the bar so that when focus is returned a new query begins
                 mSearchView.setSearchBarTitle("Rocket Notes");
-                FilterReset();
+                FilterReset(true);
 
                 //you can also set setSearchText(...) to make keep the query there when not focused and when focus returns
                 //mSearchView.setSearchText(searchSuggestion.getBody());
@@ -342,7 +343,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 
     public void FilterImages()
     {
-        Filter filter = new Filter(1, "Image", 0, R.drawable.icon_picture_full, getResources().getColor(R.color.colorPrimary));
+        Filter filter = new Filter(1, "Image", 0, R.drawable.icon_picture_image, ContextCompat.getColor(mContext, R.color.colorPrimary));
         mFilterView.setVisibility(View.VISIBLE);
         mFilterView.addFilter(filter);
         List<IFlexible> list = new ArrayList<>();
@@ -360,7 +361,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 
     public void FilterText()
     {
-        Filter filter = new Filter(1, "Text", 0, R.drawable.icon_rocket_image, getResources().getColor(R.color.colorPrimary));
+        Filter filter = new Filter(1, "Text", 0, R.drawable.icon_rocket_image, ContextCompat.getColor(mContext, R.color.colorPrimary));
         mFilterView.setVisibility(View.VISIBLE);
         mFilterView.addFilter(filter);
         List<IFlexible> list = new ArrayList<>();
@@ -375,11 +376,13 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         Log.d("Filter", "Text");
     }
 
-    public void FilterReset()
+    public void FilterReset(boolean clearSticky)
     {
         List<IFlexible> list = getDatabaseList();
         mAdapter.updateDataSet(list);
-        RemoveSticky();
+        //Do not clear sticky if filtering image notes
+        if (clearSticky)
+            RemoveSticky();
         Log.d("Filter", "Reset");
     }
 
@@ -461,7 +464,7 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 
     public void UpdateFilter(UpdateMainEvent event)
     {
-        FilterReset();
+        FilterReset(true);
     }
 
     public void checkVoiceRecognition() {
@@ -503,19 +506,20 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
     protected void onResume() {
         //Listen for new messages received
         Log.d("LocalBroadcastManager", "onResume");
-        EventBus.getDefault().register(this);
         //Sometimes, multiple changes are made to mAdapter and the entire view should be refreshed.
         if (sharedPref.getBoolean(Constants.REFRESH, false)) {
             if (mAdapter != null)
             {
                 Log.d("MainActivity", "Refresh");
-                FilterReset();
+                FilterReset(false);
             }
             //Reset REFRESH flag
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(Constants.REFRESH, false);
             editor.apply();
         }
+        //Get events after feed is refreshed.
+        EventBus.getDefault().register(this);
         super.onResume();
     }
 
