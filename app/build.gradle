@@ -47,7 +47,7 @@ dependencies {
     compile 'me.xdrop:fuzzywuzzy:1.1.6' //https://github.com/xdrop/fuzzywuzzy
     compile 'io.github.yavski:fab-speed-dial:1.0.6' //https://github.com/yavski/fab-speed-dial
     compile 'com.github.angads25:filepicker:1.1.0' //https://github.com/Angads25/android-filepicker
-    compile 'com.github.GrenderG:Toasty:1.2.3' //https://github.com/GrenderG/Toasty
+    compile 'com.github.GrenderG:Toasty:1.2.5' //https://github.com/GrenderG/Toasty
     compile 'jp.wasabeef:richeditor-android:1.2.2' //https://github.com/wasabeef/richeditor-android
     compile 'com.koushikdutta.ion:ion:2.1.9' //https://github.com/koush/ion
     compile 'com.github.ybq:Android-SpinKit:1.1.0' //https://github.com/ybq/Android-SpinKit

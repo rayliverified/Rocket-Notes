@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="8dp"
+        android:gravity="left"
+        android:background="@drawable/item_share_background">
+
+        <TextView
+            android:id="@+id/note_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_toLeftOf="@+id/btn_send"
+            android:gravity="left"
+            android:text="Sample Note Title"
+            android:textSize="12sp"
+            android:textColor="@color/textPrimary"/>
+
+        <TextView
+            android:id="@+id/note_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_below="@+id/note_title"
+            android:layout_toLeftOf="@+id/btn_send"
+            android:gravity="left"
+            android:text="Sample Note Content"
+            android:textSize="10sp"
+            android:textColor="@color/textSecondary"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:ellipsize="end"/>
+
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="6dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="SEND"
+            android:textSize="10sp"
+            android:textColor="@color/white"
+            android:fontFamily="sans-serif-medium"
+            android:background="@drawable/icon_add_selector"
+            android:elevation="2dp"/>
+    </RelativeLayout>
+</LinearLayout>

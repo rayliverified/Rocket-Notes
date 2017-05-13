@@ -11,9 +11,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.text.Editable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -39,6 +39,7 @@ import com.uxcam.UXCam;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 
 import es.dmoral.toasty.Toasty;
 import stream.rocketnotes.service.SaveImageService;
@@ -61,10 +62,15 @@ public class ShareActivity extends Activity {
     private String imageName;
     private ProgressBar progressBar;
     private Future<File> downloading;
+    private DatabaseHelper dbHelper;
+    private ArrayList<NotesItem> NoteList = new ArrayList<>();
+    private RecyclerView mRecyclerView;
+    private ShareAdapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
     private String mActivity = "ShareActivity";
     private Context mContext;
 
-    private boolean saveNote = false;
+    private boolean savedNote = false;
     private boolean fileDownloading = false;
     private boolean fileDownloaded = false;
     private static final int REQUEST_STORAGE_PERMISSIONS = 23;
@@ -87,11 +93,6 @@ public class ShareActivity extends Activity {
         lp.y = Units.dpToPx(mContext, 50); // top margin
         lp.gravity = (Gravity.TOP);
         window.setAttributes(lp);
-        // set right and bottom margin implicitly by calculating width and height of dialog
-//        Point displaySize = getDisplayDimensions(mContext);
-//        int width = displaySize.x - 120;
-//        int height = displaySize.y - 120;
-//        window.setLayout(width, height);
 
         //Flag allows window to overlap status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -152,6 +153,15 @@ public class ShareActivity extends Activity {
                 saveNote();
             }
         });
+
+        dbHelper = new DatabaseHelper(mContext);
+        mRecyclerView = (RecyclerView) findViewById(R.id.share_recycler);
+        mAdapter = new ShareAdapter(this, NoteList);
+        layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(layoutManager);
+
+        LoadNotes();
     }
 
     @Override
@@ -179,7 +189,6 @@ public class ShareActivity extends Activity {
                     AnalyticsUtils.AnalyticEvent(mActivity, "Permission", "Denied");
                     Toasty.error(mContext, "Permission Denied", Toast.LENGTH_SHORT, true).show();
                 }
-                return;
             }
         }
     }
@@ -189,7 +198,7 @@ public class ShareActivity extends Activity {
         super.onPause();
         Log.d("ShareActivity", "OnPause");
         //Share attempt has been canceled by user. Delete any remnants
-        if (!saveNote && downloading != null)
+        if (!savedNote && downloading != null)
         {
             Log.d("Download", "Cancel");
             //Cancel pending download if not completed
@@ -307,15 +316,13 @@ public class ShareActivity extends Activity {
             //Enable imageView and display shared image.
             editImage.setVisibility(View.VISIBLE);
             Picasso.with(mContext).load(imageUri).into(editImage);
-            //Create Pictures folder to prepare to copy file into folder on saveNote clicked.
+            //Create Pictures folder to prepare to copy file into folder on savedNote clicked.
             FileUtils.InitializePicturesFolder(mContext);
         }
     }
 
     private void saveNote()
     {
-        //Set save attempt flag to true. Do not delete downloaded image file.
-        saveNote = true;
         //Wait for images to load before allowing user to save.
         if (!fileDownloading)
         {
@@ -331,6 +338,8 @@ public class ShareActivity extends Activity {
                 //Shared text may have originated as an Image URL
                 if (imageUri != null)
                 {
+                    //Note is saved. Do not delete downloaded image file.
+                    savedNote = true;
                     Intent saveNote = new Intent(mContext, SaveNoteService.class);
                     saveNote.putExtra(Constants.IMAGE, imageUri.toString());
                     saveNote.setAction(Constants.NEW_NOTE);
@@ -354,7 +363,6 @@ public class ShareActivity extends Activity {
             {
                 if (imageUri != null)
                 {
-                    //Sometimes Content URI is obtained if file is shared from file manager. Get usable File URI.
                     Log.d("Image URI", String.valueOf(imageUri));
                     AnalyticsUtils.AnalyticEvent(mActivity, "SaveImage", "Image");
                     String savePath = getFilesDir() + "/.Pictures";
@@ -390,6 +398,12 @@ public class ShareActivity extends Activity {
             editText.setText(imageName);
             editText.setEnabled(false);
         }
+    }
+
+    private void LoadNotes()
+    {
+        NoteList.addAll(dbHelper.GetTextNotes(10));
+        mAdapter.notifyDataSetChanged();
     }
 
     public void initializeAnalytics()

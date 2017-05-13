@@ -86,5 +86,13 @@
             app:bottomLeftRadius="40"
             app:bottomRightRadius="40"
             android:visibility="gone"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/share_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/edit_image"
+            android:background="@null"/>
     </RelativeLayout>
 </FrameLayout>

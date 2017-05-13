@@ -146,7 +146,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
     //Return note
     public NotesItem GetNote(Integer id) {
-        ArrayList<NotesItem> notes = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_ID + " = '" + id + "'";
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -198,6 +197,33 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return notes;
     }
 
+    //Return specified number of recent text notes
+    public ArrayList<NotesItem> GetTextNotes(Integer limit) {
+        ArrayList<NotesItem> notes = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_NOTE + " NOT NULL ORDER BY " + KEY_DATE + " DESC LIMIT " + limit;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c.moveToFirst()) {
+            do {
+                NotesItem note = new NotesItem();
+                if (c.getString(c.getColumnIndexOrThrow("_id")) != null) {
+                    note.setNotesID(c.getInt(c.getColumnIndexOrThrow("_id")));
+                }
+                if (c.getString(c.getColumnIndexOrThrow("note")) != null) {
+                    note.setNotesNote(c.getString(c.getColumnIndexOrThrow("note")));
+                }
+                if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
+                    note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));
+                }
+                notes.add(note);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return notes;
+    }
+
     //Return note
     public Integer GetLatestID() {
         String selectQuery = "SELECT * FROM " + TABLE_NOTES + " ORDER BY " + KEY_ID + " DESC LIMIT 1";
@@ -213,7 +239,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return id;
     }
 
-    //Return recent image notes
+    //Return image notes
     public ArrayList<NotesItem> GetImageNotes() {
         ArrayList<NotesItem> notes = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_IMAGE + " NOT NULL ORDER BY " + KEY_DATE + " DESC";
