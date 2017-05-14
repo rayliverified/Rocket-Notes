@@ -15,4 +15,6 @@
 
     <!--Toolbar Titles-->
     <string name="editpage_title">Edit Note</string>
+
+    <string name="checkmark">\u2714</string>
 </resources>

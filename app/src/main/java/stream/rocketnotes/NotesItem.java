@@ -11,6 +11,7 @@ public class NotesItem {
     String note = null;
     Long date = null;
     String image = null;
+    boolean shared = false;
 
     public NotesItem()
     {
@@ -47,6 +48,9 @@ public class NotesItem {
         this.image = image;
     }
 
+    public boolean getShared() { return shared; }
+
+
     public Integer getNotesID ()
     {
         return this._id;
@@ -60,5 +64,7 @@ public class NotesItem {
     {
         return this.image;
     }
+
+    public void setShared(boolean shared) { this.shared = shared; }
 }
 

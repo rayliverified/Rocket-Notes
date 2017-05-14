@@ -2,6 +2,7 @@ package stream.rocketnotes;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,18 @@ public class ShareAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(RecyclerView.ViewHolder genericHolder, final int position) {
         NotesItem note = notesList.get(position);
         ShareAddViewholder holder = (ShareAddViewholder) genericHolder;
+        holder.setShareAdapterInterface(new ShareAdapterInterface() {
+            @Override
+            public void ShareNote(Integer position) {
+
+            }
+
+            @Override
+            public void ShareNote(Integer position, boolean shared) {
+                Log.d("SharedNote", String.valueOf(shared));
+                notesList.get(position).setShared(shared);
+            }
+        });
         holder.setNote(note);
     }
 
