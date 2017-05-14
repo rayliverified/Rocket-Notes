@@ -15,6 +15,7 @@ public interface Constants {
     public static final String OPEN_IMAGE_SINGLE = "OPEN_IMAGE_SINGLE";
     public static final String UPDATE_NOTE = "UPDATE_NOTE";
     public static final String DELETE_NOTE = "DELETE_NOTE";
+    public static final String ADDTO_NOTE = "ADDTO_NOTE";
     public static final String REFRESH = "REFRESH";
     public static final String BODY = "BODY";
     public static final String IMAGE = "IMAGE";

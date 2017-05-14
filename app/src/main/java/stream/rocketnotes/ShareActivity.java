@@ -36,6 +36,10 @@ import com.pyze.android.Pyze;
 import com.squareup.picasso.Picasso;
 import com.uxcam.UXCam;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -194,9 +198,18 @@ public class ShareActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        //Listen for new messages received
+        Log.d(mActivity, "onResume");
+        EventBus.getDefault().register(this);
+        super.onResume();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
-        Log.d("ShareActivity", "OnPause");
+        EventBus.getDefault().unregister(this);
+        Log.d(mActivity, "OnPause");
         //Share attempt has been canceled by user. Delete any remnants
         if (!savedNote && downloading != null)
         {
@@ -397,6 +410,38 @@ public class ShareActivity extends Activity {
         {
             editText.setText(imageName);
             editText.setEnabled(false);
+        }
+    }
+
+    @Subscribe(sticky = false, threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(UpdateMainEvent event) {
+        Log.d(mActivity, event.getAction());
+        if (event.getAction().equals(Constants.ADDTO_NOTE))
+        {
+            UpdateNote(event);
+        }
+    }
+
+    public void UpdateNote(UpdateMainEvent event)
+    {
+        Integer noteID = event.getID();
+        String noteTextRaw = event.getNoteText();
+
+        if (!TextUtils.isEmpty(editText.getText().toString().trim())) {
+            Intent saveNote = new Intent(mContext, SaveNoteService.class);
+            saveNote.putExtra(Constants.ID, noteID);
+            saveNote.putExtra(Constants.BODY, noteTextRaw + "<br>" + editText.getText().toString().trim());
+            saveNote.setAction(Constants.UPDATE_NOTE);
+            mContext.startService(saveNote);
+        }
+        RemoveSticky();
+    }
+
+    public void RemoveSticky()
+    {
+        UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
+        if(stickyEvent != null) {
+            EventBus.getDefault().removeStickyEvent(stickyEvent);
         }
     }
 
