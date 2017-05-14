@@ -93,6 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_below="@id/edit_image"
-            android:background="@null"/>
+            android:background="@null"
+            android:visibility="gone"/>
     </RelativeLayout>
 </FrameLayout>

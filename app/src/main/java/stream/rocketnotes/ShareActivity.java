@@ -74,6 +74,7 @@ public class ShareActivity extends Activity {
     private String mActivity = "ShareActivity";
     private Context mContext;
 
+    private boolean textNote = false;
     private boolean savedNote = false;
     private boolean fileDownloading = false;
     private boolean fileDownloaded = false;
@@ -137,7 +138,7 @@ public class ShareActivity extends Activity {
             Log.d("ShareActivity", action);
             Log.d("ShareActivity", noteType);
             if ("text/plain".equals(noteType)) {
-                shareText(shareIntent);
+                textNote = shareText(shareIntent);
             }
             else if (noteType.startsWith("image/"))
             {
@@ -158,14 +159,10 @@ public class ShareActivity extends Activity {
             }
         });
 
-        dbHelper = new DatabaseHelper(mContext);
-        mRecyclerView = (RecyclerView) findViewById(R.id.share_recycler);
-        mAdapter = new ShareAdapter(this, NoteList);
-        layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(layoutManager);
-
-        LoadNotes();
+        if (textNote)
+        {
+            ShowRecentNotes();
+        }
     }
 
     @Override
@@ -228,7 +225,7 @@ public class ShareActivity extends Activity {
         }
     }
 
-    public void shareText(Intent intent)
+    public boolean shareText(Intent intent)
     {
         String shareText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (shareText != null) {
@@ -302,20 +299,25 @@ public class ShareActivity extends Activity {
                                         editText.setEnabled(true);
                                         //Set editDetails text to Text Note
                                         editDetails.setText("New Text Note • now");
+                                        ShowRecentNotes();
                                     }
                                 }
                             });
+                    return false;
                 }
                 else
                 {
                     editText.setText(shareText);
+                    return true;
                 }
             }
             else
             {
                 editText.setText(shareText);
+                return true;
             }
         }
+        return false;
     }
 
     public void shareImage(Intent intent)
@@ -444,6 +446,20 @@ public class ShareActivity extends Activity {
             EventBus.getDefault().removeStickyEvent(stickyEvent);
         }
     }
+
+    private void ShowRecentNotes()
+    {
+        dbHelper = new DatabaseHelper(mContext);
+        mRecyclerView = (RecyclerView) findViewById(R.id.share_recycler);
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mAdapter = new ShareAdapter(this, NoteList);
+        layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(layoutManager);
+
+        LoadNotes();
+    }
+
 
     private void LoadNotes()
     {
