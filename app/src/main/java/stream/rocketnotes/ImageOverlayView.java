@@ -29,7 +29,7 @@ import stream.rocketnotes.service.SaveFileService;
 public class ImageOverlayView extends RelativeLayout {
 
     private TextView tvDescription;
-    private String sharingText;
+    private String imageUri;
     private Integer noteID;
     private Context mContext;
 
@@ -82,7 +82,7 @@ public class ImageOverlayView extends RelativeLayout {
     public void setDescription(String description) {
         tvDescription.setText(description);
     }
-    public void setShareText(String text) { this.sharingText = text; }
+    public void setImageUri(String text) { this.imageUri = text; }
     public void setNoteID(Integer noteID) {
         this.noteID = noteID;
     }
@@ -90,9 +90,7 @@ public class ImageOverlayView extends RelativeLayout {
     private void sendShareIntent() {
 
         Uri provider = Uri.parse("content://" + Constants.AUTHORITY);
-        DatabaseHelper dbHelper = new DatabaseHelper(mContext);
-        NotesItem note = dbHelper.GetNote(noteID);
-        Uri imageUri = Uri.parse(note.getNotesImage());
+        Uri imageUri = Uri.parse(this.imageUri);
         String imagePath = imageUri.getPath();
         String imageName = imagePath.substring(imagePath.lastIndexOf("/") + 1);
         imagePath = ".Pictures/" + imageName;

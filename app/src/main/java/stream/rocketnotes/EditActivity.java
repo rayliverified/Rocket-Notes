@@ -297,7 +297,7 @@ public class EditActivity extends AppCompatActivity {
                     .build(this, Constants.FLURRY_API_KEY);
         }
         Pyze.initialize(getApplication());
-        UXCam.startWithKey(Constants.UXCAM_API_KEY);
-        UXCam.occludeSensitiveScreen(true);
+//        UXCam.startWithKey(Constants.UXCAM_API_KEY);
+//        UXCam.occludeSensitiveScreen(true);
     }
 }

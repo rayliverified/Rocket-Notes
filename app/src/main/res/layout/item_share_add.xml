@@ -38,8 +38,7 @@
             android:text="Sample Note Content"
             android:textSize="12sp"
             android:textColor="@color/textSecondary"
-            android:maxLines="1"
-            android:singleLine="true"
+            android:maxLines="2"
             android:ellipsize="end"/>
 
         <Button
@@ -50,9 +49,7 @@
             android:paddingBottom="6dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="12dp"
+            android:layout_margin="12dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:text="ADD"

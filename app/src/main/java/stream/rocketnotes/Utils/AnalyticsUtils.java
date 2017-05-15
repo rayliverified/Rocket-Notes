@@ -14,7 +14,7 @@ public class AnalyticsUtils {
         //Flurry
         FlurryAgent.logEvent(event);
         //UXCam
-        UXCam.addTagWithProperties(event);
+//        UXCam.addTagWithProperties(event);
         //Pyze
         PyzeEvents.postCustomEvent(event);
     }
@@ -26,7 +26,7 @@ public class AnalyticsUtils {
         params.put(object, value);
         FlurryAgent.logEvent(activity, params);
         //UXCam
-        UXCam.addTagWithProperties(activity, params);
+//        UXCam.addTagWithProperties(activity, params);
         //Pyze
         HashMap <String, String> attributes = new HashMap<String, String>();
         attributes.put(object, String.valueOf(value));

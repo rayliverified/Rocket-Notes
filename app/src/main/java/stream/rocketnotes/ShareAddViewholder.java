@@ -84,11 +84,11 @@ public class ShareAddViewholder extends RecyclerView.ViewHolder {
     private Animation AnimateButton() {
         // Load the animation
         final Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
-        double animationDuration = 1000;
+        double animationDuration = 1250;
         animation.setDuration((long) animationDuration);
 
         // Use custom animation interpolator to achieve the bounce effect
-        BounceInterpolator interpolator = new BounceInterpolator(0.2, 15);
+        BounceInterpolator interpolator = new BounceInterpolator(0.2, 20);
         animation.setInterpolator(interpolator);
 
         return animation;

@@ -13,7 +13,6 @@ import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
 import com.flurry.android.FlurryAgent;
 import com.pyze.android.Pyze;
-import com.uxcam.UXCam;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -95,7 +94,7 @@ public class ImageViewerActivity extends AppCompatActivity {
             @Override
             public void onImageChange(int position) {
                 String url = mNotesItem.get(position).getNotesImage();
-                overlayView.setShareText(url);
+                overlayView.setImageUri(url);
                 overlayView.setNoteID(mNotesItem.get(position).getNotesID());
 //                overlayView.setDescription(descriptions[position]);
             }
@@ -165,7 +164,7 @@ public class ImageViewerActivity extends AppCompatActivity {
                     .build(this, Constants.FLURRY_API_KEY);
         }
         Pyze.initialize(getApplication());
-        UXCam.startWithKey(Constants.UXCAM_API_KEY);
-        UXCam.occludeSensitiveScreen(true);
+//        UXCam.startWithKey(Constants.UXCAM_API_KEY);
+//        UXCam.occludeSensitiveScreen(true);
     }
 }

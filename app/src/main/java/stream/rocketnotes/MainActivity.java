@@ -615,6 +615,6 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
                     .build(this, Constants.FLURRY_API_KEY);
         };
         Pyze.initialize(getApplication());
-        UXCam.startWithKey(Constants.UXCAM_API_KEY);
+//        UXCam.startWithKey(Constants.UXCAM_API_KEY);
     }
 }
