@@ -404,7 +404,8 @@ public class ShareActivity extends Activity {
         //Use editText to display image name.
         try {
             //Get File Name from URI and encode into readable format
-            imageName = URLDecoder.decode(String.valueOf(imageUri).substring(String.valueOf(imageUri).lastIndexOf("/")+1), "UTF-8");
+            imageName = URLDecoder.decode(String.valueOf(imageUri), "UTF-8");
+            imageName = imageName.substring(imageName.lastIndexOf("/")+1);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

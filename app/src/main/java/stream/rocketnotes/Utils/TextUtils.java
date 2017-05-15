@@ -58,6 +58,13 @@ public class TextUtils {
         return output.trim();
     }
 
+    public static String CleanShare(String raw)
+    {
+        String output = "";
+        output = raw.replaceAll("<br>", "\n");
+        return output;
+    }
+
     @SuppressWarnings("deprecation")
     public static Spanned fromHtml(String html)
     {

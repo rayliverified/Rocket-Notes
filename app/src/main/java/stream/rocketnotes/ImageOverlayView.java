@@ -2,14 +2,17 @@ package stream.rocketnotes;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.commonsware.cwac.provider.StreamProvider;
 import com.github.angads25.filepicker.controller.DialogSelectionListener;
 import com.github.angads25.filepicker.model.DialogConfigs;
 import com.github.angads25.filepicker.model.DialogProperties;
@@ -48,7 +51,7 @@ public class ImageOverlayView extends RelativeLayout {
     private void init() {
 
         mContext = getContext();
-        View view = inflate(mContext, R.layout.view_image_overlay, this);
+        View view = inflate(mContext, R.layout.image_overlay_view, this);
         tvDescription = (TextView) view.findViewById(R.id.tvDescription);
         view.findViewById(R.id.button_gallery).setOnClickListener(new OnClickListener() {
             @Override
@@ -56,12 +59,12 @@ public class ImageOverlayView extends RelativeLayout {
                 openGalleryIntent();
             }
         });
-//        view.findViewById(R.id.button_share).setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                sendShareIntent();
-//            }
-//        });
+        view.findViewById(R.id.button_share).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendShareIntent();
+            }
+        });
         view.findViewById(R.id.button_save).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,11 +88,32 @@ public class ImageOverlayView extends RelativeLayout {
     }
 
     private void sendShareIntent() {
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, sharingText);
-        sendIntent.setType("text/plain");
-        mContext.startActivity(sendIntent);
+
+        Uri provider = Uri.parse("content://" + Constants.AUTHORITY);
+        DatabaseHelper dbHelper = new DatabaseHelper(mContext);
+        NotesItem note = dbHelper.GetNote(noteID);
+        Uri imageUri = Uri.parse(note.getNotesImage());
+        String imagePath = imageUri.getPath();
+        String imageName = imagePath.substring(imagePath.lastIndexOf("/") + 1);
+        imagePath = ".Pictures/" + imageName;
+
+        provider = provider
+                .buildUpon()
+                .appendPath(StreamProvider.getUriPrefix(Constants.AUTHORITY))
+                .appendPath(imagePath)
+                .build();
+
+        String extension = imagePath.substring(imagePath.lastIndexOf('.') + 1);
+        extension = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+
+        Log.d("Provider URI", String.valueOf(provider));
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, provider);
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, imageName);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, imageName);
+        shareIntent.setType(extension);
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        mContext.startActivity(Intent.createChooser(shareIntent, "Share Image"));
     }
 
     private void openGalleryIntent()

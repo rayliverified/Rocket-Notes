@@ -61,9 +61,9 @@ public class CustomImageView extends ImageView {
         if (getDrawable() != null)
         {
             height = width * getDrawable().getIntrinsicHeight() / getDrawable().getIntrinsicWidth();
-            if (height > 480)
+            if (height > 720)
             {
-                height = 480;
+                height = 720;
             }
         }
         else

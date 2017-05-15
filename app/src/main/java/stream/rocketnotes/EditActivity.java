@@ -220,8 +220,10 @@ public class EditActivity extends AppCompatActivity {
     {
         if (!TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml())))
         {
+            String shareText = stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml());
+            shareText = stream.rocketnotes.utils.TextUtils.CleanShare(shareText);
             ShareCompat.IntentBuilder.from(this)
-                    .setText(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()))
+                    .setText(shareText)
                     .setType("text/plain")
                     .setChooserTitle("Share Note")
                     .startChooser();

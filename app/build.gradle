@@ -7,8 +7,8 @@ android {
         applicationId "stream.rocketnotes"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 6
-        versionName "1.0.5"
+        versionCode 7
+        versionName "1.0.6"
     }
     buildTypes {
         release {
@@ -24,6 +24,7 @@ repositories {
     maven { url 'https://jitpack.io' }
     maven { url 'http://sdk.uxcam.com/android/' }
     maven { url  "http://pyze.bintray.com/pyze-android" }
+    maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
 }
 
 dependencies {
@@ -51,6 +52,7 @@ dependencies {
     compile 'jp.wasabeef:richeditor-android:1.2.2' //https://github.com/wasabeef/richeditor-android
     compile 'com.koushikdutta.ion:ion:2.1.9' //https://github.com/koush/ion
     compile 'com.github.ybq:Android-SpinKit:1.1.0' //https://github.com/ybq/Android-SpinKit
+    compile 'com.commonsware.cwac:provider:0.5.2' //https://github.com/commonsguy/cwac-provider
     compile 'com.flurry.android:analytics:6.9.2'
     compile 'com.uxcam:uxcam:2.5.7@aar'
     compile 'com.pyze:PyzeLibrary:2.12.0'

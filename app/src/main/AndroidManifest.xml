@@ -109,5 +109,20 @@
         <service android:name="stream.rocketnotes.service.SaveFileService"/>
         <service android:name="stream.rocketnotes.service.SaveImageService"/>
         <!-- Providers -->
+        <provider
+            android:name="com.commonsware.cwac.provider.StreamProvider"
+            android:authorities="stream.rocketnotes.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="com.commonsware.cwac.provider.STREAM_PROVIDER_PATHS"
+                android:resource="@xml/content_provider_paths"/>
+            <meta-data
+                android:name="com.commonsware.cwac.provider.USE_LEGACY_CURSOR_WRAPPER"
+                android:value="true"/>
+            <meta-data
+                android:name="com.commonsware.cwac.provider.USE_URI_FOR_DATA_COLUMN"
+                android:value="true"/>
+        </provider>
     </application>
 </manifest>
