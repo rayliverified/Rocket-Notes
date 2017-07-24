@@ -56,6 +56,7 @@ dependencies {
     compile 'com.flurry.android:analytics:7.2.1'
     compile 'com.uxcam:uxcam:2.5.8'
     compile 'com.pyze:PyzeLibrary:2.16.0'
+    compile 'org.zeroturnaround:zt-zip:1.9'
     //Custom filter chips from https://github.com/claudiodegio/MsvSearch
     //Image viewer from https://github.com/stfalcon-studio/FrescoImageViewer
 }

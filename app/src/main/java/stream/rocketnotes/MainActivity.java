@@ -41,6 +41,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,6 +67,7 @@ import stream.rocketnotes.filter.FilterMaterialSearchView;
 import stream.rocketnotes.filter.model.Filter;
 import stream.rocketnotes.service.SaveFileService;
 import stream.rocketnotes.utils.AnalyticsUtils;
+import stream.rocketnotes.utils.FileUtils;
 
 public class MainActivity extends Activity implements AppBarLayout.OnOffsetChangedListener {
 
@@ -408,34 +410,39 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
     public void BackupDatabase(String savePath)
     {
         try {
+            //Make sure Pictures folder exists. User could have no picture notes.
+            FileUtils.InitializePicturesFolder(mContext);
+
+            //Copy notes database to Pictures folder.
             final String inFileName = mContext.getDatabasePath("NotesDB").getPath();
             File dbFile = new File(inFileName);
             FileInputStream fis = new FileInputStream(dbFile);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            String currentDate = sdf.format(new Date());
-
-            String outFileName = savePath + "/" + "RocketNotes_" + currentDate + ".db";
-            Log.d("Output File", outFileName);
-
+            String outFileName = getFilesDir() + "/" + ".Pictures/" + "NotesDB.db";
             // Open the empty db as the output stream
             OutputStream output = new FileOutputStream(outFileName);
-
             // Transfer bytes from the inputfile to the outputfile
             byte[] buffer = new byte[1024];
             int length;
             while ((length = fis.read(buffer))>0){
                 output.write(buffer, 0, length);
             }
-
             // Close the streams
             output.flush();
             output.close();
             fis.close();
+
+            //Zip Pictures folder and save to user specified location.
+            File storageDir = new File(getFilesDir(), ".Pictures");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String currentDate = sdf.format(new Date());
+            String saveFilePath = savePath + "/" + "RocketNotes_" + currentDate + ".zip";
+            ZipUtil.pack(storageDir, new File(saveFilePath));
+
+            Toasty.success(mContext, "Backup Successful", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
             Toasty.error(mContext, "Backup Failed", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private void openSaveIntent()
