@@ -50,7 +50,6 @@ public class NotesItem {
 
     public boolean getShared() { return shared; }
 
-
     public Integer getNotesID ()
     {
         return this._id;

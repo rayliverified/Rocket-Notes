@@ -36,7 +36,7 @@ public class CameraActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         mContext = getApplicationContext();
         initializeAnalytics();
-        if (Build.VERSION.SDK_INT >= 23) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             final String[] permissions = {
                     Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 

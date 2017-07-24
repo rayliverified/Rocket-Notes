@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.design.internal.NavigationMenu;
@@ -27,6 +28,10 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.flurry.android.FlurryAgent;
+import com.github.angads25.filepicker.controller.DialogSelectionListener;
+import com.github.angads25.filepicker.model.DialogConfigs;
+import com.github.angads25.filepicker.model.DialogProperties;
+import com.github.angads25.filepicker.view.FilePickerDialog;
 import com.pyze.android.Pyze;
 import com.pyze.android.PyzeEvents;
 import com.uxcam.UXCam;
@@ -37,11 +42,20 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollStaggeredLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -50,6 +64,7 @@ import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 import stream.rocketnotes.filter.FilterMaterialSearchView;
 import stream.rocketnotes.filter.model.Filter;
+import stream.rocketnotes.service.SaveFileService;
 import stream.rocketnotes.utils.AnalyticsUtils;
 
 public class MainActivity extends Activity implements AppBarLayout.OnOffsetChangedListener {
@@ -251,11 +266,15 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
                     AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Filter Text");
                     FilterText();
                 }
+                else if (item.getItemId() == R.id.action_backup_sql)
+                {
+                    AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Backup Database");
+                    openSaveIntent();
+                }
                 else
                 {
 
                 }
-
             }
         });
 
@@ -384,6 +403,70 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         if (clearSticky)
             RemoveSticky();
         Log.d("Filter", "Reset");
+    }
+
+    public void BackupDatabase(String savePath)
+    {
+        try {
+            final String inFileName = mContext.getDatabasePath("NotesDB").getPath();
+            File dbFile = new File(inFileName);
+            FileInputStream fis = new FileInputStream(dbFile);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String currentDate = sdf.format(new Date());
+
+            String outFileName = savePath + "/" + "RocketNotes_" + currentDate + ".db";
+            Log.d("Output File", outFileName);
+
+            // Open the empty db as the output stream
+            OutputStream output = new FileOutputStream(outFileName);
+
+            // Transfer bytes from the inputfile to the outputfile
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = fis.read(buffer))>0){
+                output.write(buffer, 0, length);
+            }
+
+            // Close the streams
+            output.flush();
+            output.close();
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toasty.error(mContext, "Backup Failed", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void openSaveIntent()
+    {
+        DialogProperties properties = new DialogProperties();
+        properties.selection_mode = DialogConfigs.SINGLE_MODE;
+        properties.selection_type = DialogConfigs.DIR_SELECT;
+        properties.root = new File("/mnt/sdcard/");
+        properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
+        properties.offset = new File(DialogConfigs.DEFAULT_DIR);
+        properties.extensions = null;
+        FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
+        dialog.setTitle("Choose Backup Location");
+        dialog.setDialogSelectionListener(new DialogSelectionListener() {
+            @Override
+            public void onSelectedFilePaths(String[] files) {
+                if (files.length >= 1)
+                {
+                    BackupDatabase(files[0]);
+                }
+                else
+                {
+                    Toasty.error(mContext, "No Location Selected", Toast.LENGTH_SHORT).show();
+                }
+                for (String filePath : files)
+                {
+                    Log.d("File Path", filePath);
+                }
+            }
+        });
+        dialog.show();
     }
 
     public void UpdateOnAdd(UpdateMainEvent event)

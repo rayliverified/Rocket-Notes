@@ -127,7 +127,7 @@ public class ImageOverlayView extends RelativeLayout {
         DialogProperties properties = new DialogProperties();
         properties.selection_mode = DialogConfigs.SINGLE_MODE;
         properties.selection_type = DialogConfigs.DIR_SELECT;
-        properties.root = new File(DialogConfigs.DEFAULT_DIR);
+        properties.root = new File("/mnt/sdcard/Pictures");
         properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
         properties.offset = new File(DialogConfigs.DEFAULT_DIR);
         properties.extensions = null;
@@ -147,7 +147,7 @@ public class ImageOverlayView extends RelativeLayout {
                 }
                 else
                 {
-                    Toasty.custom(mContext, "No Location Selected", null, ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, false).show();
+                    Toasty.error(mContext, "No Location Selected", Toast.LENGTH_SHORT).show();
                 }
                 for (String filePath : files)
                 {
