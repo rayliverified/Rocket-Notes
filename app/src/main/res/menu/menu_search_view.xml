@@ -23,4 +23,8 @@
           android:title="Backup Database"
           android:orderInCategory="4"
           app:showAsAction="never"/>
+    <item android:id="@+id/action_restore_sql"
+          android:title="Restore Database"
+          android:orderInCategory="5"
+          app:showAsAction="never"/>
 </menu>

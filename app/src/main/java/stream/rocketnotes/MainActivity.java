@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.design.internal.NavigationMenu;
@@ -34,18 +33,14 @@ import com.github.angads25.filepicker.model.DialogProperties;
 import com.github.angads25.filepicker.view.FilePickerDialog;
 import com.pyze.android.Pyze;
 import com.pyze.android.PyzeEvents;
-import com.uxcam.UXCam;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -65,7 +60,6 @@ import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 import stream.rocketnotes.filter.FilterMaterialSearchView;
 import stream.rocketnotes.filter.model.Filter;
-import stream.rocketnotes.service.SaveFileService;
 import stream.rocketnotes.utils.AnalyticsUtils;
 import stream.rocketnotes.utils.FileUtils;
 
@@ -271,7 +265,60 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
                 else if (item.getItemId() == R.id.action_backup_sql)
                 {
                     AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Backup Database");
-                    openSaveIntent();
+                    DialogProperties properties = new DialogProperties();
+                    properties.selection_mode = DialogConfigs.SINGLE_MODE;
+                    properties.selection_type = DialogConfigs.DIR_SELECT;
+                    properties.root = new File("/mnt/sdcard/");
+                    properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
+                    properties.offset = new File(DialogConfigs.DEFAULT_DIR);
+                    properties.extensions = null;
+                    FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
+                    dialog.setTitle("Choose Backup Location");
+                    dialog.setDialogSelectionListener(new DialogSelectionListener() {
+                        @Override
+                        public void onSelectedFilePaths(String[] files) {
+                            if (files.length >= 1)
+                            {
+                                BackupDatabase(files[0]);
+                            }
+                            else
+                            {
+                                Toasty.error(mContext, "No Location Selected", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    dialog.show();
+                }
+                else if (item.getItemId() == R.id.action_restore_sql)
+                {
+                    AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Restore Database");
+                    DialogProperties properties = new DialogProperties();
+                    properties.selection_mode = DialogConfigs.SINGLE_MODE;
+                    properties.selection_type = DialogConfigs.FILE_SELECT;
+                    properties.root = new File("/mnt/sdcard/");
+                    properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
+                    properties.offset = new File(DialogConfigs.DEFAULT_DIR);
+                    properties.extensions = new String[]{"zip"};
+                    FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
+                    dialog.setTitle("Choose NotesDB Backup");
+                    dialog.setDialogSelectionListener(new DialogSelectionListener() {
+                        @Override
+                        public void onSelectedFilePaths(String[] files) {
+                            if (files.length >= 1)
+                            {
+                                RestoreDatabase(files[0]);
+                            }
+                            else
+                            {
+                                Toasty.error(mContext, "No File Selected", Toast.LENGTH_SHORT).show();
+                            }
+                            for (String filePath : files)
+                            {
+                                Log.d("File Path", filePath);
+                            }
+                        }
+                    });
+                    dialog.show();
                 }
                 else
                 {
@@ -445,35 +492,26 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         }
     }
 
-    private void openSaveIntent()
+    public void RestoreDatabase(String restorePath)
     {
-        DialogProperties properties = new DialogProperties();
-        properties.selection_mode = DialogConfigs.SINGLE_MODE;
-        properties.selection_type = DialogConfigs.DIR_SELECT;
-        properties.root = new File("/mnt/sdcard/");
-        properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
-        properties.offset = new File(DialogConfigs.DEFAULT_DIR);
-        properties.extensions = null;
-        FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
-        dialog.setTitle("Choose Backup Location");
-        dialog.setDialogSelectionListener(new DialogSelectionListener() {
-            @Override
-            public void onSelectedFilePaths(String[] files) {
-                if (files.length >= 1)
-                {
-                    BackupDatabase(files[0]);
-                }
-                else
-                {
-                    Toasty.error(mContext, "No Location Selected", Toast.LENGTH_SHORT).show();
-                }
-                for (String filePath : files)
-                {
-                    Log.d("File Path", filePath);
-                }
-            }
-        });
-        dialog.show();
+        //Make sure Pictures folder exists. User could have no picture notes.
+        FileUtils.InitializePicturesFolder(mContext);
+        //Restoring backup requires NotesDB. If no NotesDB found, backup file is not valid.
+        boolean validBackup = ZipUtil.containsEntry(new File(restorePath), "NotesDB.db");
+        if (validBackup)
+        {
+            ZipUtil.unpackEntry(new File(restorePath), "NotesDB.db", new File(mContext.getDatabasePath("NotesDB").getPath()));
+            ZipUtil.unpack(new File(restorePath), new File(getFilesDir(), ".Pictures"));
+            File file = new File(getFilesDir(), ".Pictures/NotesDB.db");
+            file.delete();
+            Toasty.success(mContext, "Backup Restored", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Toasty.error(mContext, "Invalid Backup File", Toast.LENGTH_SHORT).show();
+        }
+
+        FilterReset(true);
     }
 
     public void UpdateOnAdd(UpdateMainEvent event)
