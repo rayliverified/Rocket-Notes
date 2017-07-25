@@ -83,7 +83,7 @@ public class ShareAddViewholder extends RecyclerView.ViewHolder {
 
     private Animation AnimateButton() {
         // Load the animation
-        final Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
+        final Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_button);
         double animationDuration = 1250;
         animation.setDuration((long) animationDuration);
 

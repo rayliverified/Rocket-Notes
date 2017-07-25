@@ -2,6 +2,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="image_margin">0dp</dimen>
     <dimen name="note_widget_margin">6dp</dimen>
+    <dimen name="title_size">18sp</dimen>
+    <dimen name="body_size">14sp</dimen>
 
     <dimen name="msv_horizontal_margin">8dip</dimen>
     <dimen name="msv_filter_height">32dip</dimen>

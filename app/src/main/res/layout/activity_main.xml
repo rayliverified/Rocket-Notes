@@ -30,8 +30,7 @@
                 android:layout_height="match_parent"
                 android:visibility="gone"
                 app:msvIsContainEnabled="false"
-                android:elevation="6dp">
-            </stream.rocketnotes.filter.FilterMaterialSearchView>
+                android:elevation="4dp"/>
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v7.widget.RecyclerView

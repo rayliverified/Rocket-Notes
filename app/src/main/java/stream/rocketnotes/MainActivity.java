@@ -14,6 +14,7 @@ import android.speech.RecognizerIntent;
 import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -63,7 +64,7 @@ import stream.rocketnotes.filter.model.Filter;
 import stream.rocketnotes.utils.AnalyticsUtils;
 import stream.rocketnotes.utils.FileUtils;
 
-public class MainActivity extends Activity implements AppBarLayout.OnOffsetChangedListener {
+public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
 
     private static final String TAG = "Search";
     private SharedPreferences sharedPref;
@@ -694,6 +695,11 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
                 mImageCount += 1;
                 list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
             }
+        }
+        //Display prompt for review if user has created 3 or more notes.
+        if (mNoteCount + mImageCount >= 3)
+        {
+            list.add(new WidgetReviewViewholder("Review", MainActivity.this));
         }
         return list;
     }

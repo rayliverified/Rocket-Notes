@@ -30,6 +30,7 @@ repositories {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.github.searchy2:CustomPermissionsDialogue:1.1'
+    compile 'com.github.searchy2:CustomAlertViewDialogue:1.5'
 
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'

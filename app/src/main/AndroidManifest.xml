@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
           package="stream.rocketnotes">
 
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -16,7 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data android:name="PyzeAppKey" android:value="ERdy22a6SxORk6ndRxsEUA"/>
-        <activity android:name="stream.rocketnotes.MainActivity">
+        <activity android:name=".MainActivity"
+                  android:label=""
+                  android:icon="@mipmap/ic_launcher"
+                  android:theme="@style/AppThemeHome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -26,26 +28,26 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:name="stream.rocketnotes.ResultActivity"
-            android:parentActivityName="stream.rocketnotes.MainActivity"
+            android:name=".ResultActivity"
+            android:parentActivityName=".MainActivity"
             android:launchMode="singleTask"
             android:taskAffinity=""
             android:excludeFromRecents="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="stream.rocketnotes.MainActivity"/>
+                android:value=".MainActivity"/>
         </activity>
-        <activity android:name="stream.rocketnotes.CameraActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
+        <activity android:name=".CameraActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
         <activity
             android:name="com.afollestad.materialcamera.CaptureActivity"
             android:theme="@style/MaterialCamera.CaptureActivity" />
         <activity
             android:name="com.afollestad.materialcamera.CaptureActivity2"
             android:theme="@style/MaterialCamera.CaptureActivity" />
-        <activity android:name="stream.rocketnotes.ImageViewerActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
-        <activity android:name="stream.rocketnotes.PopupActivity" android:theme="@style/Theme.TransparentFloating" android:excludeFromRecents="true"/>
-        <activity android:name="stream.rocketnotes.EditActivity" android:theme="@style/AppActionBar" android:screenOrientation="portrait"  android:configChanges="orientation"/>
-        <activity android:name="stream.rocketnotes.ShareActivity"
+        <activity android:name=".ImageViewerActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
+        <activity android:name=".PopupActivity" android:theme="@style/Theme.TransparentFloating" android:excludeFromRecents="true"/>
+        <activity android:name=".EditActivity" android:theme="@style/AppActionBar" android:screenOrientation="portrait"  android:configChanges="orientation"/>
+        <activity android:name=".ShareActivity"
                   android:label="Rocket Notes"
                   android:theme="@style/Theme.Share"
                   android:excludeFromRecents="true">
@@ -61,7 +63,7 @@
             </intent-filter>
         </activity>
         <!-- Widgets -->
-        <receiver android:name="stream.rocketnotes.NewNoteWidget"
+        <receiver android:name=".NewNoteWidget"
                   android:icon="@drawable/icon_rocket_image_round"
                   android:label="•Quick Note•">
             <intent-filter >
@@ -72,7 +74,7 @@
                        android:resource="@xml/widget_newnote">
             </meta-data>
         </receiver>
-        <receiver android:name="stream.rocketnotes.NotesWidget"
+        <receiver android:name=".NotesWidget"
                   android:icon="@drawable/preview_notes"
                   android:label="•Rocket Notes•">
             <intent-filter >
@@ -86,7 +88,7 @@
                        android:resource="@xml/widget_notes">
             </meta-data>
         </receiver>
-        <receiver android:name="stream.rocketnotes.ImageWidget"
+        <receiver android:name=".ImageWidget"
                   android:icon="@drawable/preview_gallery"
                   android:label="•Rocket Images•">
             <intent-filter >
@@ -100,18 +102,18 @@
             </meta-data>
         </receiver>
         <!-- Services -->
-        <service android:name="stream.rocketnotes.ImageWidgetService"
+        <service android:name=".ImageWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service android:name="stream.rocketnotes.NotesWidgetService"
+        <service android:name=".NotesWidgetService"
                  android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service android:name="stream.rocketnotes.service.SaveNoteService"/>
-        <service android:name="stream.rocketnotes.service.DeleteNoteService"/>
-        <service android:name="stream.rocketnotes.service.SaveFileService"/>
-        <service android:name="stream.rocketnotes.service.SaveImageService"/>
+        <service android:name=".service.SaveNoteService"/>
+        <service android:name=".service.DeleteNoteService"/>
+        <service android:name=".service.SaveFileService"/>
+        <service android:name=".service.SaveImageService"/>
         <!-- Providers -->
         <provider
             android:name="com.commonsware.cwac.provider.StreamProvider"
-            android:authorities="stream.rocketnotes.provider"
+            android:authorities=".provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
