@@ -77,8 +77,9 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
     FilterMaterialSearchView mFilterView;
     private Integer mNoteCount;
     private Integer mImageCount;
-    private String mActivity = "MainActivity";
+    DatabaseHelper dbHelper;
     Context mContext;
+    private String mActivity = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,11 +88,11 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 
         mContext = getApplicationContext();
         initializeAnalytics();
+        Pyze.showInAppNotificationUI(this, null);
+        dbHelper = new DatabaseHelper(mContext);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         //Checks for first launch
         if (sharedPref.getBoolean("prefs_first_start", true)) {
-
-            DatabaseHelper dbMessage = new DatabaseHelper(mContext);
 
             //Start sequence finished
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -415,7 +416,6 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         mFilterView.setVisibility(View.VISIBLE);
         mFilterView.addFilter(filter);
         List<IFlexible> list = new ArrayList<>();
-        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         ArrayList<NotesItem> notesItems = dbHelper.GetImageNotes();
         Log.d("NotesItem Size", String.valueOf(notesItems.size()));
         for (NotesItem note : notesItems)
@@ -433,7 +433,6 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
         mFilterView.setVisibility(View.VISIBLE);
         mFilterView.addFilter(filter);
         List<IFlexible> list = new ArrayList<>();
-        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         ArrayList<NotesItem> notesItems = dbHelper.GetTextNotes();
         Log.d("NotesItem Size", String.valueOf(notesItems.size()));
         for (NotesItem note : notesItems)
@@ -517,7 +516,6 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
     public void UpdateOnAdd(UpdateMainEvent event)
     {
         Integer noteID = event.getID();
-        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         NotesItem note = dbHelper.GetNote(noteID);
         AbstractFlexibleItem item = null;
         if (note.getNotesImage() != null)
@@ -539,7 +537,6 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
     public void UpdateOnUpdate(UpdateMainEvent event)
     {
         Integer noteID = event.getID();
-        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         NotesItem note = dbHelper.GetNote(noteID);
         AbstractFlexibleItem item = null;
         if (note.getNotesImage() != null)
@@ -681,7 +678,6 @@ public class MainActivity extends Activity implements AppBarLayout.OnOffsetChang
 
     public List<IFlexible> getDatabaseList() {
         List<IFlexible> list = new ArrayList<>();
-        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         ArrayList<NotesItem> notesItems = dbHelper.GetNotesDate();
         mNoteCount = 0;
         mImageCount = 0;
