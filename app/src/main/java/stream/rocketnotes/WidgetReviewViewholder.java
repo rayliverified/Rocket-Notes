@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.suke.widget.SwitchButton;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -198,6 +203,19 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
                     SetReviewStatus(context, false);
                 }
             });
+            holder.hideLayout.setVisibility(View.VISIBLE);
+            holder.switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+                    if (!isChecked)
+                    {
+                        AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Hide");
+                        SetHideStatus(context, true);
+                        EventBus.getDefault().post(new UpdateMainEvent(Constants.HIDE_REVIEW));
+                        Log.d("Notification", Constants.HIDE_REVIEW);
+                    }
+                }
+            });
         }
     }
 
@@ -211,11 +229,12 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
         RelativeLayout widgetReviewLayout;
         LinearLayout rateYesLayout;
         LinearLayout rateNoLayout;
+        LinearLayout hideLayout;
         ImageButton rateYes;
         ImageButton rateNo;
         TextView body;
         TextView rateYesText;
-
+        SwitchButton switchButton;
 
         public MyViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
@@ -224,8 +243,10 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
             rateNo = (ImageButton) view.findViewById(R.id.smiley_no);
             rateYesLayout = (LinearLayout) view.findViewById(R.id.smiley_yes_layout);
             rateNoLayout = (LinearLayout) view.findViewById(R.id.smiley_no_layout);
+            hideLayout = (LinearLayout) view.findViewById(R.id.hide_container);
             body = (TextView) view.findViewById(R.id.item_widgetreview_body);
             rateYesText = (TextView) view.findViewById(R.id.smiley_yes_text);
+            switchButton = (SwitchButton) view.findViewById(R.id.hide_switch);
         }
     }
 
@@ -239,6 +260,13 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
     private void GetReviewStatus(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("prefs", 0);
         widgetReview = prefs.getBoolean(Constants.WIDGET_REVIEW, false);
+    }
+
+    private void SetHideStatus(Context context, boolean hide) {
+        SharedPreferences prefs = context.getSharedPreferences("prefs", 0);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(Constants.WIDGET_REVIEW_HIDE, hide);
+        editor.apply();
     }
 
     /**

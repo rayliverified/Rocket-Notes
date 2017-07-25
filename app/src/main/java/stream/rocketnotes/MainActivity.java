@@ -579,6 +579,16 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         Log.d("Broadcast Receiver", Constants.DELETE_NOTE);
     }
 
+    public void UpdateOnHide(UpdateMainEvent event)
+    {
+        AbstractFlexibleItem item = null;
+        item = new WidgetReviewViewholder("Review", MainActivity.this);
+        Integer position = mAdapter.getGlobalPositionOf(item);
+        Log.d("Item Position", String.valueOf(position));
+        mAdapter.removeItem(position);
+        RemoveSticky();
+        Log.d("Broadcast Receiver", Constants.HIDE_REVIEW);
+    }
 
     public void RemoveSticky()
     {
@@ -617,6 +627,10 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         else if (event.getAction().equals(Constants.DELETE_NOTE))
         {
             UpdateOnDelete(event);
+        }
+        else if (event.getAction().equals(Constants.HIDE_REVIEW))
+        {
+            UpdateOnHide(event);
         }
         else if (event.getAction().equals(Constants.FILTER))
         {
@@ -696,8 +710,10 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
             }
         }
-        //Display prompt for review if user has created 3 or more notes.
-        if (mNoteCount + mImageCount >= 3)
+        //Display prompt for review if user has created 3 or more notes and not hidden widget.
+        SharedPreferences prefs = mContext.getSharedPreferences("prefs", 0);
+        boolean hideReview = prefs.getBoolean(Constants.WIDGET_REVIEW_HIDE, false);
+        if (mNoteCount + mImageCount >= 3 && hideReview == false)
         {
             list.add(new WidgetReviewViewholder("Review", MainActivity.this));
         }

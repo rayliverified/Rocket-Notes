@@ -16,8 +16,6 @@
         android:theme="@style/AppTheme">
         <meta-data android:name="PyzeAppKey" android:value="ERdy22a6SxORk6ndRxsEUA"/>
         <activity android:name=".MainActivity"
-                  android:label=""
-                  android:icon="@mipmap/ic_launcher"
                   android:theme="@style/AppThemeHome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

@@ -54,6 +54,7 @@ dependencies {
     compile 'com.koushikdutta.ion:ion:2.2.1' //https://github.com/koush/ion
     compile 'com.github.ybq:Android-SpinKit:1.1.0' //https://github.com/ybq/Android-SpinKit
     compile 'com.commonsware.cwac:provider:0.5.2' //https://github.com/commonsguy/cwac-provider
+    compile 'com.github.zcweng:switch-button:0.0.3@aar' //https://github.com/zcweng/SwitchButton
     compile 'com.flurry.android:analytics:7.2.1'
     compile 'com.uxcam:uxcam:2.5.8'
     compile 'com.pyze:PyzeLibrary:2.16.0'
