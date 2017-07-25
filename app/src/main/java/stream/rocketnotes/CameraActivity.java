@@ -1,6 +1,7 @@
 package stream.rocketnotes;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.afollestad.materialcamera.MaterialCamera;
 import com.flurry.android.FlurryAgent;
@@ -19,6 +21,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import stream.custompermissionsdialogue.PermissionsDialogue;
+import stream.custompermissionsdialogue.utils.PermissionUtils;
 import stream.rocketnotes.service.SaveNoteService;
 import stream.rocketnotes.utils.AnalyticsUtils;
 import stream.rocketnotes.utils.FileUtils;
@@ -28,8 +32,7 @@ public class CameraActivity extends AppCompatActivity{
     private String mActivity = "CameraActivity";
     private Context mContext;
 
-    private static final int REQUEST_CAMERA_PERMISSIONS = 931;
-    private final static int CAMERA_RQ = 6969;
+    private final static int CAMERA_RQ = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,42 +40,27 @@ public class CameraActivity extends AppCompatActivity{
         mContext = getApplicationContext();
         initializeAnalytics();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            final String[] permissions = {
-                    Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
-            final List<String> permissionsToRequest = new ArrayList<>();
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                    AnalyticsUtils.AnalyticEvent(mActivity, "Permission", "Request");
-                    Log.d("Permission Request", permission);
-                    permissionsToRequest.add(permission);
-                }
+            final String[] permissions = {Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE};
+            if (PermissionUtils.IsPermissionsEnabled(mContext, permissions))
+            {
+                PermissionsDialogue.Builder alertPermissions = new PermissionsDialogue.Builder(CameraActivity.this)
+                        .setMessage("Custom Permissions Dialogue is a sample permissions app and requires the Following permissions: ")
+                        .setIcon(R.mipmap.ic_launcher)
+                        .setRequireCamera(PermissionsDialogue.REQUIRED)
+                        .setRequireStorage(PermissionsDialogue.REQUIRED)
+                        .setOnContinueClicked(new PermissionsDialogue.OnContinueClicked() {
+                            @Override
+                            public void OnClick(View view, Dialog dialog) {
+                                dialog.dismiss();
+                                StartCamera();
+                            }
+                        })
+                        .build();
+                alertPermissions.show();
             }
-            if (!permissionsToRequest.isEmpty()) {
-                ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
-            } else StartCamera();
-        } else {
-            StartCamera();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        Log.d("Request Code", String.valueOf(requestCode));
-        switch (requestCode) {
-            case REQUEST_CAMERA_PERMISSIONS: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    AnalyticsUtils.AnalyticEvent(mActivity, "Permission", "Granted");
-                    StartCamera();
-                } else {
-                    AnalyticsUtils.AnalyticEvent(mActivity, "Permission", "Denied");
-                    finish();
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 

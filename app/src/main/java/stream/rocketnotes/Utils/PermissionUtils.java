@@ -22,4 +22,17 @@ public class PermissionUtils {
             return true;
         }
     }
+
+    public static boolean IsPermissionsEnabled(Context context, String[] permissionList)
+    {
+        for (String permission : permissionList)
+        {
+            if (!IsPermissionEnabled(context, permission))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
