@@ -1,6 +1,8 @@
 package stream.rocketnotes;
 
+import android.*;
 import android.app.Activity;
+import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -59,6 +61,8 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
+import stream.custompermissionsdialogue.PermissionsDialogue;
+import stream.custompermissionsdialogue.utils.PermissionUtils;
 import stream.rocketnotes.filter.FilterMaterialSearchView;
 import stream.rocketnotes.filter.model.Filter;
 import stream.rocketnotes.utils.AnalyticsUtils;
@@ -88,6 +92,21 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         setContentView(R.layout.activity_main);
 
         mContext = getApplicationContext();
+        if (!PermissionUtils.IsPermissionEnabled(mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        {
+            PermissionsDialogue.Builder alertPermissions = new PermissionsDialogue.Builder(MainActivity.this)
+                    .setMessage(getString(R.string.app_name) + " requires the following permissions to save notes: ")
+                    .setIcon(R.mipmap.ic_launcher)
+                    .setRequireStorage(PermissionsDialogue.REQUIRED)
+                    .setOnContinueClicked(new PermissionsDialogue.OnContinueClicked() {
+                        @Override
+                        public void OnClick(View view, Dialog dialog) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .build();
+            alertPermissions.show();
+        }
         initializeAnalytics();
         Pyze.showInAppNotificationUI(this, null);
         dbHelper = new DatabaseHelper(mContext);
@@ -275,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                     properties.offset = new File(DialogConfigs.DEFAULT_DIR);
                     properties.extensions = null;
                     FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
-                    dialog.setTitle("Choose Backup Location");
+                    dialog.setTitle("Select Backup Location");
                     dialog.setDialogSelectionListener(new DialogSelectionListener() {
                         @Override
                         public void onSelectedFilePaths(String[] files) {
@@ -302,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                     properties.offset = new File(DialogConfigs.DEFAULT_DIR);
                     properties.extensions = new String[]{"zip"};
                     FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
-                    dialog.setTitle("Choose NotesDB Backup");
+                    dialog.setTitle("Select Backup File");
                     dialog.setDialogSelectionListener(new DialogSelectionListener() {
                         @Override
                         public void onSelectedFilePaths(String[] files) {

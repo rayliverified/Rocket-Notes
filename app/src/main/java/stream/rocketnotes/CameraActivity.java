@@ -41,13 +41,12 @@ public class CameraActivity extends AppCompatActivity{
         initializeAnalytics();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-            final String[] permissions = {Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE};
-            if (PermissionUtils.IsPermissionsEnabled(mContext, permissions))
+            final String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+            if (!PermissionUtils.IsPermissionsEnabled(mContext, permissions))
             {
                 PermissionsDialogue.Builder alertPermissions = new PermissionsDialogue.Builder(CameraActivity.this)
-                        .setMessage("Custom Permissions Dialogue is a sample permissions app and requires the Following permissions: ")
+                        .setMessage(getString(R.string.app_name) + " requires the following permissions to take photos: ")
                         .setIcon(R.mipmap.ic_launcher)
                         .setRequireCamera(PermissionsDialogue.REQUIRED)
                         .setRequireStorage(PermissionsDialogue.REQUIRED)
@@ -60,6 +59,10 @@ public class CameraActivity extends AppCompatActivity{
                         })
                         .build();
                 alertPermissions.show();
+            }
+            else
+            {
+                StartCamera();
             }
         }
     }

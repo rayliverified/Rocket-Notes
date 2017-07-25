@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -193,6 +194,7 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
         {
             holder.rateNoLayout.setVisibility(View.GONE);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(context, 120), dpToPx(context, 120));
+            layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
             holder.rateYes.setLayoutParams(layoutParams);
             holder.body.setText("Thanks for the great review.");
             holder.rateYesText.setText("You're the BEST!");

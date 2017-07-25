@@ -57,7 +57,6 @@
                     android:id="@+id/smiley_yes_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="6dp"
                     android:orientation="vertical">
 
                     <ImageButton
@@ -86,7 +85,7 @@
                     android:id="@+id/smiley_no_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="6dp"
+                    android:layout_marginLeft="12dp"
                     android:orientation="vertical">
 
                     <ImageButton
