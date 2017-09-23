@@ -464,7 +464,7 @@ public class ShareActivity extends Activity {
 
     private void LoadNotes()
     {
-        NoteList.addAll(dbHelper.GetTextNotes(10));
+        NoteList.addAll(dbHelper.GetTextNotes(Constants.RECENT_NOTES));
         mAdapter.notifyDataSetChanged();
     }
 

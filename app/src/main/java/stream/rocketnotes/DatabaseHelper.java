@@ -117,7 +117,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     //Return notes sorted by last id date
     public ArrayList<NotesItem> GetNotesDate() {
         ArrayList<NotesItem> notes = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " ORDER BY " + KEY_DATE + " DESC LIMIT 20";
+        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " ORDER BY " + KEY_DATE + " DESC";
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor c = db.rawQuery(selectQuery, null);
@@ -200,10 +200,12 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     //Return specified number of recent text notes
     public ArrayList<NotesItem> GetTextNotes(Integer limit) {
         ArrayList<NotesItem> notes = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_NOTE + " NOT NULL ORDER BY " + KEY_DATE + " DESC LIMIT " + limit;
+        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_IMAGE + " IS NULL ORDER BY " + KEY_DATE + " DESC LIMIT " + limit;
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor c = db.rawQuery(selectQuery, null);
+
+        Log.d("TextNotesCount", String.valueOf(c.getCount()));
 
         if (c.moveToFirst()) {
             do {
@@ -213,6 +215,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
                 }
                 if (c.getString(c.getColumnIndexOrThrow("note")) != null) {
                     note.setNotesNote(c.getString(c.getColumnIndexOrThrow("note")));
+                    Log.d("Note", c.getString(c.getColumnIndexOrThrow("note")));
                 }
                 if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
                     note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));

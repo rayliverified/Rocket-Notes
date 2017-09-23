@@ -2,10 +2,11 @@ package stream.rocketnotes;
 
 public interface Constants {
     public static final String APP_NAME = "Rocket Note";
-    public static final String APP_VERSION = "1.0.4";
+    public static final String APP_VERSION = "1.0.8";
     public static final String YEAR = "2017";
     public static final Integer TITLE_LENGTH = 40;
     public static final Integer RECENT_IMAGES = 8;
+    public static final Integer RECENT_NOTES = 30;
     public static final String QUICK_NOTE = "QUICK_NOTE";
     public static final String OPEN_APP = "OPEN_APP";
     public static final String NEW_NOTE = "NEW_NOTE";

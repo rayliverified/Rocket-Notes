@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         List<IFlexible> myItems = getDatabaseList();
 
         // Initialize the Adapter
-        mAdapter = new FlexibleAdapter<IFlexible>(myItems);
+        mAdapter = new FlexibleAdapter<>(myItems);
         mStaggeredLayoutManager = createNewStaggeredGridLayoutManager();
 
         // Prepare the RecyclerView and attach the Adapter to it
@@ -732,7 +732,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         //Display prompt for review if user has created 3 or more notes and not hidden widget.
         SharedPreferences prefs = mContext.getSharedPreferences("prefs", 0);
         boolean hideReview = prefs.getBoolean(Constants.WIDGET_REVIEW_HIDE, false);
-        if (mNoteCount + mImageCount >= 3 && hideReview == false)
+        if (mNoteCount + mImageCount >= 3 && !hideReview)
         {
             list.add(new WidgetReviewViewholder("Review", MainActivity.this));
         }
