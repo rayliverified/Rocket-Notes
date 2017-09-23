@@ -111,7 +111,7 @@
         <!-- Providers -->
         <provider
             android:name="com.commonsware.cwac.provider.StreamProvider"
-            android:authorities=".provider"
+            android:authorities="stream.rocketnotes.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
