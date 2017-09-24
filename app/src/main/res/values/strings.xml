@@ -17,7 +17,6 @@
     <!--Toolbar Titles-->
     <string name="editpage_title">Edit Note</string>
 
-    <string name="checkmark">\u2714</string>
     <string name="email_mailto">admin@streammms.com</string>
     <string name="email_subject">Rocket Notes Feedback</string>
     <string name="email_message">Send to: admin@streammms.com\nFeedback:\n</string>

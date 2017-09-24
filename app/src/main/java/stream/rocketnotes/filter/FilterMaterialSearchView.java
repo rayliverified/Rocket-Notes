@@ -157,14 +157,11 @@ public class FilterMaterialSearchView extends FrameLayout implements RecyclerIte
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         if (!(state instanceof FilterMSVSavedState)) {
-            super.onRestoreInstanceState(state);
             return;
         }
 
         FilterMSVSavedState mSavedState = (FilterMSVSavedState) state;
-
         super.onRestoreInstanceState(mSavedState.getSuperState());
-
         mFilterRvAdapter.setFilters(mSavedState.filters);
     }
 

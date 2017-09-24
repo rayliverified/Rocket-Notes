@@ -7,22 +7,22 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.RelativeLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
+
 import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 
 import stream.rocketnotes.ui.BounceInterpolator;
 
 public class ShareAddViewholder extends RecyclerView.ViewHolder {
 
-    public RelativeLayout mContainer;
     public NotesItem note;
     public TextView mTitle;
     public TextView mBody;
     private String noteTextRaw;
-    public Button mBtnSend;
+    public ImageButton mBtnSend;
     public Context mContext;
     public ShareAdapterInterface mShareAdapterInterface;
     public final String mActivity = "ShareAddViewHolder";
@@ -32,10 +32,9 @@ public class ShareAddViewholder extends RecyclerView.ViewHolder {
     public ShareAddViewholder(View itemView) {
         super(itemView);
 
-        mContainer = (RelativeLayout) itemView.findViewById(R.id.container);
         mTitle = (TextView) itemView.findViewById(R.id.note_title);
         mBody = (TextView) itemView.findViewById(R.id.note_body);
-        mBtnSend = (Button) itemView.findViewById(R.id.btn_send);
+        mBtnSend = (ImageButton) itemView.findViewById(R.id.btn_send);
         mContext = itemView.getContext();
     }
 
@@ -77,7 +76,7 @@ public class ShareAddViewholder extends RecyclerView.ViewHolder {
 
     private void SetButtonShared()
     {
-        mBtnSend.setText(mContext.getResources().getText(R.string.checkmark));
+        mBtnSend.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.icon_check_fit));
         mBtnSend.setBackground(ContextCompat.getDrawable(mContext, R.drawable.icon_add_activated));
     }
 

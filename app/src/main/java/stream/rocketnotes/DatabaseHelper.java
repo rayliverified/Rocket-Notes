@@ -205,8 +205,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
         Cursor c = db.rawQuery(selectQuery, null);
 
-        Log.d("TextNotesCount", String.valueOf(c.getCount()));
-
         if (c.moveToFirst()) {
             do {
                 NotesItem note = new NotesItem();
@@ -215,7 +213,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
                 }
                 if (c.getString(c.getColumnIndexOrThrow("note")) != null) {
                     note.setNotesNote(c.getString(c.getColumnIndexOrThrow("note")));
-                    Log.d("Note", c.getString(c.getColumnIndexOrThrow("note")));
                 }
                 if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
                     note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));

@@ -130,20 +130,37 @@ public class ShareActivity extends Activity {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSIONS);
         }
 
+        //Check if shared data is text or image.
+        boolean validShare = false;
+
         //Get data shared to app
-        shareIntent = getIntent();
-        String action = getIntent().getAction();
-        noteType = getIntent().getType();
-        if (action.equals(Intent.ACTION_SEND) && noteType != null) {
-            Log.d("ShareActivity", action);
-            Log.d("ShareActivity", noteType);
-            if ("text/plain".equals(noteType)) {
-                textNote = shareText(shareIntent);
-            }
-            else if (noteType.startsWith("image/"))
+        if (getIntent() != null)
+        {
+            if (getIntent().getAction() != null)
             {
-                shareImage(shareIntent);
+                shareIntent = getIntent();
+                String action = getIntent().getAction();
+                noteType = getIntent().getType();
+                if (action.equals(Intent.ACTION_SEND) && noteType != null) {
+                    Log.d("ShareActivity", action);
+                    Log.d("ShareActivity", noteType);
+                    if ("text/plain".equals(noteType)) {
+                        textNote = shareText(shareIntent);
+                        validShare = true;
+                    }
+                    else if (noteType.startsWith("image/"))
+                    {
+                        shareImage(shareIntent);
+                        validShare = true;
+                    }
+                }
             }
+        }
+
+        if (!validShare)
+        {
+            Toasty.error(mContext, "Invalid content", Toast.LENGTH_SHORT).show();
+            finish();
         }
 
         editText.setOnClickListener(new View.OnClickListener() {
