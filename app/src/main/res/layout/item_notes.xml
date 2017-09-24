@@ -13,12 +13,11 @@
 
         <LinearLayout
             android:id="@+id/item_note"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:clickable="true">
+            android:clickable="true"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/item_note_title"
@@ -44,6 +43,41 @@
                 android:maxLines="5"
                 android:ellipsize="end"
                 android:singleLine="false"/>
+
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="@color/divider_menu"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:clickable="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/btn_add"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:padding="5dp"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/icon_plus_selector"
+                    android:clickable="true"/>
+
+                <ImageView
+                    android:id="@+id/btn_more"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:padding="5dp"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/icon_more_horizontal_selector"
+                    android:clickable="true"/>
+            </RelativeLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </RelativeLayout>

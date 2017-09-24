@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -97,6 +98,17 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
                 context.startActivity(intent);
             }
         });
+
+        holder.mBtnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, PopupActivity.class);
+                intent.putExtra(Constants.ID, Integer.valueOf(id));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setAction(Constants.OPEN_NOTE);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -116,12 +128,16 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
         public LinearLayout noteLayout;
         public TextView noteTitle;
         public TextView noteBody;
+        public ImageView mBtnAdd;
+        public ImageView mBtnMore;
 
         public MyViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
             noteLayout = view.findViewById(R.id.item_note);
             noteTitle = view.findViewById(R.id.item_note_title);
             noteBody = view.findViewById(R.id.item_note_note);
+            mBtnAdd = view.findViewById(R.id.btn_add);
+            mBtnMore = view.findViewById(R.id.btn_more);
         }
     }
 }
