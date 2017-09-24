@@ -14,10 +14,8 @@ import android.widget.RemoteViewsService;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 
 public class ImageWidgetService extends RemoteViewsService {
@@ -53,8 +51,7 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     public RemoteViews getViewAt(int position) {
 
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_image_widget);
-        if (position < mNotesItems.size())
-        {
+        if (position < mNotesItems.size()) {
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
             bmOptions.inJustDecodeBounds = false;
             bmOptions.inSampleSize = 8;
@@ -70,29 +67,23 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 e.printStackTrace();
                 imageFile = null;
             }
-            if(imageFile != null)
-            {
+            if (imageFile != null) {
                 Bitmap imageBitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
                 Matrix matrix = getOrientation(imagePath);
                 imageBitmap = crop(imageBitmap, matrix);
                 Log.d("Image Width", String.valueOf(imageBitmap.getWidth()));
                 Log.d("Image Height", String.valueOf(imageBitmap.getHeight()));
                 rv.setImageViewBitmap(R.id.item_image, imageBitmap);
-            }
-            else
-            {
+            } else {
                 rv.setImageViewResource(R.id.item_image, R.drawable.icon_picture);
             }
-        }
-        else
-        {
+        } else {
             rv.setImageViewResource(R.id.item_image, R.drawable.icon_picture);
         }
 
         Bundle extras = new Bundle();
         Intent fillInIntent = new Intent();
-        if (position < mNotesItems.size())
-        {
+        if (position < mNotesItems.size()) {
             extras.putInt(Constants.ID, mNotesItems.get(position).getNotesID());
             extras.putInt(Constants.IMAGE, position);
             fillInIntent.putExtras(extras);
@@ -156,7 +147,7 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
             dstBmp = Bitmap.createBitmap(
                     srcBmp,
-                    srcBmp.getWidth()/2 - srcBmp.getHeight()/2,
+                    srcBmp.getWidth() / 2 - srcBmp.getHeight() / 2,
                     0,
                     srcBmp.getHeight(),
                     srcBmp.getHeight(),
@@ -169,7 +160,7 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             dstBmp = Bitmap.createBitmap(
                     srcBmp,
                     0,
-                    srcBmp.getHeight()/2 - srcBmp.getWidth()/2,
+                    srcBmp.getHeight() / 2 - srcBmp.getWidth() / 2,
                     srcBmp.getWidth(),
                     srcBmp.getWidth(),
                     matrix,

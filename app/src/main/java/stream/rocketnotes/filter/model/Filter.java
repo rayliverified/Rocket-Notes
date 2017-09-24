@@ -50,11 +50,11 @@ public class Filter extends BaseElement {
     }
 
 
-    public boolean hasIconRefId(){
+    public boolean hasIconRefId() {
         return mIconRefId != View.NO_ID;
     }
 
-    public Drawable getIconDrawable(){
+    public Drawable getIconDrawable() {
         return mIconDrawable;
     }
 }

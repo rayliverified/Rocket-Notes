@@ -52,9 +52,8 @@ public class BounceInterpolator implements android.view.animation.Interpolator {
     /**
      * Initialize a new interpolator.
      *
-     * @param      amplitude   The amplitude of the bounces. The higher value produces more pronounced bounces. The lower values (0.1, for example) produce less noticeable wobbles.
-     * @param      frequency   The frequency of the bounces. The higher value produces more wobbles during the animation time period.
-     *
+     * @param amplitude The amplitude of the bounces. The higher value produces more pronounced bounces. The lower values (0.1, for example) produce less noticeable wobbles.
+     * @param frequency The frequency of the bounces. The higher value produces more wobbles during the animation time period.
      */
     public BounceInterpolator(double amplitude, double frequency) {
         mAmplitude = amplitude;
@@ -63,12 +62,14 @@ public class BounceInterpolator implements android.view.animation.Interpolator {
 
     public float getInterpolation(float time) {
         double amplitude = mAmplitude;
-        if (amplitude == 0) { amplitude = 0.05; }
+        if (amplitude == 0) {
+            amplitude = 0.05;
+        }
 
         // The interpolation curve equation:
         //    -e^(-time / amplitude) * cos(frequency * time) + 1
         //
         // View the graph live: https://www.desmos.com/calculator/6gbvrm5i0s
-        return (float) (-1 * Math.pow(Math.E, -time/ mAmplitude) * Math.cos(mFrequency * time) + 1);
+        return (float) (-1 * Math.pow(Math.E, -time / mAmplitude) * Math.cos(mFrequency * time) + 1);
     }
 }

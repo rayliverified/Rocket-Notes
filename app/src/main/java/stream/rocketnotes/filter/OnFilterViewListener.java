@@ -1,7 +1,8 @@
 package stream.rocketnotes.filter;
 
-import stream.rocketnotes.filter.model.Filter;
 import java.util.List;
+
+import stream.rocketnotes.filter.model.Filter;
 
 public interface OnFilterViewListener {
     void onFilterAdded(Filter filter);

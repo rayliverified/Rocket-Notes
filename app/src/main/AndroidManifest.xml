@@ -14,16 +14,20 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data android:name="PyzeAppKey" android:value="ERdy22a6SxORk6ndRxsEUA"/>
-        <activity android:name=".MainActivity"
-                  android:theme="@style/AppThemeHome">
+        <meta-data
+            android:name="PyzeAppKey"
+            android:value="ERdy22a6SxORk6ndRxsEUA"/>
+
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppThemeHome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
             <meta-data
                 android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
+                android:resource="@xml/shortcuts"/>
         </activity>
         <activity
             android:name=".ResultActivity"
@@ -35,75 +39,97 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
         </activity>
-        <activity android:name=".CameraActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
+        <activity
+            android:name=".CameraActivity"
+            android:theme="@style/Theme.Transparent"
+            android:excludeFromRecents="true"/>
         <activity
             android:name="com.afollestad.materialcamera.CaptureActivity"
-            android:theme="@style/MaterialCamera.CaptureActivity" />
+            android:theme="@style/MaterialCamera.CaptureActivity"/>
         <activity
             android:name="com.afollestad.materialcamera.CaptureActivity2"
-            android:theme="@style/MaterialCamera.CaptureActivity" />
-        <activity android:name=".ImageViewerActivity" android:theme="@style/Theme.Transparent" android:excludeFromRecents="true"/>
-        <activity android:name=".PopupActivity" android:theme="@style/Theme.TransparentFloating" android:excludeFromRecents="true"/>
-        <activity android:name=".EditActivity" android:theme="@style/AppActionBar" android:screenOrientation="portrait"  android:configChanges="orientation"/>
-        <activity android:name=".ShareActivity"
-                  android:label="Rocket Notes"
-                  android:theme="@style/Theme.Share"
-                  android:excludeFromRecents="true">
+            android:theme="@style/MaterialCamera.CaptureActivity"/>
+        <activity
+            android:name=".ImageViewerActivity"
+            android:theme="@style/Theme.Transparent"
+            android:excludeFromRecents="true"/>
+        <activity
+            android:name=".PopupActivity"
+            android:theme="@style/Theme.TransparentFloating"
+            android:excludeFromRecents="true"/>
+        <activity
+            android:name=".EditActivity"
+            android:theme="@style/AppActionBar"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"/>
+        <activity
+            android:name=".ShareActivity"
+            android:label="Rocket Notes"
+            android:theme="@style/Theme.Share"
+            android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:mimeType="text/*"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/*" />
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="image/*"/>
             </intent-filter>
         </activity>
         <!-- Widgets -->
-        <receiver android:name=".NewNoteWidget"
-                  android:icon="@drawable/icon_rocket_image_round"
-                  android:label="•Quick Note•">
-            <intent-filter >
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+        <receiver
+            android:name=".NewNoteWidget"
+            android:icon="@drawable/icon_rocket_image_round"
+            android:label="•Quick Note•">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name=".NewNoteWidget.QUICK_NOTE"/>
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
-                       android:resource="@xml/widget_newnote">
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_newnote">
             </meta-data>
         </receiver>
-        <receiver android:name=".NotesWidget"
-                  android:icon="@drawable/preview_notes"
-                  android:label="•Rocket Notes•">
-            <intent-filter >
+        <receiver
+            android:name=".NotesWidget"
+            android:icon="@drawable/preview_notes"
+            android:label="•Rocket Notes•">
+            <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
                 <action android:name=".NotesWidget.NEW_NOTE"/>
                 <action android:name=".NotesWidget.OPEN_NOTE"/>
                 <action android:name=".NotesWidget.NEW_REPLY"/>
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
-                       android:resource="@xml/widget_notes">
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_notes">
             </meta-data>
         </receiver>
-        <receiver android:name=".ImageWidget"
-                  android:icon="@drawable/preview_gallery"
-                  android:label="•Rocket Images•">
-            <intent-filter >
+        <receiver
+            android:name=".ImageWidget"
+            android:icon="@drawable/preview_gallery"
+            android:label="•Rocket Images•">
+            <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
                 <action android:name=".ImageWidget.ADD_IMAGE"/>
                 <action android:name=".ImageWidget.OPEN_IMAGE"/>
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
-                       android:resource="@xml/widget_image">
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_image">
             </meta-data>
         </receiver>
         <!-- Services -->
-        <service android:name=".ImageWidgetService"
-                 android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service android:name=".NotesWidgetService"
-                 android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service
+            android:name=".ImageWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+        <service
+            android:name=".NotesWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
         <service android:name=".service.SaveNoteService"/>
         <service android:name=".service.DeleteNoteService"/>
         <service android:name=".service.SaveFileService"/>

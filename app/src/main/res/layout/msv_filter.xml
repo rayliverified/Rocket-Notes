@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_filter"
             android:layout_width="match_parent"
@@ -16,7 +17,8 @@
             android:paddingLeft="6dp"
             android:paddingRight="6dp"
             android:paddingBottom="6dp"
-            android:background="@color/colorPrimary" />
+            android:background="@color/colorPrimary"/>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dip"

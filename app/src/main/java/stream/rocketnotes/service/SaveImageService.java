@@ -15,17 +15,13 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
-import java.nio.channels.FileChannel;
 
 import es.dmoral.toasty.Toasty;
 import stream.rocketnotes.Constants;
@@ -70,8 +66,7 @@ public class SaveImageService extends Service {
             String sourcePath = extras.getString(Constants.SOURCE_PATH);
             String sourceName = "";
             //Create name for saved image
-            if (sourcePath != null)
-            {
+            if (sourcePath != null) {
                 //Format file name with proper encoding so image locations are stored correctly
                 try {
                     sourceName = URLDecoder.decode(sourcePath.substring(sourcePath.lastIndexOf("/") + 1), "UTF-8");
@@ -87,9 +82,7 @@ public class SaveImageService extends Service {
             if (!dir.exists()) {
                 dir.mkdirs();
                 Log.d("Directory", "Created");
-            }
-            else
-            {
+            } else {
                 Log.d("Directory", "Exists");
             }
 
@@ -105,16 +98,15 @@ public class SaveImageService extends Service {
             String outputfile = getFilesDir() + "/.Pictures/" + sourceName;
             Log.d("OutputFile", outputfile);
             File f = new File(outputfile);
-            if (!f.exists())
-            {
+            if (!f.exists()) {
                 try {
                     f.setWritable(true, false);
                     OutputStream outputStream = new FileOutputStream(f);
                     byte buffer[] = new byte[1024];
                     int length = 0;
 
-                    while((length = inputStream.read(buffer)) > 0) {
-                        outputStream.write(buffer,0,length);
+                    while ((length = inputStream.read(buffer)) > 0) {
+                        outputStream.write(buffer, 0, length);
                     }
 
                     outputStream.close();
@@ -124,9 +116,7 @@ public class SaveImageService extends Service {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-            else
-            {
+            } else {
                 Log.d("Save File", "File Exists");
                 Message message = mHandler.obtainMessage(0, "Already Saved");
                 message.sendToTarget();
@@ -139,8 +129,7 @@ public class SaveImageService extends Service {
         protected void onPostExecute(String savedImagePath) {
             super.onPostExecute(savedImagePath);
 
-            if (savedImagePath != null)
-            {
+            if (savedImagePath != null) {
                 savedImagePath = "file://" + savedImagePath;
                 Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
                 saveNote.putExtra(Constants.IMAGE, savedImagePath);

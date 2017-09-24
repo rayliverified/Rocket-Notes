@@ -51,8 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
     public void initiateContent() {
         //Initiate note sequence
-        for (int i = 0; i < 20; i++)
-        {
+        for (int i = 0; i < 20; i++) {
             NotesItem note = new NotesItem();
             note.setNotesNote("Note content: " + i);
             note.setNotesDate(1487520000000L + i);
@@ -109,7 +108,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = KEY_ID + " = ?";
-        String[] selectionArgs = new String[] {Integer.toString(id)};
+        String[] selectionArgs = new String[]{Integer.toString(id)};
 
         return db.delete(TABLE_NOTES, selection, selectionArgs);
     }

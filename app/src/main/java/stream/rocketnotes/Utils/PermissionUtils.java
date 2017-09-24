@@ -6,29 +6,21 @@ import android.os.Build;
 
 public class PermissionUtils {
 
-    public static boolean IsPermissionEnabled(Context context, String permission)
-    {
+    public static boolean IsPermissionEnabled(Context context, String permission) {
         if (Build.VERSION.SDK_INT >= 23) {
             if (context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
                 return true;
-            }
-            else
-            {
+            } else {
                 return false;
             }
-        }
-        else
-        {
+        } else {
             return true;
         }
     }
 
-    public static boolean IsPermissionsEnabled(Context context, String[] permissionList)
-    {
-        for (String permission : permissionList)
-        {
-            if (!IsPermissionEnabled(context, permission))
-            {
+    public static boolean IsPermissionsEnabled(Context context, String[] permissionList) {
+        for (String permission : permissionList) {
+            if (!IsPermissionEnabled(context, permission)) {
                 return false;
             }
         }
@@ -36,7 +28,7 @@ public class PermissionUtils {
         return true;
     }
 
-    public static Boolean isAppInstalled(Context context, String appName){
+    public static Boolean isAppInstalled(Context context, String appName) {
         PackageManager pm = context.getPackageManager();
         boolean installed;
         try {

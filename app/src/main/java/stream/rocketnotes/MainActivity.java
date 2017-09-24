@@ -1,7 +1,5 @@
 package stream.rocketnotes;
 
-import android.*;
-import android.app.Activity;
 import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -92,8 +90,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         setContentView(R.layout.activity_main);
 
         mContext = getApplicationContext();
-        if (!PermissionUtils.IsPermissionEnabled(mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE))
-        {
+        if (!PermissionUtils.IsPermissionEnabled(mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             PermissionsDialogue.Builder alertPermissions = new PermissionsDialogue.Builder(MainActivity.this)
                     .setMessage(getString(R.string.app_name) + " requires the following permissions to save notes: ")
                     .setIcon(R.mipmap.ic_launcher)
@@ -128,19 +125,15 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         mFilterView = (FilterMaterialSearchView) findViewById(R.id.sv);
         setupSearchBar();
         setupFAB();
-        if (getIntent().getAction() != null && getIntent().getAction() != Intent.ACTION_MAIN)
-        {
+        if (getIntent().getAction() != null && getIntent().getAction() != Intent.ACTION_MAIN) {
             Log.d("MainActivity", getIntent().getAction());
-            if (getIntent().getAction().equals(Constants.STICKY))
-            {
+            if (getIntent().getAction().equals(Constants.STICKY)) {
 
             }
-        }
-        else
-        {
+        } else {
             Log.d("MainActivity", "Clear Sticky");
             UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
-            if(stickyEvent != null) {
+            if (stickyEvent != null) {
                 EventBus.getDefault().removeStickyEvent(stickyEvent);
             }
         }
@@ -266,25 +259,18 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
 //                    //... put other settings in the Intent
 //                    startActivityForResult(intent, 0);
 //                }
-                if (item.getItemId() == R.id.action_camera)
-                {
+                if (item.getItemId() == R.id.action_camera) {
                     AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Camera");
                     Intent intent = new Intent(mContext, CameraActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
-                }
-                else if (item.getItemId() == R.id.filter_image)
-                {
+                } else if (item.getItemId() == R.id.filter_image) {
                     AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Filter Image");
                     FilterImages();
-                }
-                else if (item.getItemId() == R.id.filter_text)
-                {
+                } else if (item.getItemId() == R.id.filter_text) {
                     AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Filter Text");
                     FilterText();
-                }
-                else if (item.getItemId() == R.id.action_backup_sql)
-                {
+                } else if (item.getItemId() == R.id.action_backup_sql) {
                     AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Backup Database");
                     DialogProperties properties = new DialogProperties();
                     properties.selection_mode = DialogConfigs.SINGLE_MODE;
@@ -298,20 +284,15 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                     dialog.setDialogSelectionListener(new DialogSelectionListener() {
                         @Override
                         public void onSelectedFilePaths(String[] files) {
-                            if (files.length >= 1)
-                            {
+                            if (files.length >= 1) {
                                 BackupDatabase(files[0]);
-                            }
-                            else
-                            {
+                            } else {
                                 Toasty.error(mContext, "No Location Selected", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                     dialog.show();
-                }
-                else if (item.getItemId() == R.id.action_restore_sql)
-                {
+                } else if (item.getItemId() == R.id.action_restore_sql) {
                     AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Restore Database");
                     DialogProperties properties = new DialogProperties();
                     properties.selection_mode = DialogConfigs.SINGLE_MODE;
@@ -325,24 +306,18 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                     dialog.setDialogSelectionListener(new DialogSelectionListener() {
                         @Override
                         public void onSelectedFilePaths(String[] files) {
-                            if (files.length >= 1)
-                            {
+                            if (files.length >= 1) {
                                 RestoreDatabase(files[0]);
-                            }
-                            else
-                            {
+                            } else {
                                 Toasty.error(mContext, "No File Selected", Toast.LENGTH_SHORT).show();
                             }
-                            for (String filePath : files)
-                            {
+                            for (String filePath : files) {
                                 Log.d("File Path", filePath);
                             }
                         }
                     });
                     dialog.show();
-                }
-                else
-                {
+                } else {
 
                 }
             }
@@ -398,8 +373,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         });
     }
 
-    public void setupFAB()
-    {
+    public void setupFAB() {
         FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.main_fab);
         fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
@@ -412,8 +386,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
                     return true;
-                }
-                else if (menuItem.getItemId() == R.id.action_camera) {
+                } else if (menuItem.getItemId() == R.id.action_camera) {
                     Log.d("FAB", "Camera");
                     AnalyticsUtils.AnalyticEvent(mActivity, "Click", "New Image");
                     Intent intent = new Intent(mContext, CameraActivity.class);
@@ -423,6 +396,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 }
                 return false;
             }
+
             @Override
             public boolean onPrepareMenu(NavigationMenu navigationMenu) {
                 return true;
@@ -430,16 +404,14 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         });
     }
 
-    public void FilterImages()
-    {
+    public void FilterImages() {
         Filter filter = new Filter(1, "Image", 0, R.drawable.icon_picture_image, ContextCompat.getColor(mContext, R.color.colorPrimary));
         mFilterView.setVisibility(View.VISIBLE);
         mFilterView.addFilter(filter);
         List<IFlexible> list = new ArrayList<>();
         ArrayList<NotesItem> notesItems = dbHelper.GetImageNotes();
         Log.d("NotesItem Size", String.valueOf(notesItems.size()));
-        for (NotesItem note : notesItems)
-        {
+        for (NotesItem note : notesItems) {
             list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
         }
         mAdapter.updateDataSet(list);
@@ -447,24 +419,21 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         Log.d("Filter", "Images");
     }
 
-    public void FilterText()
-    {
+    public void FilterText() {
         Filter filter = new Filter(1, "Text", 0, R.drawable.icon_rocket_image, ContextCompat.getColor(mContext, R.color.colorPrimary));
         mFilterView.setVisibility(View.VISIBLE);
         mFilterView.addFilter(filter);
         List<IFlexible> list = new ArrayList<>();
         ArrayList<NotesItem> notesItems = dbHelper.GetTextNotes();
         Log.d("NotesItem Size", String.valueOf(notesItems.size()));
-        for (NotesItem note : notesItems)
-        {
+        for (NotesItem note : notesItems) {
             list.add(new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote()));
         }
         mAdapter.updateDataSet(list);
         Log.d("Filter", "Text");
     }
 
-    public void FilterReset(boolean clearSticky)
-    {
+    public void FilterReset(boolean clearSticky) {
         List<IFlexible> list = getDatabaseList();
         mAdapter.updateDataSet(list);
         //Do not clear sticky if filtering image notes
@@ -473,8 +442,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         Log.d("Filter", "Reset");
     }
 
-    public void BackupDatabase(String savePath)
-    {
+    public void BackupDatabase(String savePath) {
         try {
             //Make sure Pictures folder exists. User could have no picture notes.
             FileUtils.InitializePicturesFolder(mContext);
@@ -489,7 +457,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
             // Transfer bytes from the inputfile to the outputfile
             byte[] buffer = new byte[1024];
             int length;
-            while ((length = fis.read(buffer))>0){
+            while ((length = fis.read(buffer)) > 0) {
                 output.write(buffer, 0, length);
             }
             // Close the streams
@@ -511,40 +479,32 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         }
     }
 
-    public void RestoreDatabase(String restorePath)
-    {
+    public void RestoreDatabase(String restorePath) {
         //Make sure Pictures folder exists. User could have no picture notes.
         FileUtils.InitializePicturesFolder(mContext);
         //Restoring backup requires NotesDB. If no NotesDB found, backup file is not valid.
         boolean validBackup = ZipUtil.containsEntry(new File(restorePath), "NotesDB.db");
-        if (validBackup)
-        {
+        if (validBackup) {
             ZipUtil.unpackEntry(new File(restorePath), "NotesDB.db", new File(mContext.getDatabasePath("NotesDB").getPath()));
             ZipUtil.unpack(new File(restorePath), new File(getFilesDir(), ".Pictures"));
             File file = new File(getFilesDir(), ".Pictures/NotesDB.db");
             file.delete();
             Toasty.success(mContext, "Backup Restored", Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
+        } else {
             Toasty.error(mContext, "Invalid Backup File", Toast.LENGTH_SHORT).show();
         }
 
         FilterReset(true);
     }
 
-    public void UpdateOnAdd(UpdateMainEvent event)
-    {
+    public void UpdateOnAdd(UpdateMainEvent event) {
         Integer noteID = event.getID();
         NotesItem note = dbHelper.GetNote(noteID);
         AbstractFlexibleItem item = null;
-        if (note.getNotesImage() != null)
-        {
+        if (note.getNotesImage() != null) {
             Log.d("Image View Holder", note.getNotesImage());
             item = new ImageItemViewholder(Integer.toString(noteID), note.getNotesImage());
-        }
-        else if (note.getNotesNote() != null)
-        {
+        } else if (note.getNotesNote() != null) {
             Log.d("Note", "Note Item");
             item = new NoteItemViewholder(Integer.toString(noteID), note.getNotesNote());
         }
@@ -554,18 +514,14 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         Log.d("Broadcast Receiver", Constants.RECEIVED);
     }
 
-    public void UpdateOnUpdate(UpdateMainEvent event)
-    {
+    public void UpdateOnUpdate(UpdateMainEvent event) {
         Integer noteID = event.getID();
         NotesItem note = dbHelper.GetNote(noteID);
         AbstractFlexibleItem item = null;
-        if (note.getNotesImage() != null)
-        {
+        if (note.getNotesImage() != null) {
             Log.d("Image View Holder", note.getNotesImage());
             item = new ImageItemViewholder(Integer.toString(noteID), note.getNotesImage());
-        }
-        else if (note.getNotesNote() != null)
-        {
+        } else if (note.getNotesNote() != null) {
             Log.d("Note", "Note Item");
             item = new NoteItemViewholder(Integer.toString(noteID), note.getNotesNote());
         }
@@ -577,17 +533,13 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         Log.d("Broadcast Receiver", Constants.UPDATE_NOTE);
     }
 
-    public void UpdateOnDelete(UpdateMainEvent event)
-    {
+    public void UpdateOnDelete(UpdateMainEvent event) {
         NotesItem note = event.getNotesItem();
         AbstractFlexibleItem item = null;
-        if (note.getNotesImage() != null)
-        {
+        if (note.getNotesImage() != null) {
             Log.d("Image View Holder", note.getNotesImage());
             item = new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage());
-        }
-        else if (note.getNotesNote() != null)
-        {
+        } else if (note.getNotesNote() != null) {
             Log.d("Note", "Note Item");
             item = new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote());
         }
@@ -598,8 +550,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         Log.d("Broadcast Receiver", Constants.DELETE_NOTE);
     }
 
-    public void UpdateOnHide(UpdateMainEvent event)
-    {
+    public void UpdateOnHide(UpdateMainEvent event) {
         AbstractFlexibleItem item = null;
         item = new WidgetReviewViewholder("Review", MainActivity.this);
         Integer position = mAdapter.getGlobalPositionOf(item);
@@ -609,16 +560,14 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         Log.d("Broadcast Receiver", Constants.HIDE_REVIEW);
     }
 
-    public void RemoveSticky()
-    {
+    public void RemoveSticky() {
         UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
-        if(stickyEvent != null) {
+        if (stickyEvent != null) {
             EventBus.getDefault().removeStickyEvent(stickyEvent);
         }
     }
 
-    public void UpdateFilter(UpdateMainEvent event)
-    {
+    public void UpdateFilter(UpdateMainEvent event) {
         FilterReset(true);
     }
 
@@ -638,25 +587,15 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         Log.d("MainActivity", event.getAction());
         if (event.getAction().equals(Constants.RECEIVED)) {
             UpdateOnAdd(event);
-        }
-        else if (event.getAction().equals(Constants.UPDATE_NOTE))
-        {
+        } else if (event.getAction().equals(Constants.UPDATE_NOTE)) {
             UpdateOnUpdate(event);
-        }
-        else if (event.getAction().equals(Constants.DELETE_NOTE))
-        {
+        } else if (event.getAction().equals(Constants.DELETE_NOTE)) {
             UpdateOnDelete(event);
-        }
-        else if (event.getAction().equals(Constants.HIDE_REVIEW))
-        {
+        } else if (event.getAction().equals(Constants.HIDE_REVIEW)) {
             UpdateOnHide(event);
-        }
-        else if (event.getAction().equals(Constants.FILTER))
-        {
+        } else if (event.getAction().equals(Constants.FILTER)) {
             UpdateFilter(event);
-        }
-        else if (event.getAction().equals(Constants.FILTER_IMAGES))
-        {
+        } else if (event.getAction().equals(Constants.FILTER_IMAGES)) {
             FilterImages();
         }
     }
@@ -667,8 +606,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         Log.d("LocalBroadcastManager", "onResume");
         //Sometimes, multiple changes are made to mAdapter and the entire view should be refreshed.
         if (sharedPref.getBoolean(Constants.REFRESH, false)) {
-            if (mAdapter != null)
-            {
+            if (mAdapter != null) {
                 Log.d("MainActivity", "Refresh");
                 FilterReset(true);
             }
@@ -690,8 +628,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0 && resultCode == RESULT_OK) {
             ArrayList<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
@@ -716,15 +653,11 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         mNoteCount = 0;
         mImageCount = 0;
         Log.d("NotesItem Size", String.valueOf(notesItems.size()));
-        for (NotesItem note : notesItems)
-        {
-            if (note.getNotesNote() != null)
-            {
+        for (NotesItem note : notesItems) {
+            if (note.getNotesNote() != null) {
                 mNoteCount += 1;
                 list.add(new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote()));
-            }
-            else if (note.getNotesImage() != null)
-            {
+            } else if (note.getNotesImage() != null) {
                 mImageCount += 1;
                 list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
             }
@@ -732,17 +665,15 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         //Display prompt for review if user has created 3 or more notes and not hidden widget.
         SharedPreferences prefs = mContext.getSharedPreferences("prefs", 0);
         boolean hideReview = prefs.getBoolean(Constants.WIDGET_REVIEW_HIDE, false);
-        if (mNoteCount + mImageCount >= 3 && !hideReview)
-        {
+        if (mNoteCount + mImageCount >= 3 && !hideReview) {
             list.add(new WidgetReviewViewholder("Review", MainActivity.this));
         }
         return list;
     }
 
-    public void sessionDetails()
-    {
+    public void sessionDetails() {
         Map<String, String> params = new HashMap<String, String>();
-        HashMap <String, String> attributes = new HashMap<String, String>();
+        HashMap<String, String> attributes = new HashMap<String, String>();
 
         int ids[] = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, ImageWidget.class));
         if (ids.length > 0) {
@@ -771,14 +702,13 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         PyzeEvents.postCustomEventWithAttributes(mActivity, attributes);
     }
 
-    public void initializeAnalytics()
-    {
-        if (!FlurryAgent.isSessionActive())
-        {
+    public void initializeAnalytics() {
+        if (!FlurryAgent.isSessionActive()) {
             new FlurryAgent.Builder()
                     .withLogEnabled(true)
                     .build(this, Constants.FLURRY_API_KEY);
-        };
+        }
+        ;
         Pyze.initialize(getApplication());
 //        UXCam.startWithKey(Constants.UXCAM_API_KEY);
     }

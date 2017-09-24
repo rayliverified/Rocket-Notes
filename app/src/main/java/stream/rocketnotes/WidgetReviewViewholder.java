@@ -10,9 +10,7 @@ import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -67,7 +65,7 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
      * - The Hash increases performance in big list during Update & Filter operations.
      * - Collapsing many expandable items is much faster.
      * - You might want to activate stable ids via Constructor for RV, if your id
-     *   is unique (read more in the wiki page: "Setting Up Advanced").
+     * is unique (read more in the wiki page: "Setting Up Advanced").
      */
     @Override
     public int hashCode() {
@@ -96,8 +94,7 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
         final Context context = holder.itemView.getContext();
         GetReviewStatus(context);
         final String appName = context.getPackageName();
-        if (!widgetReview)
-        {
+        if (!widgetReview) {
             holder.rateYes.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -105,30 +102,23 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
                     holder.rateYes.startAnimation(AnimUtils.Bounce(context, R.anim.anim_bounce, 600));
                     SetReviewStatus(context, true);
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    if (PermissionUtils.isAppInstalled(context, "com.android.vending"))
-                    {
+                    if (PermissionUtils.isAppInstalled(context, "com.android.vending")) {
                         intent.setData(Uri.parse("market://details?id=" + appName));
                         try {
                             context.startActivity(intent);
-                        }
-                        catch (android.content.ActivityNotFoundException ex) {
+                        } catch (android.content.ActivityNotFoundException ex) {
                             intent.setData(Uri.parse(String.format("https://play.google.com/store/apps/details?id=%s", context.getString(R.string.app_package))));
                             context.startActivity(intent);
                         }
-                    }
-                    else if (PermissionUtils.isAppInstalled(context, "com.amazon.venezia"))
-                    {
+                    } else if (PermissionUtils.isAppInstalled(context, "com.amazon.venezia")) {
                         intent.setData(Uri.parse("amzn://apps/android?p=" + appName));
                         try {
                             context.startActivity(intent);
-                        }
-                        catch (android.content.ActivityNotFoundException ex) {
+                        } catch (android.content.ActivityNotFoundException ex) {
                             intent.setData(Uri.parse("https://www.amazon.com/Stream-Inc-Blank-Icon/dp/B06XDVL38F"));
                             context.startActivity(intent);
                         }
-                    }
-                    else
-                    {
+                    } else {
                         intent.setData(Uri.parse(String.format("https://play.google.com/store/apps/details?id=%s", context.getString(R.string.app_package))));
                         context.startActivity(intent);
                     }
@@ -157,14 +147,13 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
                                     Intent intent = new Intent(Intent.ACTION_SEND);
                                     intent.setType("message/rfc822");
                                     intent.setType("vnd.android.cursor.item/email");
-                                    intent.putExtra(Intent.EXTRA_EMAIL, new String[] {context.getString(R.string.email_mailto)});
+                                    intent.putExtra(Intent.EXTRA_EMAIL, new String[]{context.getString(R.string.email_mailto)});
                                     intent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.email_subject));
                                     intent.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.email_message) + inputList.get(0));
                                     try {
                                         Toasty.normal(context, "Send via email", Toast.LENGTH_SHORT).show();
                                         context.startActivity(Intent.createChooser(intent, "Send email using..."));
-                                    }
-                                    catch (android.content.ActivityNotFoundException ex) {
+                                    } catch (android.content.ActivityNotFoundException ex) {
                                         Toasty.normal(context, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -183,9 +172,7 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
                     alert.show();
                 }
             });
-        }
-        else
-        {
+        } else {
             holder.rateNoLayout.setVisibility(View.GONE);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(context, 120), dpToPx(context, 120));
             layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
@@ -203,8 +190,7 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
             holder.switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                    if (!isChecked)
-                    {
+                    if (!isChecked) {
                         AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Hide");
                         SetHideStatus(context, true);
                         EventBus.getDefault().post(new UpdateMainEvent(Constants.HIDE_REVIEW));

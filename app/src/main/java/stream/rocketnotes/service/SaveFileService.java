@@ -77,9 +77,7 @@ public class SaveFileService extends Service {
             if (!dir.exists()) {
                 dir.mkdirs();
                 Log.d("Directory", "Created");
-            }
-            else
-            {
+            } else {
                 Log.d("Directory", "Exists");
             }
 
@@ -87,17 +85,14 @@ public class SaveFileService extends Service {
             savePath = savePath + "/" + sourceName;
             Log.d("Save Path", savePath);
             File f = new File(savePath);
-            if (!f.exists())
-            {
+            if (!f.exists()) {
                 try {
                     f.createNewFile();
                     copyFile(mHandler, new File(sourcePath), f);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-            else
-            {
+            } else {
                 Log.d("Save File", "File Exists");
                 Message message = mHandler.obtainMessage(0, "Already Saved");
                 message.sendToTarget();

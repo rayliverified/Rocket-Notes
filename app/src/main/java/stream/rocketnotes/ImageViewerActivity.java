@@ -53,12 +53,9 @@ public class ImageViewerActivity extends AppCompatActivity {
         Integer position = getIntent().getIntExtra(Constants.IMAGE, 0);
         Integer noteID = getIntent().getIntExtra(Constants.ID, -1);
         Log.d("Image Position", String.valueOf(position));
-        if (getIntent().getAction().equals(Constants.OPEN_IMAGE))
-        {
+        if (getIntent().getAction().equals(Constants.OPEN_IMAGE)) {
             mNotesItem = recentImages(mContext);
-        }
-        else if (getIntent().getAction().equals(Constants.OPEN_IMAGE_SINGLE))
-        {
+        } else if (getIntent().getAction().equals(Constants.OPEN_IMAGE_SINGLE)) {
             mNotesItem = singleImage(mContext, noteID);
         }
         showPicker(position);
@@ -73,8 +70,7 @@ public class ImageViewerActivity extends AppCompatActivity {
     private void showPicker(int startPosition) {
         overlayView = new ImageOverlayView(this);
         ArrayList<String> imageItems = new ArrayList<String>();
-        for (NotesItem note : mNotesItem)
-        {
+        for (NotesItem note : mNotesItem) {
             imageItems.add(note.getNotesImage());
             Log.d("Image URI", note.getNotesImage());
         }
@@ -155,10 +151,8 @@ public class ImageViewerActivity extends AppCompatActivity {
         return notesItems;
     }
 
-    public void initializeAnalytics()
-    {
-        if (FlurryAgent.isSessionActive() == false)
-        {
+    public void initializeAnalytics() {
+        if (FlurryAgent.isSessionActive() == false) {
             new FlurryAgent.Builder()
                     .withLogEnabled(true)
                     .build(this, Constants.FLURRY_API_KEY);

@@ -41,12 +41,9 @@ public class ProportionalImageView extends ImageView {
         int height;
 
         width = MeasureSpec.getSize(widthMeasureSpec);
-        if (getDrawable() != null)
-        {
+        if (getDrawable() != null) {
             height = width * getDrawable().getIntrinsicHeight() / getDrawable().getIntrinsicWidth();
-        }
-        else
-        {
+        } else {
             height = MeasureSpec.getSize(0);
         }
 

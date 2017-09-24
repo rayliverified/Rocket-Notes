@@ -3,7 +3,6 @@ package stream.rocketnotes;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -82,7 +81,11 @@ public class ImageOverlayView extends RelativeLayout {
     public void setDescription(String description) {
         tvDescription.setText(description);
     }
-    public void setImageUri(String text) { this.imageUri = text; }
+
+    public void setImageUri(String text) {
+        this.imageUri = text;
+    }
+
     public void setNoteID(Integer noteID) {
         this.noteID = noteID;
     }
@@ -114,16 +117,14 @@ public class ImageOverlayView extends RelativeLayout {
         mContext.startActivity(Intent.createChooser(shareIntent, "Share Image"));
     }
 
-    private void openGalleryIntent()
-    {
+    private void openGalleryIntent() {
         NotificationSender();
         Intent galleryIntent = new Intent(mContext, MainActivity.class);
         galleryIntent.setAction(Constants.STICKY);
         mContext.startActivity(galleryIntent);
     }
 
-    private void openSaveIntent()
-    {
+    private void openSaveIntent() {
         DialogProperties properties = new DialogProperties();
         properties.selection_mode = DialogConfigs.SINGLE_MODE;
         properties.selection_type = DialogConfigs.DIR_SELECT;
@@ -136,21 +137,17 @@ public class ImageOverlayView extends RelativeLayout {
         dialog.setDialogSelectionListener(new DialogSelectionListener() {
             @Override
             public void onSelectedFilePaths(String[] files) {
-                if (files.length >= 1)
-                {
+                if (files.length >= 1) {
                     DatabaseHelper dbHelper = new DatabaseHelper(mContext);
                     NotesItem note = dbHelper.GetNote(noteID);
                     Intent savePicture = new Intent(mContext, SaveFileService.class);
                     savePicture.putExtra(Constants.SOURCE_PATH, note.getNotesImage());
                     savePicture.putExtra(Constants.SAVE_PATH, files[0]);
                     mContext.startService(savePicture);
-                }
-                else
-                {
+                } else {
                     Toasty.error(mContext, "No Location Selected", Toast.LENGTH_SHORT).show();
                 }
-                for (String filePath : files)
-                {
+                for (String filePath : files) {
                     Log.d("File Path", filePath);
                 }
             }
@@ -158,8 +155,7 @@ public class ImageOverlayView extends RelativeLayout {
         dialog.show();
     }
 
-    private void openDeleteIntent()
-    {
+    private void openDeleteIntent() {
         Intent deleteNote = new Intent(mContext, DeleteNoteService.class);
         deleteNote.putExtra(Constants.ID, noteID);
         deleteNote.setAction(Constants.DELETE_NOTE);
@@ -167,14 +163,12 @@ public class ImageOverlayView extends RelativeLayout {
         NotificationDelete();
     }
 
-    public void NotificationSender()
-    {
+    public void NotificationSender() {
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.FILTER_IMAGES));
         Log.d("Notification", Constants.FILTER_IMAGES);
     }
 
-    public void NotificationDelete()
-    {
+    public void NotificationDelete() {
         EventBus.getDefault().post(new UpdateMainEvent(Constants.DELETE_NOTE));
         Log.d("Notification", Constants.DELETE_NOTE);
     }

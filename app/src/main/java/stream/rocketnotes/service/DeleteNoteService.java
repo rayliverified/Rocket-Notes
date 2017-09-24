@@ -14,7 +14,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Calendar;
 
 import stream.rocketnotes.Constants;
 import stream.rocketnotes.DatabaseHelper;
@@ -37,17 +36,14 @@ public class DeleteNoteService extends Service {
             Integer noteID = extras.getInt(Constants.ID);
             DatabaseHelper dbHelper = new DatabaseHelper(mContext);
             NotesItem note = dbHelper.GetNote(noteID);
-            if (note.getNotesImage() != null)
-            {
+            if (note.getNotesImage() != null) {
                 try {
                     File imageFile = new File(new URI(note.getNotesImage()));
                     imageFile.delete();
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
                 }
-            }
-            else
-            {
+            } else {
 
             }
             dbHelper.DeleteNote(noteID);
@@ -68,8 +64,7 @@ public class DeleteNoteService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public void NotificationSender(NotesItem note)
-    {
+    public void NotificationSender(NotesItem note) {
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.DELETE_NOTE, note));
     }
 

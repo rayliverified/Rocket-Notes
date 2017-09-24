@@ -28,7 +28,7 @@ public class SelectFilterRvAdapter extends RecyclerView.Adapter<SelectFilterRvAd
     private Context mCtx;
     private LayoutInflater mInflater;
 
-    public SelectFilterRvAdapter(Context context, boolean isContain){
+    public SelectFilterRvAdapter(Context context, boolean isContain) {
         this.mCtx = context;
         this.mInflater = LayoutInflater.from(context);
         mList = new ArrayList<>();
@@ -52,6 +52,7 @@ public class SelectFilterRvAdapter extends RecyclerView.Adapter<SelectFilterRvAd
     public BaseElement getItem(int position) {
         return mListFiltered.get(position);
     }
+
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -163,7 +164,8 @@ public class SelectFilterRvAdapter extends RecyclerView.Adapter<SelectFilterRvAd
             super(itemView);
         }
 
-        public void bind(BaseElement element) {}
+        public void bind(BaseElement element) {
+        }
     }
 
     class ItemViewHolder extends BaseViewHolder {
@@ -171,24 +173,25 @@ public class SelectFilterRvAdapter extends RecyclerView.Adapter<SelectFilterRvAd
         TextView mTextView;
         CircleImageView mCiv;
         ImageView mIv;
+
         public ItemViewHolder(View itemView) {
             super(itemView);
             mTextView = (TextView) itemView.findViewById(R.id.tv_name);
-            mCiv =  (CircleImageView)itemView.findViewById(R.id.civ_icon);
-            mIv = (ImageView)itemView.findViewById(R.id.iv_icon);
+            mCiv = (CircleImageView) itemView.findViewById(R.id.civ_icon);
+            mIv = (ImageView) itemView.findViewById(R.id.iv_icon);
         }
 
         @Override
         public void bind(BaseElement element) {
             mTextView.setText(element.getName());
 
-            Filter filter = (Filter)element;
+            Filter filter = (Filter) element;
 
             // Colore
             int color = filter.getIconBgColor();
 
             if (color != View.NO_ID) {
-               // mCiv.setBackgroundColor();
+                // mCiv.setBackgroundColor();
                 mIv.setVisibility(View.GONE);
                 mCiv.setVisibility(View.VISIBLE);
 
@@ -215,6 +218,7 @@ public class SelectFilterRvAdapter extends RecyclerView.Adapter<SelectFilterRvAd
     class SectionViewHolder extends BaseViewHolder {
 
         TextView mTextView;
+
         public SectionViewHolder(View itemView) {
             super(itemView);
             mTextView = (TextView) itemView;

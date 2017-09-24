@@ -130,14 +130,11 @@ public class NotesWidget extends AppWidgetProvider {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.setAction(Constants.NEW_NOTE);
             context.startActivity(intent);
-        }
-        else if (intent.getAction().equals(Constants.OPEN_NOTE))
-        {
+        } else if (intent.getAction().equals(Constants.OPEN_NOTE)) {
             Log.d("onReceive", Constants.OPEN_NOTE);
             try {
                 Integer noteID = intent.getIntExtra(Constants.ID, -1);
-                if (noteID != -1)
-                {
+                if (noteID != -1) {
                     Log.d("Note ID", String.valueOf(noteID));
                     intent = new Intent(context, PopupActivity.class);
                     intent.putExtra(Constants.ID, noteID);
@@ -145,18 +142,14 @@ public class NotesWidget extends AppWidgetProvider {
                     intent.setAction(Constants.OPEN_NOTE);
                     context.startActivity(intent);
                 }
-            }
-            catch (ActivityNotFoundException e) {
+            } catch (ActivityNotFoundException e) {
 
             }
-        }
-        else if (intent.getAction().equals(Constants.OPEN_APP))
-        {
+        } else if (intent.getAction().equals(Constants.OPEN_APP)) {
             Intent openIntent = new Intent(context, MainActivity.class);
             openIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(openIntent);
-        }
-        else {
+        } else {
             Log.d("onReceive", "Clicked");
             super.onReceive(context, intent);
         }

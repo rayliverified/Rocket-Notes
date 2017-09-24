@@ -9,5 +9,5 @@
         android:id="@+id/action_camera"
         android:icon="@drawable/icon_snap_simple"
         android:orderInCategory="1"
-        android:title="Camera" />
+        android:title="Camera"/>
 </menu>

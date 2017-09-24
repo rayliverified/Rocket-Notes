@@ -11,11 +11,11 @@ import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.imagepipeline.image.ImageInfo;
-import frescoimageviewer.drawee.ZoomableDraweeView;
 
 import java.util.HashSet;
 import java.util.List;
 
+import frescoimageviewer.drawee.ZoomableDraweeView;
 import me.relex.photodraweeview.OnScaleChangeListener;
 
 /*

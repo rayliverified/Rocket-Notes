@@ -6,23 +6,23 @@
         android:icon="@drawable/icon_undo"
         android:orderInCategory="1"
         app:showAsAction="always"
-        android:title="Undo" />
+        android:title="Undo"/>
     <item
         android:id="@+id/action_redo"
         android:icon="@drawable/icon_redo"
         android:orderInCategory="2"
         app:showAsAction="ifRoom"
-        android:title="Redo" />
+        android:title="Redo"/>
     <item
         android:id="@+id/action_share"
         android:icon="@drawable/icon_share"
         android:orderInCategory="3"
         app:showAsAction="ifRoom"
-        android:title="Share" />
+        android:title="Share"/>
     <item
         android:id="@+id/action_delete"
         android:icon="@drawable/icon_delete"
         android:orderInCategory="4"
         app:showAsAction="ifRoom"
-        android:title="Delete" />
+        android:title="Delete"/>
 </menu>

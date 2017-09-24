@@ -55,11 +55,11 @@ public class FilterMaterialSearchView extends FrameLayout implements RecyclerIte
         }
     }
 
-    public List<Filter> getFilter(){
+    public List<Filter> getFilter() {
         return mFilterRvAdapter.getFilters();
     }
 
-    private void initView(){
+    private void initView() {
         LayoutInflater.from(getContext()).inflate(R.layout.msv_filter, this, true);
 
         mRvFilter = (RecyclerView) findViewById(R.id.rv_filter);
@@ -75,7 +75,7 @@ public class FilterMaterialSearchView extends FrameLayout implements RecyclerIte
         mFilterRvAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
-                if (mFilterRvAdapter.getItemCount() == 0){
+                if (mFilterRvAdapter.getItemCount() == 0) {
                     closeFilter();
                 } else {
                     showFilter();
@@ -84,7 +84,7 @@ public class FilterMaterialSearchView extends FrameLayout implements RecyclerIte
 
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                if (mFilterRvAdapter.getItemCount() == 0){
+                if (mFilterRvAdapter.getItemCount() == 0) {
                     closeFilter();
                 } else {
                     showFilter();
@@ -93,7 +93,7 @@ public class FilterMaterialSearchView extends FrameLayout implements RecyclerIte
 
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
-                if (mFilterRvAdapter.getItemCount() == 0){
+                if (mFilterRvAdapter.getItemCount() == 0) {
                     closeFilter();
                 } else {
                     showFilter();
@@ -115,19 +115,18 @@ public class FilterMaterialSearchView extends FrameLayout implements RecyclerIte
         NotificationSender();
     }
 
-    public void NotificationSender()
-    {
+    public void NotificationSender() {
         EventBus.getDefault().post(new UpdateMainEvent(Constants.FILTER));
         Log.d("Notification", Constants.FILTER);
     }
 
 
-    public boolean isFilterVisible(){
+    public boolean isFilterVisible() {
         return mRvFilter.getVisibility() == VISIBLE;
     }
 
-    public int getFilterHeight(){
-       return mRvFilter.getHeight();
+    public int getFilterHeight() {
+        return mRvFilter.getHeight();
     }
 
     @Override

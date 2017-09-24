@@ -18,16 +18,14 @@ public class ResultActivity extends MainActivity {
         setContentView(R.layout.activity_result);
 
         String newNote = getMessageText(getIntent());
-        if (!newNote.equals(""))
-        {
+        if (!newNote.equals("")) {
             Calendar calendar = Calendar.getInstance();
             Long currentTime = calendar.getTimeInMillis();
             DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
             dbHelper.AddNewNote(newNote, currentTime, null);
             int widgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), NotesWidget.class));
 
-            for (int id : widgetIDs)
-            {
+            for (int id : widgetIDs) {
                 AppWidgetManager.getInstance(getApplication()).notifyAppWidgetViewDataChanged(id, R.id.notes_listview);
             }
         }

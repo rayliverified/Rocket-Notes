@@ -46,7 +46,11 @@ public class ShareAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public int getItemCount() { return notesList.size(); }
+    public int getItemCount() {
+        return notesList.size();
+    }
 
-    public NotesItem getNote(int position) { return notesList.get(position); }
+    public NotesItem getNote(int position) {
+        return notesList.get(position);
+    }
 }

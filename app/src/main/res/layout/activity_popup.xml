@@ -110,6 +110,7 @@
                 android:src="@drawable/icon_send_selector"
                 android:visibility="gone"/>
         </LinearLayout>
+
         <TextView
             android:id="@+id/edit_helper"
             android:layout_width="match_parent"

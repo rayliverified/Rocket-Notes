@@ -4,10 +4,8 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -15,11 +13,8 @@ import android.view.View;
 import com.afollestad.materialcamera.MaterialCamera;
 import com.flurry.android.FlurryAgent;
 import com.pyze.android.Pyze;
-import com.uxcam.UXCam;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import stream.custompermissionsdialogue.PermissionsDialogue;
 import stream.custompermissionsdialogue.utils.PermissionUtils;
@@ -27,7 +22,7 @@ import stream.rocketnotes.service.SaveNoteService;
 import stream.rocketnotes.utils.AnalyticsUtils;
 import stream.rocketnotes.utils.FileUtils;
 
-public class CameraActivity extends AppCompatActivity{
+public class CameraActivity extends AppCompatActivity {
 
     private String mActivity = "CameraActivity";
     private Context mContext;
@@ -43,8 +38,7 @@ public class CameraActivity extends AppCompatActivity{
 
             final String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-            if (!PermissionUtils.IsPermissionsEnabled(mContext, permissions))
-            {
+            if (!PermissionUtils.IsPermissionsEnabled(mContext, permissions)) {
                 PermissionsDialogue.Builder alertPermissions = new PermissionsDialogue.Builder(CameraActivity.this)
                         .setMessage(getString(R.string.app_name) + " requires the following permissions to take photos: ")
                         .setIcon(R.mipmap.ic_launcher)
@@ -59,9 +53,7 @@ public class CameraActivity extends AppCompatActivity{
                         })
                         .build();
                 alertPermissions.show();
-            }
-            else
-            {
+            } else {
                 StartCamera();
             }
         }
@@ -95,10 +87,8 @@ public class CameraActivity extends AppCompatActivity{
         finish();
     }
 
-    public void initializeAnalytics()
-    {
-        if (FlurryAgent.isSessionActive() == false)
-        {
+    public void initializeAnalytics() {
+        if (FlurryAgent.isSessionActive() == false) {
             new FlurryAgent.Builder()
                     .withLogEnabled(true)
                     .build(this, Constants.FLURRY_API_KEY);

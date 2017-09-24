@@ -2,9 +2,7 @@ package stream.rocketnotes;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -46,7 +44,7 @@ public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholde
      * - The Hash increases performance in big list during Update & Filter operations.
      * - Collapsing many expandable items is much faster.
      * - You might want to activate stable ids via Constructor for RV, if your id
-     *   is unique (read more in the wiki page: "Setting Up Advanced").
+     * is unique (read more in the wiki page: "Setting Up Advanced").
      */
     @Override
     public int hashCode() {

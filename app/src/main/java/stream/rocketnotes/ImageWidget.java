@@ -117,15 +117,12 @@ public class ImageWidget extends AppWidgetProvider {
             intent = new Intent(context, CameraActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
-        }
-        else if (intent.getAction().equals(Constants.OPEN_IMAGE))
-        {
+        } else if (intent.getAction().equals(Constants.OPEN_IMAGE)) {
             Log.d("onReceive", Constants.OPEN_IMAGE);
             try {
                 Integer position = intent.getIntExtra(Constants.IMAGE, -1);
                 Integer noteID = intent.getIntExtra(Constants.ID, -1);
-                if (position != -1)
-                {
+                if (position != -1) {
                     intent = new Intent(context, ImageViewerActivity.class);
                     intent.setAction(Constants.OPEN_IMAGE);
                     intent.putExtra(Constants.IMAGE, position);
@@ -133,12 +130,10 @@ public class ImageWidget extends AppWidgetProvider {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     context.startActivity(intent);
                 }
-            }
-            catch (ActivityNotFoundException e) {
+            } catch (ActivityNotFoundException e) {
 
             }
-        }
-        else {
+        } else {
             Log.d("onReceive", "Clicked");
             super.onReceive(context, intent);
         }

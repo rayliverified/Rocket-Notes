@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -51,7 +49,7 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
      * - The Hash increases performance in big list during Update & Filter operations.
      * - Collapsing many expandable items is much faster.
      * - You might want to activate stable ids via Constructor for RV, if your id
-     *   is unique (read more in the wiki page: "Setting Up Advanced").
+     * is unique (read more in the wiki page: "Setting Up Advanced").
      */
     @Override
     public int hashCode() {
@@ -82,13 +80,10 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
 
         ArrayList<String> note = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(title));
         holder.noteTitle.setText(stream.rocketnotes.utils.TextUtils.fromHtml(note.get(0)));
-        if (!TextUtils.isEmpty(note.get(1)))
-        {
+        if (!TextUtils.isEmpty(note.get(1))) {
             holder.noteBody.setText(stream.rocketnotes.utils.TextUtils.fromHtml(note.get(1)));
             holder.noteBody.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             holder.noteBody.setVisibility(View.GONE);
         }
 

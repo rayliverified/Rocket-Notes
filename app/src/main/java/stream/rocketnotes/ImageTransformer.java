@@ -17,20 +17,16 @@ public class ImageTransformer {
                 int targetWidth = imageView.getWidth();
                 Log.d("Image Transform", String.valueOf(targetWidth));
                 //Source image does not load fast enough, set to fixed width to prevent crash
-                if (targetWidth <= 0)
-                {
+                if (targetWidth <= 0) {
                     targetWidth = 500;
                 }
                 //Checks if the width is great than the height (landscape or portrait)
-                if (source.getWidth() < source.getHeight())
-                {
+                if (source.getWidth() < source.getHeight()) {
                     //creates and returns a square of the original bmp if the image is portrait orientation
                     Bitmap result = ThumbnailUtils.extractThumbnail(source, targetWidth, targetWidth, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
                     //ThumbnailUtils.OPTIONS_RECYCLE_INPUT recycles source image. Image must always be recycled!
                     return result;
-                }
-                else
-                {
+                } else {
                     //Calculates source image aspect ratio
                     double aspectRatio = (double) source.getHeight() / (double) source.getWidth();
                     //Sets transformed image target height

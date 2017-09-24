@@ -8,20 +8,16 @@ import android.util.Log;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 import java.util.TimeZone;
 
 public class TextUtils {
 
-    public TextUtils()
-    {
+    public TextUtils() {
 
     }
 
-    public static String Compatibility(String raw)
-    {
-        if (raw == null || raw == "")
-        {
+    public static String Compatibility(String raw) {
+        if (raw == null || raw == "") {
             return null;
         }
         String output = "";
@@ -29,27 +25,21 @@ public class TextUtils {
         return output;
     }
 
-    public static String Clean(String raw)
-    {
-        if (raw == null || raw == "")
-        {
+    public static String Clean(String raw) {
+        if (raw == null || raw == "") {
             return null;
         }
         String output = "";
         output = raw.trim();
         output = output.replaceAll("&nbsp;", " ");
-        if (output.length() >= 4)
-        {
-            if (output.substring(0, 4).equals("<br>"))
-            {
+        if (output.length() >= 4) {
+            if (output.substring(0, 4).equals("<br>")) {
                 Log.d("Trimed", "Beginning");
                 output = output.substring(4, output.length());
             }
         }
-        if (output.length() >= 8)
-        {
-            if (output.substring(output.length() - 8, output.length()).equals("<br><br>"))
-            {
+        if (output.length() >= 8) {
+            if (output.substring(output.length() - 8, output.length()).equals("<br><br>")) {
                 Log.d("Trimed", "End");
                 output = output.substring(0, output.length() - 8);
             }
@@ -58,19 +48,17 @@ public class TextUtils {
         return output.trim();
     }
 
-    public static String CleanShare(String raw)
-    {
+    public static String CleanShare(String raw) {
         String output = "";
         output = raw.replaceAll("<br>", "\n");
         return output;
     }
 
     @SuppressWarnings("deprecation")
-    public static Spanned fromHtml(String html)
-    {
+    public static Spanned fromHtml(String html) {
         Spanned result;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            result = Html.fromHtml(html,Html.FROM_HTML_MODE_LEGACY);
+            result = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
         } else {
             result = Html.fromHtml(html);
         }
@@ -95,14 +83,11 @@ public class TextUtils {
             return String.valueOf(minutes) + " minutes ago";
         else if (now.get(Calendar.YEAR) == noteTime.get(Calendar.YEAR)
                 && now.get(Calendar.MONTH) == noteTime.get(Calendar.MONTH)
-                && now.get(Calendar.DATE) == noteTime.get(Calendar.DATE))
-        {
+                && now.get(Calendar.DATE) == noteTime.get(Calendar.DATE)) {
             return "Today " + DateFormat.format(timeFormatString, noteTime);
-        }
-        else if (now.get(Calendar.YEAR) == noteTime.get(Calendar.YEAR)
+        } else if (now.get(Calendar.YEAR) == noteTime.get(Calendar.YEAR)
                 && now.get(Calendar.MONTH) == noteTime.get(Calendar.MONTH)
-                && now.get(Calendar.DATE) - noteTime.get(Calendar.DATE) == 1)
-        {
+                && now.get(Calendar.DATE) - noteTime.get(Calendar.DATE) == 1) {
             return "Yesterday " + DateFormat.format(timeFormatString, noteTime);
         }
 
@@ -124,14 +109,11 @@ public class TextUtils {
         String timeFormatString = "h:mm aa";
         if (now.get(Calendar.YEAR) == noteTime.get(Calendar.YEAR)
                 && now.get(Calendar.MONTH) == noteTime.get(Calendar.MONTH)
-                && now.get(Calendar.DATE) == noteTime.get(Calendar.DATE))
-        {
+                && now.get(Calendar.DATE) == noteTime.get(Calendar.DATE)) {
             return (String) DateFormat.format(timeFormatString, noteTime);
-        }
-        else if (now.get(Calendar.YEAR) == noteTime.get(Calendar.YEAR)
+        } else if (now.get(Calendar.YEAR) == noteTime.get(Calendar.YEAR)
                 && now.get(Calendar.MONTH) == noteTime.get(Calendar.MONTH)
-                && now.get(Calendar.DATE) - noteTime.get(Calendar.DATE) == 1)
-        {
+                && now.get(Calendar.DATE) - noteTime.get(Calendar.DATE) == 1) {
             return "Yesterday";
         }
 

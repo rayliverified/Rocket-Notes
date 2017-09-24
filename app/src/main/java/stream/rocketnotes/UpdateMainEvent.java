@@ -27,11 +27,19 @@ public class UpdateMainEvent {
         this.noteText = noteText;
     }
 
-    public String getAction() { return this.action; }
+    public String getAction() {
+        return this.action;
+    }
 
-    public Integer getID() { return this.id; }
+    public Integer getID() {
+        return this.id;
+    }
 
-    public NotesItem getNotesItem() { return this.notesItem; }
+    public NotesItem getNotesItem() {
+        return this.notesItem;
+    }
 
-    public String getNoteText() { return noteText; }
+    public String getNoteText() {
+        return noteText;
+    }
 }

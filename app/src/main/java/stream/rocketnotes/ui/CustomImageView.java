@@ -44,8 +44,7 @@ public class CustomImageView extends ImageView {
                 mBottomLeftRadius = a.getInteger(R.styleable.CustomImageView_bottomLeftRadius, 0);
                 mBottomRightRadius = a.getInteger(R.styleable.CustomImageView_bottomRightRadius, 0);
                 setRadius(mTopLeftRadius, mTopRightRadius, mBottomLeftRadius, mBottomRightRadius);
-            }
-            finally {
+            } finally {
                 a.recycle();
             }
         }
@@ -58,16 +57,12 @@ public class CustomImageView extends ImageView {
         int height;
 
         width = MeasureSpec.getSize(widthMeasureSpec);
-        if (getDrawable() != null)
-        {
+        if (getDrawable() != null) {
             height = width * getDrawable().getIntrinsicHeight() / getDrawable().getIntrinsicWidth();
-            if (height > 720)
-            {
+            if (height > 720) {
                 height = 720;
             }
-        }
-        else
-        {
+        } else {
             height = MeasureSpec.getSize(0);
         }
 
@@ -96,8 +91,7 @@ public class CustomImageView extends ImageView {
         }
     }
 
-    public void setRadius(int topLeftRadius, int topRightRadius, int bottomLeftRadius, int bottomRightRadius)
-    {
+    public void setRadius(int topLeftRadius, int topRightRadius, int bottomLeftRadius, int bottomRightRadius) {
         mTopLeftRadius = topLeftRadius;
         mTopRightRadius = topRightRadius;
         mBottomLeftRadius = bottomLeftRadius;

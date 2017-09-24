@@ -18,6 +18,7 @@ public class NotesWidgetService extends RemoteViewsService {
         return new NotesRemoteViewsFactory(this.getApplicationContext(), intent);
     }
 }
+
 class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private static int mCount = 0;
     private ArrayList<NotesItem> mNotesItems = new ArrayList<NotesItem>();
@@ -50,13 +51,10 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             ArrayList<String> noteText = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(note.getNotesNote()));
             rv.setTextViewText(R.id.item_note_title, stream.rocketnotes.utils.TextUtils.fromHtml(noteText.get(0)));
             rv.setTextViewText(R.id.item_note_date, stream.rocketnotes.utils.TextUtils.getTimeStampShort(note.getNotesDate()));
-            if (!TextUtils.isEmpty(noteText.get(1)))
-            {
+            if (!TextUtils.isEmpty(noteText.get(1))) {
                 rv.setTextViewText(R.id.item_note_note, stream.rocketnotes.utils.TextUtils.fromHtml(noteText.get(1).replaceAll("<b>", " ")));
                 rv.setViewVisibility(R.id.item_note_note, View.VISIBLE);
-            }
-            else
-            {
+            } else {
                 rv.setViewVisibility(R.id.item_note_note, View.GONE);
             }
         }

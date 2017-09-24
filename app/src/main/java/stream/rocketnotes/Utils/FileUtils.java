@@ -24,8 +24,7 @@ public class FileUtils {
     }
 
     //Create noMedia file in Pictures folder
-    public static void CreateNoMediaFile(Context context) throws IOException
-    {
+    public static void CreateNoMediaFile(Context context) throws IOException {
         File imagePath = new File(context.getFilesDir(), ".Pictures");
         File noMediaFile = new File(imagePath, ".nomedia");
         noMediaFile.createNewFile();
@@ -33,36 +32,29 @@ public class FileUtils {
     }
 
     //Create a new internal folder for storing pictures if no folder exists
-    public static void InitializePicturesFolder(Context context)
-    {
+    public static void InitializePicturesFolder(Context context) {
         File dir = new File(context.getFilesDir() + "/.Pictures");
         if (!dir.exists()) {
             dir.mkdirs();
             Log.d("Directory", "Created");
-        }
-        else
-        {
+        } else {
             Log.d("Directory", "Exists");
         }
-        if (!NoMediaExists(context))
-        {
+        if (!NoMediaExists(context)) {
             try {
                 CreateNoMediaFile(context);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else
-        {
+        } else {
             Log.d("No Media", "Exists");
         }
     }
 
-    public static String GetFileUriFromContentUri(Context context, Uri uri)
-    {
+    public static String GetFileUriFromContentUri(Context context, Uri uri) {
         String fileUri = null;
         if (uri != null && "content".equals(uri.getScheme())) {
-            Cursor cursor = context.getContentResolver().query(uri, new String[] { android.provider.MediaStore.Images.ImageColumns.DATA }, null, null, null);
+            Cursor cursor = context.getContentResolver().query(uri, new String[]{android.provider.MediaStore.Images.ImageColumns.DATA}, null, null, null);
             cursor.moveToFirst();
             fileUri = "file://" + cursor.getString(0);
             cursor.close();

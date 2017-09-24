@@ -7,6 +7,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:statusBarColor" tools:targetApi="lollipop">@color/colorPrimary</item>
     </style>
+
     <style name="AppThemeHome" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -15,11 +16,13 @@
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
+
     <style name="Theme.Transparent" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowActivityTransitions" tools:targetApi="lollipop">true</item>
     </style>
+
     <style name="Theme.TransparentFloating" parent="android:Theme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -30,14 +33,17 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowActivityTransitions" tools:targetApi="lollipop">true</item>
     </style>
+
     <style name="Theme.Share" parent="Theme.TransparentFloating">
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
     <style name="AppActionBar" parent="AppTheme">
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item>
     </style>
+
     <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <!-- THIS is where you can color the arrow and the overflow button! -->
         <item name="colorControlNormal">@color/white</item>
@@ -49,6 +55,7 @@
         <item name="android:textColor">@color/textPrimary</item>
         <item name="android:textSize">@dimen/title_size</item>
     </style>
+
     <style name="WidgetBodyText">
         <item name="android:textColor">@color/textSecondary</item>
         <item name="android:textSize">@dimen/body_size</item>
@@ -60,14 +67,17 @@
         <item name="android:maxLines">5</item>
         <item name="android:ellipsize">end</item>
     </style>
-    <style name="MSV_SelectFilterTextSectionName" >
+
+    <style name="MSV_SelectFilterTextSectionName">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
-    <style name="MSV_SelectFilterTextFilterName" >
+
+    <style name="MSV_SelectFilterTextFilterName">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
     <style name="MSV_FilterTextName">
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">@color/black</item>

@@ -13,12 +13,12 @@ import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import frescoimageviewer.adapter.RecyclingPagerAdapter;
-import frescoimageviewer.adapter.ViewHolder;
-import frescoimageviewer.drawee.ZoomableDraweeView;
 
 import java.util.HashSet;
 
+import frescoimageviewer.adapter.RecyclingPagerAdapter;
+import frescoimageviewer.adapter.ViewHolder;
+import frescoimageviewer.drawee.ZoomableDraweeView;
 import me.relex.photodraweeview.OnScaleChangeListener;
 
 /*

@@ -34,7 +34,6 @@ import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.ProgressCallback;
 import com.pyze.android.Pyze;
 import com.squareup.picasso.Picasso;
-import com.uxcam.UXCam;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -106,7 +105,7 @@ public class ShareActivity extends Activity {
 
         //FLAG_NOT_TOUCH_MODAL passes through touch events to objects underneath view
         //FLAG_WATCH_OUTSIDE_TOUCH dismisses window when outside touch is detected
-        window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL|WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH|WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH | WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         //Hides keyboard from focusing on editText when Activity starts
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -122,8 +121,7 @@ public class ShareActivity extends Activity {
         editImage = (CustomImageView) findViewById(R.id.edit_image);
         progressBar = (ProgressBar) findViewById(R.id.edit_progress);
 
-        if (!PermissionUtils.IsPermissionEnabled(mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE))
-        {
+        if (!PermissionUtils.IsPermissionEnabled(mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             //Notify user that permission is not enabled via editText
             editText.setText("Storage permission required to save notes.");
             editText.setFocusable(false);
@@ -134,10 +132,8 @@ public class ShareActivity extends Activity {
         boolean validShare = false;
 
         //Get data shared to app
-        if (getIntent() != null)
-        {
-            if (getIntent().getAction() != null)
-            {
+        if (getIntent() != null) {
+            if (getIntent().getAction() != null) {
                 shareIntent = getIntent();
                 String action = getIntent().getAction();
                 noteType = getIntent().getType();
@@ -147,9 +143,7 @@ public class ShareActivity extends Activity {
                     if ("text/plain".equals(noteType)) {
                         textNote = shareText(shareIntent);
                         validShare = true;
-                    }
-                    else if (noteType.startsWith("image/"))
-                    {
+                    } else if (noteType.startsWith("image/")) {
                         shareImage(shareIntent);
                         validShare = true;
                     }
@@ -157,8 +151,7 @@ public class ShareActivity extends Activity {
             }
         }
 
-        if (!validShare)
-        {
+        if (!validShare) {
             Toasty.error(mContext, "Invalid content", Toast.LENGTH_SHORT).show();
             finish();
         }
@@ -176,8 +169,7 @@ public class ShareActivity extends Activity {
             }
         });
 
-        if (textNote)
-        {
+        if (textNote) {
             ShowRecentNotes();
         }
     }
@@ -225,15 +217,13 @@ public class ShareActivity extends Activity {
         EventBus.getDefault().unregister(this);
         Log.d(mActivity, "OnPause");
         //Share attempt has been canceled by user. Delete any remnants
-        if (!savedNote && downloading != null)
-        {
+        if (!savedNote && downloading != null) {
             Log.d("Download", "Cancel");
             //Cancel pending download if not completed
             downloading.cancel();
             downloading = null;
             //If download has been saved, delete download.
-            if (fileDownloaded == true && imageUri != null)
-            {
+            if (fileDownloaded == true && imageUri != null) {
                 File imageFile = new File(imageUri.getPath());
                 imageFile.delete();
                 Log.d("Download", "Delete");
@@ -242,28 +232,24 @@ public class ShareActivity extends Activity {
         }
     }
 
-    public boolean shareText(Intent intent)
-    {
+    public boolean shareText(Intent intent) {
         String shareText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (shareText != null) {
             Log.d("ShareText", "Not Null");
             //Detect if sharedText is URL link
-            if (android.util.Patterns.WEB_URL.matcher(shareText).matches())
-            {
+            if (android.util.Patterns.WEB_URL.matcher(shareText).matches()) {
                 Log.d("ShareURL", shareText);
                 //Detect if shared URL is an Image
                 String imageType = shareText.substring(shareText.lastIndexOf(".") + 1);
                 if ("png".equals(imageType) || "jpg".equals(imageType) ||
-                        "jpeg".equals(imageType) || "bmp".equals(imageType))
-                {
+                        "jpeg".equals(imageType) || "bmp".equals(imageType)) {
                     fileDownloading = true;
                     //Create location to save image
                     FileUtils.InitializePicturesFolder(mContext);
                     //Set editDetails text to Image Note
                     editDetails.setText("New Image Note • now");
                     //Passed URL must start with http:// to be accepted by image loader
-                    if(!shareText.startsWith("http"))
-                    {
+                    if (!shareText.startsWith("http")) {
                         shareText = "http://" + shareText;
                     }
                     Log.d("ParsedURL", shareText);
@@ -296,8 +282,7 @@ public class ShareActivity extends Activity {
                                 public void onCompleted(Exception e, File file) {
                                     Log.d("Ion", "onCompleted");
                                     fileDownloading = false;
-                                    if (file != null)
-                                    {
+                                    if (file != null) {
                                         //Load downloaded file into ImageView
                                         Ion.with(mContext)
                                                 .load(file)
@@ -307,9 +292,7 @@ public class ShareActivity extends Activity {
                                         imageUri = Uri.parse("file://" + file.getAbsolutePath());
                                         Log.d("ImageURI", String.valueOf(imageUri));
                                         fileDownloaded = true;
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         //Image URL is invalid, display editText instead.
                                         progressBar.setVisibility(View.GONE);
                                         editImage.setVisibility(View.GONE);
@@ -321,15 +304,11 @@ public class ShareActivity extends Activity {
                                 }
                             });
                     return false;
-                }
-                else
-                {
+                } else {
                     editText.setText(shareText);
                     return true;
                 }
-            }
-            else
-            {
+            } else {
                 editText.setText(shareText);
                 return true;
             }
@@ -337,8 +316,7 @@ public class ShareActivity extends Activity {
         return false;
     }
 
-    public void shareImage(Intent intent)
-    {
+    public void shareImage(Intent intent) {
         //Set editDetails text to Image Note
         editDetails.setText("New Image Note • now");
         imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
@@ -353,11 +331,9 @@ public class ShareActivity extends Activity {
         }
     }
 
-    private void saveNote()
-    {
+    private void saveNote() {
         //Wait for images to load before allowing user to save.
-        if (!fileDownloading)
-        {
+        if (!fileDownloading) {
             //Save note and close activity
             //Multiple content may be sent to Rocket Notes. Force refresh of main feed.
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -365,11 +341,9 @@ public class ShareActivity extends Activity {
             editor.putBoolean(Constants.REFRESH, true);
             editor.apply();
 
-            if ("text/plain".equals(noteType))
-            {
+            if ("text/plain".equals(noteType)) {
                 //Shared text may have originated as an Image URL
-                if (imageUri != null)
-                {
+                if (imageUri != null) {
                     //Note is saved. Do not delete downloaded image file.
                     savedNote = true;
                     Intent saveNote = new Intent(mContext, SaveNoteService.class);
@@ -377,24 +351,18 @@ public class ShareActivity extends Activity {
                     saveNote.setAction(Constants.NEW_NOTE);
                     mContext.startService(saveNote);
                     finish();
-                }
-                else if (!TextUtils.isEmpty(editText.getText().toString().trim())) {
+                } else if (!TextUtils.isEmpty(editText.getText().toString().trim())) {
                     AnalyticsUtils.AnalyticEvent(mActivity, "SaveNote", "Text");
                     Intent saveNote = new Intent(mContext, SaveNoteService.class);
                     saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
                     saveNote.setAction(Constants.NEW_NOTE);
                     mContext.startService(saveNote);
                     finish();
-                }
-                else
-                {
+                } else {
                     Toasty.warning(mContext, "Note Empty", Toast.LENGTH_SHORT, true).show();
                 }
-            }
-            else if (noteType.startsWith("image/"))
-            {
-                if (imageUri != null)
-                {
+            } else if (noteType.startsWith("image/")) {
+                if (imageUri != null) {
                     Log.d("Image URI", String.valueOf(imageUri));
                     AnalyticsUtils.AnalyticEvent(mActivity, "SaveImage", "Image");
                     String savePath = getFilesDir() + "/.Pictures";
@@ -403,31 +371,25 @@ public class ShareActivity extends Activity {
                     savePicture.putExtra(Constants.SAVE_PATH, savePath);
                     mContext.startService(savePicture);
                     finish();
-                }
-                else
-                {
+                } else {
                     Toasty.error(mContext, "Image Unsupported", Toast.LENGTH_SHORT, true).show();
                 }
             }
-        }
-        else
-        {
+        } else {
             Toasty.warning(mContext, "Please wait", Toast.LENGTH_SHORT, true).show();
         }
     }
 
-    private void setImageName()
-    {
+    private void setImageName() {
         //Use editText to display image name.
         try {
             //Get File Name from URI and encode into readable format
             imageName = URLDecoder.decode(String.valueOf(imageUri), "UTF-8");
-            imageName = imageName.substring(imageName.lastIndexOf("/")+1);
+            imageName = imageName.substring(imageName.lastIndexOf("/") + 1);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        if (imageName != null)
-        {
+        if (imageName != null) {
             editText.setText(imageName);
             editText.setEnabled(false);
         }
@@ -436,14 +398,12 @@ public class ShareActivity extends Activity {
     @Subscribe(sticky = false, threadMode = ThreadMode.MAIN)
     public void onMessageEvent(UpdateMainEvent event) {
         Log.d(mActivity, event.getAction());
-        if (event.getAction().equals(Constants.ADDTO_NOTE))
-        {
+        if (event.getAction().equals(Constants.ADDTO_NOTE)) {
             UpdateNote(event);
         }
     }
 
-    public void UpdateNote(UpdateMainEvent event)
-    {
+    public void UpdateNote(UpdateMainEvent event) {
         Integer noteID = event.getID();
         String noteTextRaw = event.getNoteText();
 
@@ -457,16 +417,14 @@ public class ShareActivity extends Activity {
         RemoveSticky();
     }
 
-    public void RemoveSticky()
-    {
+    public void RemoveSticky() {
         UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
-        if(stickyEvent != null) {
+        if (stickyEvent != null) {
             EventBus.getDefault().removeStickyEvent(stickyEvent);
         }
     }
 
-    private void ShowRecentNotes()
-    {
+    private void ShowRecentNotes() {
         dbHelper = new DatabaseHelper(mContext);
         mRecyclerView = (RecyclerView) findViewById(R.id.share_recycler);
         mRecyclerView.setVisibility(View.VISIBLE);
@@ -479,16 +437,13 @@ public class ShareActivity extends Activity {
     }
 
 
-    private void LoadNotes()
-    {
+    private void LoadNotes() {
         NoteList.addAll(dbHelper.GetTextNotes(Constants.RECENT_NOTES));
         mAdapter.notifyDataSetChanged();
     }
 
-    public void initializeAnalytics()
-    {
-        if (FlurryAgent.isSessionActive() == false)
-        {
+    public void initializeAnalytics() {
+        if (FlurryAgent.isSessionActive() == false) {
             new FlurryAgent.Builder()
                     .withLogEnabled(true)
                     .build(this, Constants.FLURRY_API_KEY);

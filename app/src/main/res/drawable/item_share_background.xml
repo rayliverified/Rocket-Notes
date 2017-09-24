@@ -5,5 +5,5 @@
         android:angle="270"
         android:startColor="@color/divider"
         android:centerColor="@android:color/transparent"
-        android:centerX="0.01" />
+        android:centerX="0.01"/>
 </shape>

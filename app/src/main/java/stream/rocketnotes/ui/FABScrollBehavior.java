@@ -59,6 +59,7 @@ public class FABScrollBehavior extends FabSpeedDialBehaviour {
     public void show(FabSpeedDial child) {
         child.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
     }
+
     public void hide(FabSpeedDial child) {
         child.animate().translationY(child.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
     }

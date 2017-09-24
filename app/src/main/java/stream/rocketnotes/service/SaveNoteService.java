@@ -52,9 +52,7 @@ public class SaveNoteService extends Service {
             for (int id : imageWidgetIDs) {
                 AppWidgetManager.getInstance(getApplication()).notifyAppWidgetViewDataChanged(id, R.id.image_gridview);
             }
-        }
-        else if (intent.getAction().equals(Constants.UPDATE_NOTE))
-        {
+        } else if (intent.getAction().equals(Constants.UPDATE_NOTE)) {
             Log.d("SaveNoteService", Constants.UPDATE_NOTE);
             Bundle extras = intent.getExtras();
             Integer noteID = extras.getInt(Constants.ID);
@@ -80,15 +78,13 @@ public class SaveNoteService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public void NotificationSender(NotesItem note)
-    {
+    public void NotificationSender(NotesItem note) {
         Toasty.custom(mContext, "Saved", null, ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, false).show();
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.RECEIVED, note.getNotesID()));
         Log.d("SaveNoteService", String.valueOf(note.getNotesID()));
     }
 
-    public void UpdateSender(NotesItem note)
-    {
+    public void UpdateSender(NotesItem note) {
         Toasty.custom(mContext, "Saved", null, ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, false).show();
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.UPDATE_NOTE, note.getNotesID()));
         Log.d("SaveNoteService", String.valueOf(note.getNotesID()));

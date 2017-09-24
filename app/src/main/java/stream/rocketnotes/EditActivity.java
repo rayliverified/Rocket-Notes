@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,7 +20,6 @@ import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
 import com.pyze.android.Pyze;
-import com.uxcam.UXCam;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -62,8 +60,7 @@ public class EditActivity extends AppCompatActivity {
         noteTextRaw = "";
         noteID = -1;
 
-        if (getIntent().getAction().equals(Constants.OPEN_NOTE))
-        {
+        if (getIntent().getAction().equals(Constants.OPEN_NOTE)) {
             AnalyticsUtils.AnalyticEvent(mActivity, "Note Type", Constants.OPEN_NOTE);
 
             mEditor.clearFocus();
@@ -74,28 +71,22 @@ public class EditActivity extends AppCompatActivity {
             noteTextRaw = stream.rocketnotes.utils.TextUtils.Compatibility(note.getNotesNote());
 
             String editAdd = "";
-            if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY)))
-            {
+            if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY))) {
                 editAdd = getIntent().getStringExtra(Constants.BODY);
                 editAdd = "<br>" + editAdd;
                 mEditor.setHtml(noteTextRaw + editAdd);
                 //Automatically opens keyboard for immediate input
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 mEditor.focusEditor();
-            }
-            else
-            {
+            } else {
                 mEditor.setHtml(noteTextRaw + editAdd);
             }
-        }
-        else
-        {
+        } else {
             AnalyticsUtils.AnalyticEvent(mActivity, "Note Type", Constants.NEW_NOTE);
 
             originalNew = true;
 
-            if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY)))
-            {
+            if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY))) {
                 noteTextRaw = stream.rocketnotes.utils.TextUtils.Compatibility(getIntent().getStringExtra(Constants.BODY));
                 mEditor.setHtml(noteTextRaw);
             }
@@ -103,7 +94,7 @@ public class EditActivity extends AppCompatActivity {
             //Automatically opens keyboard for immediate input
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             mEditor.focusEditor();
-            mEditor.setOnTextChangeListener(new RichEditor.OnTextChangeListener(){
+            mEditor.setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
 
                 @Override
                 public void onTextChange(String text) {
@@ -115,17 +106,13 @@ public class EditActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        if (!overrideExit)
-        {
-            if (!deletedNote && !savedNote)
-            {
+        if (!overrideExit) {
+            if (!deletedNote && !savedNote) {
                 //Autosave note when window loses focus
                 Log.d("Edit Text", "Autosaved");
                 Log.d("onPause", String.valueOf(savedNote));
                 saveNote();
-            }
-            else if (!deletedNote && savedNote == true)
-            {
+            } else if (!deletedNote && savedNote == true) {
                 //This code only runs when a new note has been saved and is being resaved.
                 DatabaseHelper dbHelper = new DatabaseHelper(this);
                 noteStatus = Constants.OPEN_NOTE;
@@ -140,8 +127,7 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         //Update noteTextRaw to newest saved value
-        if (mEditor.getHtml() != null)
-        {
+        if (mEditor.getHtml() != null) {
             noteTextRaw = mEditor.getHtml();
         }
 
@@ -187,39 +173,30 @@ public class EditActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    private void saveNote()
-    {
+    private void saveNote() {
         //Save note and close activity
-        if (!TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml())) && !noteTextRaw.equals(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml())))
-        {
+        if (!TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml())) && !noteTextRaw.equals(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()))) {
             Intent saveNote = new Intent(mContext, SaveNoteService.class);
-            if (noteStatus.equals(Constants.OPEN_NOTE))
-            {
+            if (noteStatus.equals(Constants.OPEN_NOTE)) {
                 Log.d("Edit Activity", Constants.UPDATE_NOTE);
                 saveNote.putExtra(Constants.ID, noteID);
                 saveNote.putExtra(Constants.BODY, stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()));
                 saveNote.setAction(Constants.UPDATE_NOTE);
                 mContext.startService(saveNote);
-            }
-            else
-            {
+            } else {
                 Log.d("Edit Activity", Constants.NEW_NOTE);
                 saveNote.putExtra(Constants.BODY, stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()));
                 saveNote.setAction(Constants.NEW_NOTE);
                 mContext.startService(saveNote);
                 savedNote = true;
             }
-        }
-        else if (TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml())))
-        {
+        } else if (TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()))) {
             openDeleteIntent();
         }
     }
 
-    private void openShareIntent()
-    {
-        if (!TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml())))
-        {
+    private void openShareIntent() {
+        if (!TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()))) {
             String shareText = stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml());
             shareText = stream.rocketnotes.utils.TextUtils.CleanShare(shareText);
             ShareCompat.IntentBuilder.from(this)
@@ -227,22 +204,16 @@ public class EditActivity extends AppCompatActivity {
                     .setType("text/plain")
                     .setChooserTitle("Share Note")
                     .startChooser();
-        }
-        else
-        {
+        } else {
             Toasty.error(mContext, "Note Empty", Toast.LENGTH_SHORT, true).show();
         }
     }
 
-    private void openDeleteIntent()
-    {
-        if (savedNote == false && originalNew == true)
-        {
+    private void openDeleteIntent() {
+        if (savedNote == false && originalNew == true) {
             //Note has not been saved and no database methods need to be called. Finish activity.
             return;
-        }
-        else if (savedNote == true && originalNew == true)
-        {
+        } else if (savedNote == true && originalNew == true) {
             //New note has been saved. Must get saved ID and pass to DeleteNote.
             Log.d("Edit Activity", "Delete New Note");
             DatabaseHelper dbHelper = new DatabaseHelper(this);
@@ -251,8 +222,7 @@ public class EditActivity extends AppCompatActivity {
         DeleteNote();
     }
 
-    public void DeleteNote()
-    {
+    public void DeleteNote() {
         Intent deleteNote = new Intent(mContext, DeleteNoteService.class);
         deleteNote.putExtra(Constants.ID, noteID);
         deleteNote.setAction(Constants.DELETE_NOTE);
@@ -270,7 +240,7 @@ public class EditActivity extends AppCompatActivity {
             toolBar.setCustomView(R.layout.toolbar_default);
             toolBar.setElevation(0);
             Toolbar parent = (Toolbar) toolBar.getCustomView().getParent();
-            parent.setContentInsetsAbsolute(0,0);
+            parent.setContentInsetsAbsolute(0, 0);
         }
 
         TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
@@ -288,10 +258,8 @@ public class EditActivity extends AppCompatActivity {
         });
     }
 
-    public void initializeAnalytics()
-    {
-        if (FlurryAgent.isSessionActive() == false)
-        {
+    public void initializeAnalytics() {
+        if (FlurryAgent.isSessionActive() == false) {
             new FlurryAgent.Builder()
                     .withLogEnabled(true)
                     .build(this, Constants.FLURRY_API_KEY);

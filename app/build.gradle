@@ -23,7 +23,7 @@ repositories {
     maven { url "https://dl.bintray.com/drummer-aidan/maven" }
     maven { url 'https://jitpack.io' }
     maven { url 'http://sdk.uxcam.com/android/' }
-    maven { url  "http://pyze.bintray.com/pyze-android" }
+    maven { url "http://pyze.bintray.com/pyze-android" }
     maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
     maven { url "https://maven.google.com" }
 }
@@ -43,7 +43,8 @@ dependencies {
     compile 'com.facebook.fresco:fresco:1.5.0'
     compile 'me.relex:photodraweeview:1.1.3'
     compile 'eu.davidea:flexible-adapter:5.0.0-rc2' //https://github.com/davideas/FlexibleAdapter
-    compile 'com.github.arimorty:floatingsearchview:2.1.1' //https://github.com/arimorty/floatingsearchview
+    compile 'com.github.arimorty:floatingsearchview:2.1.1'
+    //https://github.com/arimorty/floatingsearchview
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'org.greenrobot:eventbus:3.0.0' //https://github.com/greenrobot/EventBus
     compile 'de.hdodenhof:circleimageview:2.1.0' //https://github.com/hdodenhof/CircleImageView

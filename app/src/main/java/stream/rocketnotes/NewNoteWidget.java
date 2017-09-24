@@ -3,10 +3,8 @@ package stream.rocketnotes;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -38,8 +36,7 @@ public class NewNoteWidget extends AppWidgetProvider {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.setAction(Constants.NEW_NOTE);
             context.startActivity(intent);
-        }
-        else {
+        } else {
             Log.d("onReceive", "Clicked");
             super.onReceive(context, intent);
         }
