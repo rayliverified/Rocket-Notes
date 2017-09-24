@@ -66,15 +66,9 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
         return R.layout.item_notes;
     }
 
-    /**
-     * The Adapter is provided to be forwarded to the ImageViewHolder.
-     * The unique instance of the LayoutInflater is also provided to simplify the
-     * creation of the VH.
-     */
     @Override
-    public MyViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater,
-                                         ViewGroup parent) {
-        return new MyViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public MyViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new MyViewHolder(view, adapter);
     }
 
     /**

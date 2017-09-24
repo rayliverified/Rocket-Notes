@@ -61,15 +61,9 @@ public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholde
         return R.layout.item_image;
     }
 
-    /**
-     * The Adapter is provided to be forwarded to the ImageViewHolder.
-     * The unique instance of the LayoutInflater is also provided to simplify the
-     * creation of the VH.
-     */
     @Override
-    public ImageViewHolder createViewHolder(FlexibleAdapter adapter, LayoutInflater inflater,
-                                            ViewGroup parent) {
-        return new ImageViewHolder(inflater.inflate(getLayoutRes(), parent, false), adapter);
+    public ImageViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new ImageViewHolder(view, adapter);
     }
 
     /**
