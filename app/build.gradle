@@ -58,7 +58,7 @@ dependencies {
     compile 'com.commonsware.cwac:provider:0.5.2' //https://github.com/commonsguy/cwac-provider
     compile 'com.github.zcweng:switch-button:0.0.3' //https://github.com/zcweng/SwitchButton
     compile 'org.zeroturnaround:zt-zip:1.9'
-    compile 'com.github.rubensousa:bottomsheetbuilder:1.6.0' //https://github.com/rubensousa/BottomSheetBuilder
+    compile 'com.github.Kennyc1012:BottomSheet:2.3.4' //https://github.com/Kennyc1012/BottomSheet
     compile 'com.flurry.android:analytics:7.2.3'
     compile 'com.uxcam:uxcam:2.6.2-beta.4'
     compile 'com.pyze:PyzeLibrary:3.0.0'

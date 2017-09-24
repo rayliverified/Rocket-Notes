@@ -82,4 +82,12 @@
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
+    <style name="MyBottomSheetStyle" parent="@style/BottomSheet">
+        <item name="bottom_sheet_list_text_appearance">@style/ListAppearance</item>
+    </style>
+
+    <style name="ListAppearance" parent="BottomSheet.ListItem.TextAppearance">
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
 </resources>

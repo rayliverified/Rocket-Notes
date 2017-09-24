@@ -48,7 +48,7 @@
             android:layout_gravity="bottom|end"
             app:layout_behavior="stream.rocketnotes.ui.FABScrollBehavior"
             app:fabGravity="bottom_end"
-            app:fabMenu="@menu/menu_popup_view"
+            app:fabMenu="@menu/menu_fab_view"
             app:fabBackgroundTint="@color/colorPrimary"
             app:miniFabBackgroundTint="@color/colorPrimary"
             app:miniFabDrawableTint="@color/white"

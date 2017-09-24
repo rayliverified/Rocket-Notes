@@ -160,7 +160,6 @@ public class EditActivity extends AppCompatActivity {
                 Log.d("Edit Text", "Delete");
                 overrideExit = true;
                 openDeleteIntent();
-                finish();
                 break;
         }
         return true;
@@ -212,14 +211,14 @@ public class EditActivity extends AppCompatActivity {
     private void openDeleteIntent() {
         if (savedNote == false && originalNew == true) {
             //Note has not been saved and no database methods need to be called. Finish activity.
-            return;
         } else if (savedNote == true && originalNew == true) {
             //New note has been saved. Must get saved ID and pass to DeleteNote.
             Log.d("Edit Activity", "Delete New Note");
             DatabaseHelper dbHelper = new DatabaseHelper(this);
             noteID = dbHelper.GetLatestID();
+            DeleteNote();
         }
-        DeleteNote();
+        finish();
     }
 
     public void DeleteNote() {
@@ -228,7 +227,6 @@ public class EditActivity extends AppCompatActivity {
         deleteNote.setAction(Constants.DELETE_NOTE);
         mContext.startService(deleteNote);
         deletedNote = true;
-        EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.DELETE_NOTE));
         Log.d("Notification", Constants.DELETE_NOTE);
     }
 

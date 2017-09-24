@@ -2,14 +2,20 @@ package stream.rocketnotes;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.kennyc.bottomsheet.BottomSheet;
+import com.kennyc.bottomsheet.BottomSheetListener;
 import com.uxcam.UXCam;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +25,7 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.viewholders.FlexibleViewHolder;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
+import stream.rocketnotes.service.DeleteNoteService;
 
 public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.MyViewHolder> implements IFilterable {
 
@@ -107,6 +114,41 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setAction(Constants.OPEN_NOTE);
                 context.startActivity(intent);
+            }
+        });
+
+        holder.mBtnMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new BottomSheet.Builder(context)
+                        .setSheet(R.menu.menu_card_view)
+                        .setListener(new BottomSheetListener() {
+                            @Override
+                            public void onSheetShown(@NonNull BottomSheet bottomSheet) {
+
+                            }
+
+                            @Override
+                            public void onSheetItemSelected(@NonNull BottomSheet bottomSheet, MenuItem menuItem) {
+                                switch (menuItem.getItemId()) {
+                                    case R.id.action_delete:
+                                        Intent deleteNote = new Intent(context, DeleteNoteService.class);
+                                        deleteNote.putExtra(Constants.ID, Integer.valueOf(id));
+                                        deleteNote.setAction(Constants.DELETE_NOTE);
+                                        context.startService(deleteNote);
+                                        Log.d("Notification", Constants.DELETE_NOTE);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+
+                            @Override
+                            public void onSheetDismissed(@NonNull BottomSheet bottomSheet, @DismissEvent int i) {
+
+                            }
+                        })
+                        .show();
             }
         });
     }
