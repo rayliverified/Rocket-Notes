@@ -32,9 +32,9 @@ public class ShareAddViewholder extends RecyclerView.ViewHolder {
     public ShareAddViewholder(View itemView) {
         super(itemView);
 
-        mTitle = (TextView) itemView.findViewById(R.id.note_title);
-        mBody = (TextView) itemView.findViewById(R.id.note_body);
-        mBtnSend = (ImageButton) itemView.findViewById(R.id.btn_send);
+        mTitle = itemView.findViewById(R.id.note_title);
+        mBody = itemView.findViewById(R.id.note_body);
+        mBtnSend = itemView.findViewById(R.id.btn_send);
         mContext = itemView.getContext();
     }
 

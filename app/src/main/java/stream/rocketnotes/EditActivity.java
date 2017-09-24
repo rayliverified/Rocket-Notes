@@ -55,7 +55,7 @@ public class EditActivity extends AppCompatActivity {
         Log.d("Intent Action", noteStatus);
 
         //Focus defaults to editText, set again just in case
-        mEditor = (RichEditor) findViewById(R.id.editor);
+        mEditor = findViewById(R.id.editor);
         mEditor.setPadding(12, 12, 12, 12);
         noteTextRaw = "";
         noteID = -1;
@@ -236,17 +236,17 @@ public class EditActivity extends AppCompatActivity {
         ActionBar toolBar = getSupportActionBar();
         if (toolBar != null) {
             toolBar.setDisplayHomeAsUpEnabled(true);
-            toolBar.setDisplayOptions(toolBar.DISPLAY_SHOW_CUSTOM);
+            toolBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
             toolBar.setCustomView(R.layout.toolbar_default);
             toolBar.setElevation(0);
             Toolbar parent = (Toolbar) toolBar.getCustomView().getParent();
             parent.setContentInsetsAbsolute(0, 0);
         }
 
-        TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
+        TextView toolbarTitle = findViewById(R.id.toolbar_title);
         toolbarTitle.setText(R.string.editpage_title);
 
-        ImageView toolbarBack = (ImageView) findViewById(R.id.toolbar_save);
+        ImageView toolbarBack = findViewById(R.id.toolbar_save);
         toolbarBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

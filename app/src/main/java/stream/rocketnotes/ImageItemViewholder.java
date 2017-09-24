@@ -98,7 +98,7 @@ public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholde
 
         public ImageViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            noteImage = (ImageView) view.findViewById(R.id.item_image);
+            noteImage = view.findViewById(R.id.item_image);
         }
     }
 }

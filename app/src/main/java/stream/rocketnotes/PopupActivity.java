@@ -70,17 +70,17 @@ public class PopupActivity extends Activity {
         noteStatus = getIntent().getAction();
 
         //Focus defaults to editText, set again just in case
-        editText = (EditText) findViewById(R.id.edit_edit);
+        editText = findViewById(R.id.edit_edit);
         editText.requestFocus();
         //OnEditorActionListener and OnKeyListener to detect keypresses DO NOT WORK on softkeyboards
 
-        LinearLayout editNote = (LinearLayout) findViewById(R.id.edit_note);
-        final LinearLayout editEditLayout = (LinearLayout) findViewById(R.id.edit_edit_layout);
-        TextView editDetails = (TextView) findViewById(R.id.edit_details);
-        final TextView editTitle = (TextView) findViewById(R.id.edit_title);
-        final TextView editBody = (TextView) findViewById(R.id.edit_body);
-        ImageButton editSubmit = (ImageButton) findViewById(R.id.edit_submit);
-        final TextView editHelper = (TextView) findViewById(R.id.edit_helper);
+        LinearLayout editNote = findViewById(R.id.edit_note);
+        final LinearLayout editEditLayout = findViewById(R.id.edit_edit_layout);
+        TextView editDetails = findViewById(R.id.edit_details);
+        final TextView editTitle = findViewById(R.id.edit_title);
+        final TextView editBody = findViewById(R.id.edit_body);
+        ImageButton editSubmit = findViewById(R.id.edit_submit);
+        final TextView editHelper = findViewById(R.id.edit_helper);
 
 //        UXCam.occludeSensitiveView(editNote);
 //        UXCam.occludeSensitiveView(editText);

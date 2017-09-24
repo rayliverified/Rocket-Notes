@@ -103,9 +103,7 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
     public boolean filter(String constraint) {
         Integer fuzzyRatio = FuzzySearch.partialRatio(title.toLowerCase(), constraint.toLowerCase());
         Log.d("Fuzzy Search Ratio", String.valueOf(fuzzyRatio));
-        if (fuzzyRatio >= 70 || title.toLowerCase().trim().contains(constraint))
-            return true;
-        return false;
+        return fuzzyRatio >= 70 || title.toLowerCase().trim().contains(constraint);
     }
 
     /**
@@ -121,9 +119,9 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
 
         public MyViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            noteLayout = (LinearLayout) view.findViewById(R.id.item_note);
-            noteTitle = (TextView) view.findViewById(R.id.item_note_title);
-            noteBody = (TextView) view.findViewById(R.id.item_note_note);
+            noteLayout = view.findViewById(R.id.item_note);
+            noteTitle = view.findViewById(R.id.item_note_title);
+            noteBody = view.findViewById(R.id.item_note_note);
         }
     }
 }

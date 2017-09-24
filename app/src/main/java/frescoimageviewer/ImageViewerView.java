@@ -129,9 +129,9 @@ class ImageViewerView extends RelativeLayout
         inflate(getContext(), R.layout.image_viewer, this);
 
         backgroundView = findViewById(R.id.backgroundView);
-        pager = (MultiTouchViewPager) findViewById(R.id.pager);
+        pager = findViewById(R.id.pager);
 
-        dismissContainer = (ViewGroup) findViewById(R.id.container);
+        dismissContainer = findViewById(R.id.container);
         swipeDismissListener = new SwipeToDismissListener(findViewById(R.id.dismissView), this, this);
         dismissContainer.setOnTouchListener(swipeDismissListener);
 

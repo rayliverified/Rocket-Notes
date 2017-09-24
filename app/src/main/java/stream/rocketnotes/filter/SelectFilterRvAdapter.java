@@ -176,9 +176,9 @@ public class SelectFilterRvAdapter extends RecyclerView.Adapter<SelectFilterRvAd
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            mTextView = (TextView) itemView.findViewById(R.id.tv_name);
-            mCiv = (CircleImageView) itemView.findViewById(R.id.civ_icon);
-            mIv = (ImageView) itemView.findViewById(R.id.iv_icon);
+            mTextView = itemView.findViewById(R.id.tv_name);
+            mCiv = itemView.findViewById(R.id.civ_icon);
+            mIv = itemView.findViewById(R.id.iv_icon);
         }
 
         @Override

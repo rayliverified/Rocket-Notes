@@ -51,7 +51,7 @@ public class ImageOverlayView extends RelativeLayout {
 
         mContext = getContext();
         View view = inflate(mContext, R.layout.image_overlay_view, this);
-        tvDescription = (TextView) view.findViewById(R.id.tvDescription);
+        tvDescription = view.findViewById(R.id.tvDescription);
         view.findViewById(R.id.button_gallery).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {

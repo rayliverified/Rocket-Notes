@@ -8,11 +8,7 @@ public class PermissionUtils {
 
     public static boolean IsPermissionEnabled(Context context, String permission) {
         if (Build.VERSION.SDK_INT >= 23) {
-            if (context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
-                return true;
-            } else {
-                return false;
-            }
+            return context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
         } else {
             return true;
         }

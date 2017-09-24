@@ -220,15 +220,15 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
 
         public MyViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            widgetReviewLayout = (RelativeLayout) view.findViewById(R.id.item_widgetreview);
-            rateYes = (ImageButton) view.findViewById(R.id.smiley_yes);
-            rateNo = (ImageButton) view.findViewById(R.id.smiley_no);
-            rateYesLayout = (LinearLayout) view.findViewById(R.id.smiley_yes_layout);
-            rateNoLayout = (LinearLayout) view.findViewById(R.id.smiley_no_layout);
-            hideLayout = (LinearLayout) view.findViewById(R.id.hide_container);
-            body = (TextView) view.findViewById(R.id.item_widgetreview_body);
-            rateYesText = (TextView) view.findViewById(R.id.smiley_yes_text);
-            switchButton = (SwitchButton) view.findViewById(R.id.hide_switch);
+            widgetReviewLayout = view.findViewById(R.id.item_widgetreview);
+            rateYes = view.findViewById(R.id.smiley_yes);
+            rateNo = view.findViewById(R.id.smiley_no);
+            rateYesLayout = view.findViewById(R.id.smiley_yes_layout);
+            rateNoLayout = view.findViewById(R.id.smiley_no_layout);
+            hideLayout = view.findViewById(R.id.hide_container);
+            body = view.findViewById(R.id.item_widgetreview_body);
+            rateYesText = view.findViewById(R.id.smiley_yes_text);
+            switchButton = view.findViewById(R.id.hide_switch);
         }
     }
 

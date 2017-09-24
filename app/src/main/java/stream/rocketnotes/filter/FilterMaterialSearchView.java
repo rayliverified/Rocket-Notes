@@ -62,7 +62,7 @@ public class FilterMaterialSearchView extends FrameLayout implements RecyclerIte
     private void initView() {
         LayoutInflater.from(getContext()).inflate(R.layout.msv_filter, this, true);
 
-        mRvFilter = (RecyclerView) findViewById(R.id.rv_filter);
+        mRvFilter = findViewById(R.id.rv_filter);
 
         mFilterRvAdapter = new FilterRvAdapter(getContext());
         mRvFilter.setHasFixedSize(false);
@@ -141,7 +141,7 @@ public class FilterMaterialSearchView extends FrameLayout implements RecyclerIte
         }
 
         if (mOnFilterViewListener != null) {
-            mOnFilterViewListener.onFilterRemoved((Filter) filter);
+            mOnFilterViewListener.onFilterRemoved(filter);
         }
 
         if (mOnFilterViewListener != null) {

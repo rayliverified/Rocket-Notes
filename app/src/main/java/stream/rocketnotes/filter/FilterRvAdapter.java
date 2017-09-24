@@ -117,7 +117,7 @@ public class FilterRvAdapter extends RecyclerView.Adapter<FilterRvAdapter.BaseVi
 
         public BaseViewHolder(View itemView) {
             super(itemView);
-            mTextView = (TextView) itemView.findViewById(android.R.id.text1);
+            mTextView = itemView.findViewById(android.R.id.text1);
         }
 
         public void bind(Filter filter) {
@@ -131,7 +131,7 @@ public class FilterRvAdapter extends RecyclerView.Adapter<FilterRvAdapter.BaseVi
 
         public IvViewHolder(View itemView) {
             super(itemView);
-            mIv = (ImageView) itemView.findViewById(R.id.iv_icon);
+            mIv = itemView.findViewById(R.id.iv_icon);
         }
 
         @Override
@@ -152,7 +152,7 @@ public class FilterRvAdapter extends RecyclerView.Adapter<FilterRvAdapter.BaseVi
 
         public CivViewHolder(View itemView) {
             super(itemView);
-            mCIV = (CircleImageView) itemView.findViewById(R.id.civ_icon);
+            mCIV = itemView.findViewById(R.id.civ_icon);
         }
 
         @Override

@@ -117,12 +117,12 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
             editor.apply();
         }
 
-        mAppBar = (AppBarLayout) findViewById(R.id.app_bar);
+        mAppBar = findViewById(R.id.app_bar);
         mAppBar.addOnOffsetChangedListener(this);
 
         initializeRecyclerView(savedInstanceState);
 //        checkVoiceRecognition();
-        mFilterView = (FilterMaterialSearchView) findViewById(R.id.sv);
+        mFilterView = findViewById(R.id.sv);
         setupSearchBar();
         setupFAB();
         if (getIntent().getAction() != null && getIntent().getAction() != Intent.ACTION_MAIN) {
@@ -151,16 +151,16 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         mStaggeredLayoutManager = createNewStaggeredGridLayoutManager();
 
         // Prepare the RecyclerView and attach the Adapter to it
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(mStaggeredLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
 
     private void setupSearchBar() {
 
-        mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
+        mSearchView = findViewById(R.id.floating_search_view);
 //        mActionVoice = (MenuItem) findViewById(R.id.action_voice);
-        mActionCamera = (MenuItem) findViewById(R.id.action_camera);
+        mActionCamera = findViewById(R.id.action_camera);
 
         mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
 
@@ -374,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     }
 
     public void setupFAB() {
-        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.main_fab);
+        FabSpeedDial fabSpeedDial = findViewById(R.id.main_fab);
         fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
@@ -708,7 +708,6 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                     .withLogEnabled(true)
                     .build(this, Constants.FLURRY_API_KEY);
         }
-        ;
         Pyze.initialize(getApplication());
 //        UXCam.startWithKey(Constants.UXCAM_API_KEY);
     }

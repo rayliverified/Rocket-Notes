@@ -113,13 +113,13 @@ public class ShareActivity extends Activity {
         initializeAnalytics();
 
         //Focus defaults to editText, set again just in case
-        editText = (EditText) findViewById(R.id.edit_edit);
+        editText = findViewById(R.id.edit_edit);
         editText.clearFocus();
 
-        editDetails = (TextView) findViewById(R.id.edit_details);
-        editSubmit = (ImageButton) findViewById(R.id.edit_submit);
-        editImage = (CustomImageView) findViewById(R.id.edit_image);
-        progressBar = (ProgressBar) findViewById(R.id.edit_progress);
+        editDetails = findViewById(R.id.edit_details);
+        editSubmit = findViewById(R.id.edit_submit);
+        editImage = findViewById(R.id.edit_image);
+        progressBar = findViewById(R.id.edit_progress);
 
         if (!PermissionUtils.IsPermissionEnabled(mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             //Notify user that permission is not enabled via editText
@@ -426,7 +426,7 @@ public class ShareActivity extends Activity {
 
     private void ShowRecentNotes() {
         dbHelper = new DatabaseHelper(mContext);
-        mRecyclerView = (RecyclerView) findViewById(R.id.share_recycler);
+        mRecyclerView = findViewById(R.id.share_recycler);
         mRecyclerView.setVisibility(View.VISIBLE);
         mAdapter = new ShareAdapter(this, NoteList);
         layoutManager = new LinearLayoutManager(this);
