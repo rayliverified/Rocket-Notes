@@ -147,7 +147,7 @@ public class NotesWidget extends AppWidgetProvider {
             }
         } else if (intent.getAction().equals(Constants.OPEN_APP)) {
             Intent openIntent = new Intent(context, MainActivity.class);
-            openIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            openIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(openIntent);
         } else {
             Log.d("onReceive", "Clicked");

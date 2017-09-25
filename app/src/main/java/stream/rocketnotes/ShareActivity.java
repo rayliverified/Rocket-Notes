@@ -55,23 +55,23 @@ import stream.rocketnotes.utils.Units;
 
 public class ShareActivity extends Activity {
 
-    private EditText editText;
-    private TextView editDetails;
-    private ImageButton editSubmit;
-    private CustomImageView editImage;
-    private Intent shareIntent;
-    private String noteType;
-    private Uri imageUri;
-    private String imageName;
-    private ProgressBar progressBar;
-    private Future<File> downloading;
-    private DatabaseHelper dbHelper;
-    private ArrayList<NotesItem> NoteList = new ArrayList<>();
-    private RecyclerView mRecyclerView;
-    private ShareAdapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
-    private String mActivity = this.getClass().getSimpleName();
-    private Context mContext;
+    EditText editText;
+    TextView editDetails;
+    ImageButton editSubmit;
+    CustomImageView editImage;
+    Intent shareIntent;
+    String noteType;
+    Uri imageUri;
+    String imageName;
+    ProgressBar progressBar;
+    Future<File> downloading;
+    DatabaseHelper dbHelper;
+    ArrayList<NotesItem> NoteList = new ArrayList<>();
+    RecyclerView mRecyclerView;
+    ShareAdapter mAdapter;
+    RecyclerView.LayoutManager layoutManager;
+    String mActivity = this.getClass().getSimpleName();
+    Context mContext;
 
     private boolean textNote = false;
     private boolean savedNote = false;
@@ -110,7 +110,7 @@ public class ShareActivity extends Activity {
         //Hides keyboard from focusing on editText when Activity starts
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        initializeAnalytics();
+        InitializeAnalytics();
 
         //Focus defaults to editText, set again just in case
         editText = findViewById(R.id.edit_edit);
@@ -442,7 +442,7 @@ public class ShareActivity extends Activity {
         mAdapter.notifyDataSetChanged();
     }
 
-    public void initializeAnalytics() {
+    public void InitializeAnalytics() {
         if (FlurryAgent.isSessionActive() == false) {
             new FlurryAgent.Builder()
                     .withLogEnabled(true)

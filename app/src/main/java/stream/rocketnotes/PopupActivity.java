@@ -66,7 +66,7 @@ public class PopupActivity extends Activity {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
         mContext = getApplicationContext();
-        initializeAnalytics();
+        InitializeAnalytics();
         noteStatus = getIntent().getAction();
 
         //Focus defaults to editText, set again just in case
@@ -307,7 +307,7 @@ public class PopupActivity extends Activity {
         return super.onTouchEvent(event);
     }
 
-    public void initializeAnalytics() {
+    public void InitializeAnalytics() {
         if (FlurryAgent.isSessionActive() == false) {
             new FlurryAgent.Builder()
                     .withLogEnabled(true)

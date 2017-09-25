@@ -33,7 +33,7 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getApplicationContext();
-        initializeAnalytics();
+        InitializeAnalytics();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             final String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -87,7 +87,7 @@ public class CameraActivity extends AppCompatActivity {
         finish();
     }
 
-    public void initializeAnalytics() {
+    public void InitializeAnalytics() {
         if (FlurryAgent.isSessionActive() == false) {
             new FlurryAgent.Builder()
                     .withLogEnabled(true)

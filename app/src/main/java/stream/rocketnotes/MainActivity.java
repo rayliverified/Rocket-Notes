@@ -28,31 +28,18 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.flurry.android.FlurryAgent;
-import com.github.angads25.filepicker.controller.DialogSelectionListener;
-import com.github.angads25.filepicker.model.DialogConfigs;
-import com.github.angads25.filepicker.model.DialogProperties;
-import com.github.angads25.filepicker.view.FilePickerDialog;
 import com.pyze.android.Pyze;
 import com.pyze.android.PyzeEvents;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.zeroturnaround.zip.ZipUtil;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import es.dmoral.toasty.Toasty;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollStaggeredLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -64,25 +51,27 @@ import stream.custompermissionsdialogue.utils.PermissionUtils;
 import stream.rocketnotes.filter.FilterMaterialSearchView;
 import stream.rocketnotes.filter.model.Filter;
 import stream.rocketnotes.utils.AnalyticsUtils;
-import stream.rocketnotes.utils.FileUtils;
 
 public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
 
-    private static final String TAG = "Search";
-    private SharedPreferences sharedPref;
-    private RecyclerView mRecyclerView;
-    private FlexibleAdapter<IFlexible> mAdapter;
-    private StaggeredGridLayoutManager mStaggeredLayoutManager;
-    private FloatingSearchView mSearchView;
-    private AppBarLayout mAppBar;
-    private MenuItem mActionVoice;
-    private MenuItem mActionCamera;
-    FilterMaterialSearchView mFilterView;
     private Integer mNoteCount;
     private Integer mImageCount;
+
+    RecyclerView mRecyclerView;
+    FlexibleAdapter<IFlexible> mAdapter;
+    StaggeredGridLayoutManager mStaggeredLayoutManager;
     DatabaseHelper dbHelper;
+
+    AppBarLayout mAppBar;
+    FloatingSearchView mSearchView;
+    FilterMaterialSearchView mFilterView;
+    MenuItem mActionVoice;
+    MenuItem mActionCamera;
+
     Context mContext;
     private String mActivity = this.getClass().getSimpleName();
+    SharedPreferences sharedPref;
+    private final String TAG = "Search";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                     .build();
             alertPermissions.show();
         }
-        initializeAnalytics();
+        InitializeAnalytics();
         Pyze.showInAppNotificationUI(this, null);
         dbHelper = new DatabaseHelper(mContext);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -120,11 +109,11 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         mAppBar = findViewById(R.id.app_bar);
         mAppBar.addOnOffsetChangedListener(this);
 
-        initializeRecyclerView(savedInstanceState);
+        InitializeRecyclerView(savedInstanceState);
 //        checkVoiceRecognition();
         mFilterView = findViewById(R.id.sv);
-        setupSearchBar();
-        setupFAB();
+        SetupSearchBar();
+        SetupFAB();
         if (getIntent().getAction() != null && getIntent().getAction() != Intent.ACTION_MAIN) {
             Log.d("MainActivity", getIntent().getAction());
             if (getIntent().getAction().equals(Constants.STICKY)) {
@@ -137,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 EventBus.getDefault().removeStickyEvent(stickyEvent);
             }
         }
-        sessionDetails();
+        SessionDetails();
         Log.d("MainActivity", "onCreate");
     }
 
@@ -146,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         super.onSaveInstanceState(outState);
     }
 
-    private void initializeRecyclerView(Bundle savedInstanceState) {
+    private void InitializeRecyclerView(Bundle savedInstanceState) {
 
         // Optional but strongly recommended: Compose the initial list
         List<IFlexible> myItems = getDatabaseList();
@@ -161,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void setupSearchBar() {
+    private void SetupSearchBar() {
 
         mSearchView = findViewById(R.id.floating_search_view);
 //        mActionVoice = (MenuItem) findViewById(R.id.action_voice);
@@ -342,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         });
     }
 
-    public void setupFAB() {
+    public void SetupFAB() {
         FabSpeedDial fabSpeedDial = findViewById(R.id.main_fab);
         fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
@@ -595,7 +584,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         return list;
     }
 
-    public void sessionDetails() {
+    public void SessionDetails() {
         Map<String, String> params = new HashMap<String, String>();
         HashMap<String, String> attributes = new HashMap<String, String>();
 
@@ -626,7 +615,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         PyzeEvents.postCustomEventWithAttributes(mActivity, attributes);
     }
 
-    public void initializeAnalytics() {
+    public void InitializeAnalytics() {
         if (!FlurryAgent.isSessionActive()) {
             new FlurryAgent.Builder()
                     .withLogEnabled(true)

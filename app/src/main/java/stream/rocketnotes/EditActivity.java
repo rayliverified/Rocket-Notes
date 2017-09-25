@@ -49,7 +49,7 @@ public class EditActivity extends AppCompatActivity {
         ActionBar();
         Window window = getWindow();
         mContext = getApplicationContext();
-        initializeAnalytics();
+        InitializeAnalytics();
         noteStatus = getIntent().getAction();
         Log.d("Intent Action", noteStatus);
 
@@ -255,7 +255,7 @@ public class EditActivity extends AppCompatActivity {
         });
     }
 
-    public void initializeAnalytics() {
+    public void InitializeAnalytics() {
         if (FlurryAgent.isSessionActive() == false) {
             new FlurryAgent.Builder()
                     .withLogEnabled(true)
