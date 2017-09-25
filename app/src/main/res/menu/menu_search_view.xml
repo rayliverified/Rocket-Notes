@@ -12,7 +12,7 @@
         android:title="Camera"
         android:orderInCategory="1"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/icon_snap_simple"/>
+        android:icon="@drawable/icon_camera_black"/>
     <item
         android:id="@+id/filter_image"
         android:title="Only Images"
@@ -24,13 +24,8 @@
         android:orderInCategory="3"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/action_backup_sql"
-        android:title="Backup Database"
+        android:id="@+id/action_settings"
+        android:title="Settings"
         android:orderInCategory="4"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/action_restore_sql"
-        android:title="Restore Database"
-        android:orderInCategory="5"
         app:showAsAction="never"/>
 </menu>

@@ -141,6 +141,11 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         Log.d("MainActivity", "onCreate");
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
     private void initializeRecyclerView(Bundle savedInstanceState) {
 
         // Optional but strongly recommended: Compose the initial list
@@ -251,6 +256,31 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
             @Override
             public void onActionMenuItemSelected(MenuItem item) {
 
+                switch (item.getItemId())
+                {
+                    case R.id.action_camera:
+                        AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Camera");
+                        Intent intent = new Intent(mContext, CameraActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
+                        break;
+                    case R.id.filter_image:
+                        AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Filter Image");
+                        FilterImages();
+                        break;
+                    case R.id.filter_text:
+                        AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Filter Text");
+                        FilterText();
+                        break;
+                    case R.id.action_settings:
+                        intent = new Intent(mContext, SettingsActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
+                        break;
+                    default:
+                        break;
+                }
+
 //                if (item.getItemId() == R.id.action_voice)
 //                {
 //                    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -259,67 +289,6 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
 //                    //... put other settings in the Intent
 //                    startActivityForResult(intent, 0);
 //                }
-                if (item.getItemId() == R.id.action_camera) {
-                    AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Camera");
-                    Intent intent = new Intent(mContext, CameraActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.startActivity(intent);
-                } else if (item.getItemId() == R.id.filter_image) {
-                    AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Filter Image");
-                    FilterImages();
-                } else if (item.getItemId() == R.id.filter_text) {
-                    AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Filter Text");
-                    FilterText();
-                } else if (item.getItemId() == R.id.action_backup_sql) {
-                    AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Backup Database");
-                    DialogProperties properties = new DialogProperties();
-                    properties.selection_mode = DialogConfigs.SINGLE_MODE;
-                    properties.selection_type = DialogConfigs.DIR_SELECT;
-                    properties.root = new File("/mnt/sdcard/");
-                    properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
-                    properties.offset = new File(DialogConfigs.DEFAULT_DIR);
-                    properties.extensions = null;
-                    FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
-                    dialog.setTitle("Select Backup Location");
-                    dialog.setDialogSelectionListener(new DialogSelectionListener() {
-                        @Override
-                        public void onSelectedFilePaths(String[] files) {
-                            if (files.length >= 1) {
-                                BackupDatabase(files[0]);
-                            } else {
-                                Toasty.error(mContext, "No Location Selected", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                    dialog.show();
-                } else if (item.getItemId() == R.id.action_restore_sql) {
-                    AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Restore Database");
-                    DialogProperties properties = new DialogProperties();
-                    properties.selection_mode = DialogConfigs.SINGLE_MODE;
-                    properties.selection_type = DialogConfigs.FILE_SELECT;
-                    properties.root = new File("/mnt/sdcard/");
-                    properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
-                    properties.offset = new File(DialogConfigs.DEFAULT_DIR);
-                    properties.extensions = new String[]{"zip"};
-                    FilePickerDialog dialog = new FilePickerDialog(MainActivity.this, properties);
-                    dialog.setTitle("Select Backup File");
-                    dialog.setDialogSelectionListener(new DialogSelectionListener() {
-                        @Override
-                        public void onSelectedFilePaths(String[] files) {
-                            if (files.length >= 1) {
-                                RestoreDatabase(files[0]);
-                            } else {
-                                Toasty.error(mContext, "No File Selected", Toast.LENGTH_SHORT).show();
-                            }
-                            for (String filePath : files) {
-                                Log.d("File Path", filePath);
-                            }
-                        }
-                    });
-                    dialog.show();
-                } else {
-
-                }
             }
         });
 
@@ -405,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     }
 
     public void FilterImages() {
-        Filter filter = new Filter(1, "Image", 0, R.drawable.icon_picture_image, ContextCompat.getColor(mContext, R.color.colorPrimary));
+        Filter filter = new Filter(1, "Image", 0, R.drawable.image_picture, ContextCompat.getColor(mContext, R.color.colorPrimary));
         mFilterView.setVisibility(View.VISIBLE);
         mFilterView.addFilter(filter);
         List<IFlexible> list = new ArrayList<>();
@@ -440,61 +409,6 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         if (clearSticky)
             RemoveSticky();
         Log.d("Filter", "Reset");
-    }
-
-    public void BackupDatabase(String savePath) {
-        try {
-            //Make sure Pictures folder exists. User could have no picture notes.
-            FileUtils.InitializePicturesFolder(mContext);
-
-            //Copy notes database to Pictures folder.
-            final String inFileName = mContext.getDatabasePath("NotesDB").getPath();
-            File dbFile = new File(inFileName);
-            FileInputStream fis = new FileInputStream(dbFile);
-            String outFileName = getFilesDir() + "/" + ".Pictures/" + "NotesDB.db";
-            // Open the empty db as the output stream
-            OutputStream output = new FileOutputStream(outFileName);
-            // Transfer bytes from the inputfile to the outputfile
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = fis.read(buffer)) > 0) {
-                output.write(buffer, 0, length);
-            }
-            // Close the streams
-            output.flush();
-            output.close();
-            fis.close();
-
-            //Zip Pictures folder and save to user specified location.
-            File storageDir = new File(getFilesDir(), ".Pictures");
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            String currentDate = sdf.format(new Date());
-            String saveFilePath = savePath + "/" + "RocketNotes_" + currentDate + ".zip";
-            ZipUtil.pack(storageDir, new File(saveFilePath));
-
-            Toasty.success(mContext, "Backup Successful", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toasty.error(mContext, "Backup Failed", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void RestoreDatabase(String restorePath) {
-        //Make sure Pictures folder exists. User could have no picture notes.
-        FileUtils.InitializePicturesFolder(mContext);
-        //Restoring backup requires NotesDB. If no NotesDB found, backup file is not valid.
-        boolean validBackup = ZipUtil.containsEntry(new File(restorePath), "NotesDB.db");
-        if (validBackup) {
-            ZipUtil.unpackEntry(new File(restorePath), "NotesDB.db", new File(mContext.getDatabasePath("NotesDB").getPath()));
-            ZipUtil.unpack(new File(restorePath), new File(getFilesDir(), ".Pictures"));
-            File file = new File(getFilesDir(), ".Pictures/NotesDB.db");
-            file.delete();
-            Toasty.success(mContext, "Backup Restored", Toast.LENGTH_SHORT).show();
-        } else {
-            Toasty.error(mContext, "Invalid Backup File", Toast.LENGTH_SHORT).show();
-        }
-
-        FilterReset(true);
     }
 
     public void UpdateOnAdd(UpdateMainEvent event) {
@@ -585,18 +499,28 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onMessageEvent(UpdateMainEvent event) {
         Log.d("MainActivity", event.getAction());
-        if (event.getAction().equals(Constants.RECEIVED)) {
-            UpdateOnAdd(event);
-        } else if (event.getAction().equals(Constants.UPDATE_NOTE)) {
-            UpdateOnUpdate(event);
-        } else if (event.getAction().equals(Constants.DELETE_NOTE)) {
-            UpdateOnDelete(event);
-        } else if (event.getAction().equals(Constants.HIDE_REVIEW)) {
-            UpdateOnHide(event);
-        } else if (event.getAction().equals(Constants.FILTER)) {
-            UpdateFilter(event);
-        } else if (event.getAction().equals(Constants.FILTER_IMAGES)) {
-            FilterImages();
+        switch (event.getAction())
+        {
+            case Constants.RECEIVED:
+                UpdateOnAdd(event);
+                break;
+            case Constants.UPDATE_NOTE:
+                UpdateOnUpdate(event);
+                break;
+            case Constants.DELETE_NOTE:
+                UpdateOnDelete(event);
+                break;
+            case Constants.HIDE_REVIEW:
+                UpdateOnHide(event);
+                break;
+            case Constants.FILTER:
+                UpdateFilter(event);
+                break;
+            case Constants.FILTER_IMAGES:
+                FilterImages();
+                break;
+            default:
+                break;
         }
     }
 

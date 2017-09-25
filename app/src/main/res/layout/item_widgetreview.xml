@@ -65,7 +65,7 @@
                         android:layout_height="70dp"
                         android:padding="5dp"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/emoji_grinning"
+                        android:src="@drawable/image_emoji_grinning"
                         android:background="@color/transparent"
                         android:scaleType="fitXY"/>
 
@@ -94,7 +94,7 @@
                         android:layout_height="70dp"
                         android:padding="5dp"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/emoji_crying"
+                        android:src="@drawable/image_emoji_crying"
                         android:background="@color/transparent"
                         android:scaleType="fitXY"/>
 

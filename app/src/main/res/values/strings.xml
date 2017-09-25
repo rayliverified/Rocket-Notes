@@ -1,6 +1,17 @@
 <resources>
     <string name="app_name">Rocket Notes</string>
+    <string name="app_version">v1.0.8</string>
     <string name="app_package">stream.rocketnotes</string>
+
+    <!-- Settings Page -->
+    <string name="settings_tos">Terms of Service</string>
+    <string name="settings_privacy">Privacy Policy</string>
+    <string name="settings_thanks">Acknowledgements</string>
+    <string name="settings_contact">Contact us</string>
+    <string name="url_tos">http://streammms.com/rocketnotes/tos.html</string>
+    <string name="url_privacy">http://streammms.com/rocketnotes/privacy.html</string>
+    <string name="url_thanks">http://streammms.com/rocketnotes/thanks.html</string>
+    
     <string name="camera_retake">Retake</string>
     <string name="camera_save">Save</string>
 
@@ -16,6 +27,7 @@
 
     <!--Toolbar Titles-->
     <string name="editpage_title">Edit Note</string>
+    <string name="settingspage_title">Settings</string>
 
     <string name="email_mailto">admin@streammms.com</string>
     <string name="email_subject">Rocket Notes Feedback</string>

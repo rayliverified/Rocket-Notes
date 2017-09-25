@@ -30,6 +30,8 @@ public interface Constants {
     String SAVE_PATH = "SAVE_PATH";
     String WIDGET_REVIEW = "WIDGET_REVIEW";
     String WIDGET_REVIEW_HIDE = "WIDGET_REVIEW_HIDE";
+    String URL = "URL";
+    String TITLE = "TITLE";
     String AUTHORITY = "stream.rocketnotes.provider";
     String FLURRY_API_KEY = "FQY6KKKN77CZYWWB9KPV";
     String UXCAM_API_KEY = "0cbfb20ca44be10";

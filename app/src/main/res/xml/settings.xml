@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:key="preferenceScreen">
+
+    <PreferenceCategory
+        android:key="header_appearance"
+        android:title="Appearance">
+
+        <SwitchPreference
+            android:key="show_quickactions"
+            android:title="Show quick actions"
+            android:summary="Display quick actions on note cards"
+            android:defaultValue="true">
+        </SwitchPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="header_backup"
+        android:title="Backup">
+
+        <Preference
+            android:key="settings_local_backup"
+            android:title="Backup Notes"
+            android:summary="Backup all text and image notes to selected location"/>
+
+        <Preference
+            android:key="settings_local_restore"
+            android:title="Restore Notes"
+            android:summary="Restore notes from backup file"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="header_about"
+        android:title="About">
+
+        <Preference
+            android:key="settings_version"
+            android:title="Version"/>
+
+        <Preference
+            android:key="settings_terms"
+            android:title="Terms of Service"/>
+
+        <Preference
+            android:key="settings_privacy"
+            android:title="Privacy"/>
+
+        <Preference
+            android:key="settings_thanks"
+            android:title="Acknowledgements"/>
+
+        <Preference
+            android:key="settings_contact_us"
+            android:title="Contact Us"
+            android:summary="Send us your feedback!"/>
+    </PreferenceCategory>
+</PreferenceScreen>

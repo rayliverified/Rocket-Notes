@@ -7,7 +7,7 @@
         android:title="New Note"/>
     <item
         android:id="@+id/action_camera"
-        android:icon="@drawable/icon_snap_simple"
+        android:icon="@drawable/icon_camera_black"
         android:orderInCategory="1"
         android:title="Camera"/>
 </menu>

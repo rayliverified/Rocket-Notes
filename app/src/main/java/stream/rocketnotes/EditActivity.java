@@ -21,8 +21,6 @@ import android.widget.Toast;
 import com.flurry.android.FlurryAgent;
 import com.pyze.android.Pyze;
 
-import org.greenrobot.eventbus.EventBus;
-
 import es.dmoral.toasty.Toasty;
 import jp.wasabeef.richeditor.RichEditor;
 import stream.rocketnotes.service.DeleteNoteService;
@@ -39,7 +37,8 @@ public class EditActivity extends AppCompatActivity {
     private boolean deletedNote = false;
     private boolean savedNote = false; //Has note already been saved? If so, treat as OPEN_NOTE
     private boolean overrideExit = false; //Skip onPause autosave and exit cleanly.
-    private String mActivity = "EditActivity";
+
+    private String mActivity = this.getClass().getSimpleName();
     private Context mContext;
 
     @Override
@@ -235,7 +234,7 @@ public class EditActivity extends AppCompatActivity {
         if (toolBar != null) {
             toolBar.setDisplayHomeAsUpEnabled(true);
             toolBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-            toolBar.setCustomView(R.layout.toolbar_default);
+            toolBar.setCustomView(R.layout.toolbar_edit);
             toolBar.setElevation(0);
             Toolbar parent = (Toolbar) toolBar.getCustomView().getParent();
             parent.setContentInsetsAbsolute(0, 0);
@@ -248,7 +247,7 @@ public class EditActivity extends AppCompatActivity {
         toolbarBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Edit Text", "Back");
+                Log.d(mActivity, "Back");
                 overrideExit = true;
                 saveNote();
                 finish();

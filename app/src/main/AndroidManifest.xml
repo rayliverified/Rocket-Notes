@@ -78,6 +78,10 @@
                 <data android:mimeType="image/*"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:theme="@style/AppActionBar"/>
+        <activity android:name=".WebViewActivity" android:theme="@style/AppTheme"/>
         <!-- Widgets -->
         <receiver
             android:name=".NewNoteWidget"

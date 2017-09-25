@@ -75,10 +75,10 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 Log.d("Image Height", String.valueOf(imageBitmap.getHeight()));
                 rv.setImageViewBitmap(R.id.item_image, imageBitmap);
             } else {
-                rv.setImageViewResource(R.id.item_image, R.drawable.icon_picture);
+                rv.setImageViewResource(R.id.item_image, R.drawable.image_picture_placeholder);
             }
         } else {
-            rv.setImageViewResource(R.id.item_image, R.drawable.icon_picture);
+            rv.setImageViewResource(R.id.item_image, R.drawable.image_picture_placeholder);
         }
 
         Bundle extras = new Bundle();

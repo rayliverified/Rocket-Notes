@@ -59,6 +59,8 @@ dependencies {
     compile 'com.github.zcweng:switch-button:0.0.3' //https://github.com/zcweng/SwitchButton
     compile 'org.zeroturnaround:zt-zip:1.9'
     compile 'com.github.Kennyc1012:BottomSheet:2.3.4' //https://github.com/Kennyc1012/BottomSheet
+    compile 'com.github.jetradarmobile.desertplaceholder:desertplaceholder:+' //https://github.com/JetradarMobile/desertplaceholder
+    compile 'com.github.delight-im:Android-AdvancedWebView:+' //https://github.com/delight-im/Android-AdvancedWebView
     compile 'com.flurry.android:analytics:7.2.3'
     compile 'com.uxcam:uxcam:2.6.2-beta.4'
     compile 'com.pyze:PyzeLibrary:3.0.0'

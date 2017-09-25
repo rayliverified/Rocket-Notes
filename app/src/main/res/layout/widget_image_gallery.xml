@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="6dp"
         android:layout_marginRight="12dp"
-        android:src="@drawable/icon_camera"
+        android:src="@drawable/image_camera"
         android:scaleType="fitCenter"/>
 
     <GridView

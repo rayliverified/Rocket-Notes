@@ -2,13 +2,17 @@ package stream.rocketnotes;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kennyc.bottomsheet.BottomSheet;
@@ -31,6 +35,7 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
 
     private String id;
     private String title;
+    private boolean showQuickActions = true;
 
     public NoteItemViewholder(String id, String title) {
         this.id = id;
@@ -84,7 +89,7 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
     public void bindViewHolder(FlexibleAdapter adapter, MyViewHolder holder, int position,
                                List payloads) {
         final Context context = holder.itemView.getContext();
-        UXCam.occludeSensitiveView(holder.noteLayout);
+//        UXCam.occludeSensitiveView(holder.noteLayout);
 
         ArrayList<String> note = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(title));
         holder.noteTitle.setText(stream.rocketnotes.utils.TextUtils.fromHtml(note.get(0)));
@@ -106,51 +111,62 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
             }
         });
 
-        holder.mBtnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, PopupActivity.class);
-                intent.putExtra(Constants.ID, Integer.valueOf(id));
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setAction(Constants.OPEN_NOTE);
-                context.startActivity(intent);
-            }
-        });
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        showQuickActions = sharedPrefs.getBoolean("show_quickactions", true);
 
-        holder.mBtnMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new BottomSheet.Builder(context)
-                        .setSheet(R.menu.menu_card_view)
-                        .setListener(new BottomSheetListener() {
-                            @Override
-                            public void onSheetShown(@NonNull BottomSheet bottomSheet) {
+        if (!showQuickActions)
+        {
+            holder.menuContainer.setVisibility(View.GONE);
+        }
+        else
+        {
+            holder.menuContainer.setVisibility(View.VISIBLE);
+            holder.mBtnAdd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, PopupActivity.class);
+                    intent.putExtra(Constants.ID, Integer.valueOf(id));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setAction(Constants.OPEN_NOTE);
+                    context.startActivity(intent);
+                }
+            });
 
-                            }
+            holder.mBtnMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new BottomSheet.Builder(context)
+                            .setSheet(R.menu.menu_card_view)
+                            .setListener(new BottomSheetListener() {
+                                @Override
+                                public void onSheetShown(@NonNull BottomSheet bottomSheet) {
 
-                            @Override
-                            public void onSheetItemSelected(@NonNull BottomSheet bottomSheet, MenuItem menuItem) {
-                                switch (menuItem.getItemId()) {
-                                    case R.id.action_delete:
-                                        Intent deleteNote = new Intent(context, DeleteNoteService.class);
-                                        deleteNote.putExtra(Constants.ID, Integer.valueOf(id));
-                                        deleteNote.setAction(Constants.DELETE_NOTE);
-                                        context.startService(deleteNote);
-                                        Log.d("Notification", Constants.DELETE_NOTE);
-                                        break;
-                                    default:
-                                        break;
                                 }
-                            }
 
-                            @Override
-                            public void onSheetDismissed(@NonNull BottomSheet bottomSheet, @DismissEvent int i) {
+                                @Override
+                                public void onSheetItemSelected(@NonNull BottomSheet bottomSheet, MenuItem menuItem) {
+                                    switch (menuItem.getItemId()) {
+                                        case R.id.action_delete:
+                                            Intent deleteNote = new Intent(context, DeleteNoteService.class);
+                                            deleteNote.putExtra(Constants.ID, Integer.valueOf(id));
+                                            deleteNote.setAction(Constants.DELETE_NOTE);
+                                            context.startService(deleteNote);
+                                            Log.d("Notification", Constants.DELETE_NOTE);
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
 
-                            }
-                        })
-                        .show();
-            }
-        });
+                                @Override
+                                public void onSheetDismissed(@NonNull BottomSheet bottomSheet, @DismissEvent int i) {
+
+                                }
+                            })
+                            .show();
+                }
+            });
+        }
     }
 
     @Override
@@ -170,6 +186,7 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
         public LinearLayout noteLayout;
         public TextView noteTitle;
         public TextView noteBody;
+        public RelativeLayout menuContainer;
         public ImageView mBtnAdd;
         public ImageView mBtnMore;
 
@@ -178,6 +195,7 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
             noteLayout = view.findViewById(R.id.item_note);
             noteTitle = view.findViewById(R.id.item_note_title);
             noteBody = view.findViewById(R.id.item_note_note);
+            menuContainer = view.findViewById(R.id.menu_container);
             mBtnAdd = view.findViewById(R.id.btn_add);
             mBtnMore = view.findViewById(R.id.btn_more);
         }
