@@ -62,6 +62,8 @@ public class EditActivity extends AppCompatActivity {
         if (getIntent().getAction().equals(Constants.OPEN_NOTE)) {
             AnalyticsUtils.AnalyticEvent(mActivity, "Note Type", Constants.OPEN_NOTE);
 
+            savedNote = true;
+
             mEditor.clearFocus();
             noteID = getIntent().getIntExtra(Constants.ID, -1);
             Log.d("Received Note ID", String.valueOf(noteID));
@@ -176,13 +178,13 @@ public class EditActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml())) && !noteTextRaw.equals(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()))) {
             Intent saveNote = new Intent(mContext, SaveNoteService.class);
             if (noteStatus.equals(Constants.OPEN_NOTE)) {
-                Log.d("Edit Activity", Constants.UPDATE_NOTE);
+                Log.d(mActivity, Constants.UPDATE_NOTE);
                 saveNote.putExtra(Constants.ID, noteID);
                 saveNote.putExtra(Constants.BODY, stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()));
                 saveNote.setAction(Constants.UPDATE_NOTE);
                 mContext.startService(saveNote);
             } else {
-                Log.d("Edit Activity", Constants.NEW_NOTE);
+                Log.d(mActivity, Constants.NEW_NOTE);
                 saveNote.putExtra(Constants.BODY, stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()));
                 saveNote.setAction(Constants.NEW_NOTE);
                 mContext.startService(saveNote);
@@ -210,11 +212,16 @@ public class EditActivity extends AppCompatActivity {
     private void openDeleteIntent() {
         if (savedNote == false && originalNew == true) {
             //Note has not been saved and no database methods need to be called. Finish activity.
+            Log.d(mActivity, "Delete Unsaved Note");
         } else if (savedNote == true && originalNew == true) {
             //New note has been saved. Must get saved ID and pass to DeleteNote.
-            Log.d("Edit Activity", "Delete New Note");
+            Log.d(mActivity, "Delete New Note");
             DatabaseHelper dbHelper = new DatabaseHelper(this);
             noteID = dbHelper.GetLatestID();
+            DeleteNote();
+        }
+        else if (savedNote == true)
+        {
             DeleteNote();
         }
         finish();

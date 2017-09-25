@@ -57,4 +57,15 @@
         android:divider="@drawable/list_divider"
         android:dividerHeight="1dp">
     </ListView>
+
+    <TextView
+        android:id="@+id/notes_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@color/white"
+        android:text="No notes yet..."
+        android:textSize="16sp"
+        android:textColor="@color/textPrimary"
+        android:visibility="gone"/>
 </LinearLayout>

@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
-import com.uxcam.UXCam;
 
 import java.util.List;
 

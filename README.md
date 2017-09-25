@@ -1,3 +1,4 @@
+[![GitHub release](https://img.shields.io/github/release/searchy2/Rocket-Notes.svg?style=flat-square)](https://github.com/searchy2/Rocket-Notes/releases) [![Libraries.io for GitHub](https://img.shields.io/librariesio/github/searchy2/Rocket-Notes.svg?style=flat-square)](https://github.com/searchy2/CustomRecentImages) 
 # Rocket Notes
 ### World's Fastest Note Taking App
 ---

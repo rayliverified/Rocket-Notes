@@ -1,6 +1,8 @@
 package stream.rocketnotes;
 
 import android.app.Dialog;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -87,11 +89,8 @@ public class SettingsFragment extends PreferenceFragment {
         showQuickActions.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                //Refresh MainActivity
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(Constants.REFRESH, true);
-                editor.apply();
+
+                RefreshMainActivity();
                 return false;
             }
         });
@@ -145,6 +144,16 @@ public class SettingsFragment extends PreferenceFragment {
                     public void onSelectedFilePaths(String[] files) {
                         if (files.length >= 1) {
                             RestoreDatabase(files[0]);
+                            RefreshMainActivity();
+                            int widgetIDs[] = AppWidgetManager.getInstance(getActivity().getApplication()).getAppWidgetIds(new ComponentName(mContext, NotesWidget.class));
+                            for (int id : widgetIDs) {
+                                AppWidgetManager.getInstance(getActivity().getApplication()).notifyAppWidgetViewDataChanged(id, R.id.notes_listview);
+                            }
+
+                            int imageWidgetIDs[] = AppWidgetManager.getInstance(getActivity().getApplication()).getAppWidgetIds(new ComponentName(mContext, ImageWidget.class));
+                            for (int id : imageWidgetIDs) {
+                                AppWidgetManager.getInstance(getActivity().getApplication()).notifyAppWidgetViewDataChanged(id, R.id.image_gridview);
+                            }
                         } else {
                             Toasty.error(mContext, "No File Selected", Toast.LENGTH_SHORT).show();
                         }
@@ -318,5 +327,14 @@ public class SettingsFragment extends PreferenceFragment {
         } else {
             Toasty.error(mContext, "Invalid Backup File", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void RefreshMainActivity()
+    {
+        //Refresh MainActivity
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(Constants.REFRESH, true);
+        editor.apply();
     }
 }

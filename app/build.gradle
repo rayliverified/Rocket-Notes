@@ -16,6 +16,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dexOptions {
+        jumboMode true
+    }
 }
 
 repositories {
@@ -58,10 +61,9 @@ dependencies {
     compile 'com.github.zcweng:switch-button:0.0.3' //https://github.com/zcweng/SwitchButton
     compile 'org.zeroturnaround:zt-zip:1.9'
     compile 'com.github.Kennyc1012:BottomSheet:2.3.4' //https://github.com/Kennyc1012/BottomSheet
-    compile 'com.github.jetradarmobile.desertplaceholder:desertplaceholder:+' //https://github.com/JetradarMobile/desertplaceholder
-    compile 'com.github.delight-im:Android-AdvancedWebView:+' //https://github.com/delight-im/Android-AdvancedWebView
+    compile 'com.github.jetradarmobile.desertplaceholder:desertplaceholder:1.2.4' //https://github.com/JetradarMobile/desertplaceholder
+    compile 'com.github.delight-im:Android-AdvancedWebView:v3.0.0' //https://github.com/delight-im/Android-AdvancedWebView
     compile 'com.flurry.android:analytics:7.2.3'
-    compile 'com.uxcam:uxcam:2.6.2-beta.4'
     compile 'com.pyze:PyzeLibrary:3.0.0'
     //Custom filter chips from https://github.com/claudiodegio/MsvSearch
     //Image viewer from https://github.com/stfalcon-studio/FrescoImageViewer

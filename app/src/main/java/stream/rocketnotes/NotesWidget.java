@@ -22,8 +22,7 @@ public class NotesWidget extends AppWidgetProvider {
 
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_notes_listview);
             remoteViews.setRemoteAdapter(R.id.notes_listview, intent);
-
-//            rv.setEmptyView(R.id.notes_listview, R.id.rocket_icon);
+            remoteViews.setEmptyView(R.id.notes_listview, R.id.notes_empty);
 
             //Register widget onClickListeners
             Intent noteAddIntent = new Intent(context, NotesWidget.class);
