@@ -35,7 +35,7 @@ public class PopupActivity extends Activity {
     private String noteTextRaw;
     private Integer noteID;
     private boolean savedNote = false;
-    private String mActivity = "PopupActivity";
+    private String mActivity = this.getClass().getSimpleName();
     private Context mContext;
 
     @Override

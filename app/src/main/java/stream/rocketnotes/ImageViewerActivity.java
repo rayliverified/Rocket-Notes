@@ -26,7 +26,7 @@ public class ImageViewerActivity extends AppCompatActivity {
 
     private ImageOverlayView overlayView;
     private ArrayList<NotesItem> mNotesItem;
-    private String mActivity = "ImageViewerActivity";
+    private String mActivity = this.getClass().getSimpleName();
     private Context mContext;
 
     @Override

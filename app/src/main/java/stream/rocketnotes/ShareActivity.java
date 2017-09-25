@@ -70,7 +70,7 @@ public class ShareActivity extends Activity {
     private RecyclerView mRecyclerView;
     private ShareAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    private String mActivity = "ShareActivity";
+    private String mActivity = this.getClass().getSimpleName();
     private Context mContext;
 
     private boolean textNote = false;

@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     private Integer mImageCount;
     DatabaseHelper dbHelper;
     Context mContext;
-    private String mActivity = "MainActivity";
+    private String mActivity = this.getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -25,7 +25,7 @@ public class ShareAddViewholder extends RecyclerView.ViewHolder {
     public ImageButton mBtnSend;
     public Context mContext;
     public ShareAdapterInterface mShareAdapterInterface;
-    public final String mActivity = "ShareAddViewHolder";
+    public final String mActivity = this.getClass().getSimpleName();
 
     public boolean sharedNote;
 

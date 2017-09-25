@@ -24,8 +24,8 @@ import stream.rocketnotes.utils.FileUtils;
 
 public class CameraActivity extends AppCompatActivity {
 
-    private String mActivity = "CameraActivity";
     private Context mContext;
+    private String mActivity = this.getClass().getSimpleName();
 
     private final static int CAMERA_RQ = 0;
 
