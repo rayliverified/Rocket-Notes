@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kennyc.bottomsheet.BottomSheet;
 import com.kennyc.bottomsheet.BottomSheetListener;
@@ -20,6 +21,7 @@ import com.kennyc.bottomsheet.BottomSheetListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
@@ -30,12 +32,14 @@ import stream.rocketnotes.service.DeleteNoteService;
 public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.MyViewHolder> implements IFilterable {
 
     private String id;
-    private String title;
+    private String noteText;
     private boolean showQuickActions = true;
 
-    public NoteItemViewholder(String id, String title) {
+    private final String mActivity = this.getClass().getSimpleName();
+
+    public NoteItemViewholder(String id, String noteText) {
         this.id = id;
-        this.title = title;
+        this.noteText = noteText;
     }
 
     /**
@@ -87,7 +91,7 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
         final Context context = holder.itemView.getContext();
 //        UXCam.occludeSensitiveView(holder.noteLayout);
 
-        ArrayList<String> note = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(title));
+        ArrayList<String> note = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(noteText));
         holder.noteTitle.setText(stream.rocketnotes.utils.TextUtils.fromHtml(note.get(0)));
         if (!TextUtils.isEmpty(note.get(1))) {
             holder.noteBody.setText(stream.rocketnotes.utils.TextUtils.fromHtml(note.get(1)));
@@ -142,12 +146,21 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
                                 @Override
                                 public void onSheetItemSelected(@NonNull BottomSheet bottomSheet, MenuItem menuItem) {
                                     switch (menuItem.getItemId()) {
+                                        case R.id.action_share:
+                                            stream.rocketnotes.utils.TextUtils.Share(context, noteText);
+                                            Log.d(mActivity, "Share");
+                                            break;
+                                        case R.id.action_copy:
+                                            stream.rocketnotes.utils.TextUtils.CopyText(context, noteText);
+                                            Toasty.normal(context, "Copied", Toast.LENGTH_SHORT).show();
+                                            Log.d(mActivity, "Copy");
+                                            break;
                                         case R.id.action_delete:
                                             Intent deleteNote = new Intent(context, DeleteNoteService.class);
                                             deleteNote.putExtra(Constants.ID, Integer.valueOf(id));
                                             deleteNote.setAction(Constants.DELETE_NOTE);
                                             context.startService(deleteNote);
-                                            Log.d("Notification", Constants.DELETE_NOTE);
+                                            Log.d(mActivity, Constants.DELETE_NOTE);
                                             break;
                                         default:
                                             break;
@@ -167,9 +180,9 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
 
     @Override
     public boolean filter(String constraint) {
-        Integer fuzzyRatio = FuzzySearch.partialRatio(title.toLowerCase(), constraint.toLowerCase());
+        Integer fuzzyRatio = FuzzySearch.partialRatio(noteText.toLowerCase(), constraint.toLowerCase());
         Log.d("Fuzzy Search Ratio", String.valueOf(fuzzyRatio));
-        return fuzzyRatio >= 70 || title.toLowerCase().trim().contains(constraint);
+        return fuzzyRatio >= 70 || noteText.toLowerCase().trim().contains(constraint);
     }
 
     /**

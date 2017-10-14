@@ -157,6 +157,10 @@ public class EditActivity extends AppCompatActivity {
                 Log.d("Edit Text", "Share");
                 openShareIntent();
                 break;
+            case R.id.action_copy:
+                Log.d("Edit Text", "Share");
+                openCopyIntent();
+                break;
             case R.id.action_delete:
                 Log.d("Edit Text", "Delete");
                 overrideExit = true;
@@ -196,14 +200,19 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private void openShareIntent() {
+
         if (!TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()))) {
-            String shareText = stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml());
-            shareText = stream.rocketnotes.utils.TextUtils.CleanShare(shareText);
-            ShareCompat.IntentBuilder.from(this)
-                    .setText(shareText)
-                    .setType("text/plain")
-                    .setChooserTitle("Share Note")
-                    .startChooser();
+            stream.rocketnotes.utils.TextUtils.Share(mContext, mEditor.getHtml());
+        } else {
+            Toasty.error(mContext, "Note Empty", Toast.LENGTH_SHORT, true).show();
+        }
+    }
+
+    private void openCopyIntent() {
+
+        if (!TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()))) {
+            stream.rocketnotes.utils.TextUtils.CopyText(mContext, mEditor.getHtml());
+            Toasty.normal(mContext, "Copied", Toast.LENGTH_SHORT).show();
         } else {
             Toasty.error(mContext, "Note Empty", Toast.LENGTH_SHORT, true).show();
         }

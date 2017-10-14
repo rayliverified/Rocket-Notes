@@ -20,6 +20,12 @@
         app:showAsAction="ifRoom"
         android:title="Share"/>
     <item
+        android:id="@+id/action_copy"
+        android:icon="@drawable/icon_clipboard"
+        android:orderInCategory="3"
+        app:showAsAction="ifRoom"
+        android:title="Copy"/>
+    <item
         android:id="@+id/action_delete"
         android:icon="@drawable/icon_delete"
         android:orderInCategory="4"

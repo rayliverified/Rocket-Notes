@@ -1,5 +1,9 @@
 package stream.rocketnotes.utils;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.format.DateFormat;
@@ -52,6 +56,25 @@ public class TextUtils {
         String output = "";
         output = raw.replaceAll("<br>", "\n");
         return output;
+    }
+
+    public static void Share(Context context, String text)
+    {
+        String shareText = Clean(text);
+        shareText = CleanShare(text);
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareText);
+        context.startActivity(Intent.createChooser(sharingIntent, "Share Note"));
+    }
+
+    public static void CopyText(Context context, String text)
+    {
+        String shareText = Clean(text);
+        shareText = CleanShare(text);
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("text/plain", shareText);
+        clipboard.setPrimaryClip(clip);
     }
 
     @SuppressWarnings("deprecation")
