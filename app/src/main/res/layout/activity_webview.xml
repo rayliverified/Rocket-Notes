@@ -1,18 +1,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <im.delight.android.webview.AdvancedWebView
-        android:id="@+id/webview"
+    <ProgressBar
+        android:id="@+id/webview_progressbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-7dp"
+        android:layout_marginTop="-7dp"
+        android:layout_gravity="top"
+        android:progress="32"
+        style="?android:attr/progressBarStyleHorizontal"/>
 
-    <com.jetradar.desertplaceholder.DesertPlaceholder
-        android:id="@+id/WebViewErrorScreen"
+    <FrameLayout
+        android:id="@+id/webview_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:dp_buttonText="Refresh"
-        app:dp_message="Uh oh...unable to connect to server."/>
+        android:layout_height="match_parent">
+
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:id="@+id/webview_error_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/webview_error"
+            android:textSize="16sp"
+            android:textColor="@color/textSecondary"
+            android:visibility="gone"/>
+    </FrameLayout>
 </LinearLayout>

@@ -1,28 +1,36 @@
 package stream.rocketnotes;
 
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
-import com.jetradar.desertplaceholder.DesertPlaceholder;
 import com.pyze.android.Pyze;
 
-import im.delight.android.webview.AdvancedWebView;
 import stream.rocketnotes.utils.AnalyticsUtils;
 
-public class WebViewActivity extends AppCompatActivity implements AdvancedWebView.Listener  {
+public class WebViewActivity extends AppCompatActivity {
 
-    AdvancedWebView mWebView;
-    DesertPlaceholder mWebViewErrorScreen;
+    WebView mWebView;
+    ProgressBar mProgressBar;
+    TextView mErrorText;
     String sUrl, sTitle;
     private String mActivity = this.getClass().getSimpleName();
 
@@ -36,16 +44,74 @@ public class WebViewActivity extends AppCompatActivity implements AdvancedWebVie
         sTitle = i.getStringExtra(Constants.TITLE);
         InitializeAnalytics();
 
-        mWebView = findViewById(R.id.webview);
-        mWebViewErrorScreen = findViewById(R.id.WebViewErrorScreen);
-        mWebViewErrorScreen.setOnClickListener(new View.OnClickListener() {
+
+        mErrorText = findViewById(R.id.webview_error_text);
+        mErrorText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Refresh(sUrl);
             }
         });
+        mProgressBar = findViewById(R.id.webview_progressbar);
+        mProgressBar.setIndeterminate(true);
 
-        mWebView.setListener(this, this);
+        mWebView = findViewById(R.id.webview);
+        mWebView.setWebViewClient(new WebViewClient() {
+
+            //If you will not use this method url links are opeen in new brower not in webview
+            @SuppressWarnings("deprecation")
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+                view.loadUrl(url);
+                return true;
+            }
+
+            @TargetApi(Build.VERSION_CODES.N)
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                final Uri uri = request.getUrl();
+                return true;
+            }
+
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+
+                showLoadingScreen();
+            }
+
+            public void onPageFinished(WebView view, String url) {
+
+                showContentScreen();
+            }
+
+            @SuppressWarnings("deprecation")
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+
+                showErrorScreen();
+                Toast.makeText(getApplicationContext(), errorCode + " " + description + " " + failingUrl, Toast.LENGTH_SHORT).show();
+            }
+
+            @TargetApi(Build.VERSION_CODES.N)
+            public void onReceivedError(WebView view, WebResourceRequest req, WebResourceError rerr) {
+                // Redirect to deprecated method, so you can use it in all SDK versions
+                onReceivedError(view, rerr.getErrorCode(), rerr.getDescription().toString(), req.getUrl().toString());
+            }
+        });
+        mWebView.setWebChromeClient(new WebChromeClient() {
+
+            public void onProgressChanged(WebView view, int progress) {
+                if(progress < 15) {
+                    mProgressBar.setIndeterminate(true);
+                    mProgressBar.setVisibility(View.VISIBLE);
+                }
+                if(progress >= 90) {
+                    mProgressBar.setVisibility(View.GONE);
+                }
+                else if(progress > 15) {
+                    mProgressBar.setIndeterminate(false);
+                    mProgressBar.setProgress(progress);
+                }
+            }
+        });
+        mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.loadUrl(sUrl);
 
         ActionBar();
@@ -75,81 +141,27 @@ public class WebViewActivity extends AppCompatActivity implements AdvancedWebVie
     }
 
     private void Refresh (final String urlString){
-        mWebView.loadUrl(sUrl, true);
+        mWebView.loadUrl(urlString);
     }
 
     public void showLoadingScreen() {
 
         Log.d("Screen", "Loading");
-        mWebViewErrorScreen.setVisibility(View.GONE);
+        mErrorText.setVisibility(View.GONE);
     }
 
     public void showErrorScreen() {
 
         Log.d("Screen", "Error");
         mWebView.setVisibility(View.GONE);
-        mWebViewErrorScreen.setVisibility(View.VISIBLE);
+        mErrorText.setVisibility(View.VISIBLE);
     }
 
     public void showContentScreen() {
 
         Log.d("Screen", "Content");
         mWebView.setVisibility(View.VISIBLE);
-        mWebViewErrorScreen.setVisibility(View.GONE);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mWebView.onResume();
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    protected void onPause() {
-        mWebView.onPause();
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        mWebView.onDestroy();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onPageStarted(String url, Bitmap favicon) {
-
-    }
-
-    @Override
-    public void onPageFinished(String url) {
-        showContentScreen();
-    }
-
-    @Override
-    public void onPageError(int errorCode, String description, String failingUrl) {
-        Log.d("Error Code", String.valueOf(errorCode));
-        if (errorCode == -2)
-        {
-            showErrorScreen();
-        }
-    }
-
-    @Override
-    public void onDownloadRequested(String url, String suggestedFilename, String mimeType, long contentLength, String contentDisposition, String userAgent) {
-
-    }
-
-    @Override
-    public void onExternalPageRequest(String url) {
-
+        mErrorText.setVisibility(View.GONE);
     }
 
     public void InitializeAnalytics()

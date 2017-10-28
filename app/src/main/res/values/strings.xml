@@ -8,9 +8,10 @@
     <string name="settings_privacy">Privacy Policy</string>
     <string name="settings_thanks">Acknowledgements</string>
     <string name="settings_contact">Contact us</string>
-    <string name="url_tos">http://streammms.com/rocketnotes/tos.html</string>
-    <string name="url_privacy">http://streammms.com/rocketnotes/privacy.html</string>
-    <string name="url_thanks">http://streammms.com/rocketnotes/thanks.html</string>
+    <string name="url_tos">http://apprewards.org/rocketnotes/tos.html</string>
+    <string name="url_privacy">http://apprewards.org/rocketnotes/privacy.html</string>
+    <string name="url_thanks">http://apprewards.org/rocketnotes/thanks.html</string>
+    <string name="webview_error">Uh oh…something went wrong.</string>
     
     <string name="camera_retake">Retake</string>
     <string name="camera_save">Save</string>
@@ -29,7 +30,7 @@
     <string name="editpage_title">Edit Note</string>
     <string name="settingspage_title">Settings</string>
 
-    <string name="email_mailto">admin@streammms.com</string>
+    <string name="email_mailto">support@apprewards.org</string>
     <string name="email_subject">Rocket Notes Feedback</string>
-    <string name="email_message">Send to: admin@streammms.com\nFeedback:\n</string>
+    <string name="email_message">Send to: support@apprewards.org\nFeedback:\n</string>
 </resources>
