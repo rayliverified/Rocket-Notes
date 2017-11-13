@@ -6,7 +6,7 @@ public interface Constants {
     String YEAR = "2017";
     Integer TITLE_LENGTH = 40;
     Integer RECENT_IMAGES = 8;
-    Integer RECENT_NOTES = 30;
+    Integer RECENT_NOTES = 40;
     String QUICK_NOTE = "QUICK_NOTE";
     String OPEN_APP = "OPEN_APP";
     String NEW_NOTE = "NEW_NOTE";

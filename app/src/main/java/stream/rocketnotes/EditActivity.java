@@ -29,7 +29,7 @@ import stream.rocketnotes.utils.AnalyticsUtils;
 public class EditActivity extends AppCompatActivity {
 
     private RichEditor mEditor;
-    private String noteStatus;
+    private String noteStatus; //OPEN_NOTE or NEW_NOTE flag.
     private Integer noteID;
     private String noteTextRaw;
     private boolean originalNew = false; //Current note is new and just created
@@ -52,40 +52,42 @@ public class EditActivity extends AppCompatActivity {
         noteStatus = getIntent().getAction();
         Log.d("Intent Action", noteStatus);
 
-        //Focus defaults to editText, set again just in case
         mEditor = findViewById(R.id.editor);
         mEditor.setPadding(12, 12, 12, 12);
         noteTextRaw = "";
         noteID = -1;
 
-        if (getIntent().getAction().equals(Constants.OPEN_NOTE)) {
+        if (noteStatus.equals(Constants.OPEN_NOTE)) {
             AnalyticsUtils.AnalyticEvent(mActivity, "Note Type", Constants.OPEN_NOTE);
 
             savedNote = true;
 
-            mEditor.clearFocus();
+            mEditor.clearFocus(); //Clear default focus so keyboard does not appear automatically.
             noteID = getIntent().getIntExtra(Constants.ID, -1);
             Log.d("Received Note ID", String.valueOf(noteID));
             DatabaseHelper dbHelper = new DatabaseHelper(this);
             NotesItem note = dbHelper.GetNote(noteID);
             noteTextRaw = stream.rocketnotes.utils.TextUtils.Compatibility(note.getNotesNote());
 
-            String editAdd = "";
+            //Intent contains extra string if note opened from PopupActivity and user has typed text.
             if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY))) {
-                editAdd = getIntent().getStringExtra(Constants.BODY);
+                //Append what the user was typing to existing note.
+                String editAdd = getIntent().getStringExtra(Constants.BODY);
                 editAdd = "<br>" + editAdd;
                 mEditor.setHtml(noteTextRaw + editAdd);
                 //Automatically opens keyboard for immediate input
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                //User was adding to note so open keyboard for additional input.
                 mEditor.focusEditor();
             } else {
-                mEditor.setHtml(noteTextRaw + editAdd);
+                mEditor.setHtml(noteTextRaw);
             }
         } else {
             AnalyticsUtils.AnalyticEvent(mActivity, "Note Type", Constants.NEW_NOTE);
 
             originalNew = true;
 
+            //Intent contains extra string if note opened from PopupActivity and user started typing new note.
             if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY))) {
                 noteTextRaw = stream.rocketnotes.utils.TextUtils.Compatibility(getIntent().getStringExtra(Constants.BODY));
                 mEditor.setHtml(noteTextRaw);
@@ -106,14 +108,16 @@ public class EditActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        //Do not automatically save note if user deletes note or exits properly.
         if (!overrideExit) {
             if (!deletedNote && !savedNote) {
+                //Note has not been deleted and never saved before.
                 //Autosave note when window loses focus
                 Log.d("Edit Text", "Autosaved");
                 Log.d("onPause", String.valueOf(savedNote));
                 saveNote();
             } else if (!deletedNote && savedNote == true) {
-                //This code only runs when a new note has been saved and is being resaved.
+                //Update existing note in database.
                 DatabaseHelper dbHelper = new DatabaseHelper(this);
                 noteStatus = Constants.OPEN_NOTE;
                 noteID = dbHelper.GetLatestID(); //New note always has the latest ID.
@@ -180,20 +184,20 @@ public class EditActivity extends AppCompatActivity {
         //Save note and close activity
         if (!TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml())) && !noteTextRaw.equals(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()))) {
             Intent saveNote = new Intent(mContext, SaveNoteService.class);
+            saveNote.putExtra(Constants.BODY, stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()));
             if (noteStatus.equals(Constants.OPEN_NOTE)) {
                 Log.d(mActivity, Constants.UPDATE_NOTE);
-                saveNote.putExtra(Constants.ID, noteID);
-                saveNote.putExtra(Constants.BODY, stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()));
                 saveNote.setAction(Constants.UPDATE_NOTE);
+                saveNote.putExtra(Constants.ID, noteID);
                 mContext.startService(saveNote);
             } else {
                 Log.d(mActivity, Constants.NEW_NOTE);
-                saveNote.putExtra(Constants.BODY, stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()));
                 saveNote.setAction(Constants.NEW_NOTE);
                 mContext.startService(saveNote);
                 savedNote = true;
             }
         } else if (TextUtils.isEmpty(stream.rocketnotes.utils.TextUtils.Clean(mEditor.getHtml()))) {
+            //Note is empty. Delete note if saved in database.
             openDeleteIntent();
         }
     }
@@ -228,6 +232,7 @@ public class EditActivity extends AppCompatActivity {
             noteID = dbHelper.GetLatestID();
             DeleteNote();
         } else if (savedNote == true) {
+            //Delete existing note.
             DeleteNote();
         }
         finish();

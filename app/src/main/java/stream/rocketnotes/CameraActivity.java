@@ -34,6 +34,7 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mContext = getApplicationContext();
         InitializeAnalytics();
+        //Camera usage requires camera and storage permission.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             final String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -65,8 +66,8 @@ public class CameraActivity extends AppCompatActivity {
 
         AnalyticsUtils.AnalyticEvent(mActivity, "Camera", "Start");
 
-        FileUtils.InitializePicturesFolder(mContext);
-        File storageDir = new File(getFilesDir(), ".Pictures");
+        FileUtils.InitializePicturesFolder(mContext); //Create pictures folder if folder does not exist.
+        File storageDir = new File(getFilesDir(), ".Pictures"); //Create storage location.
         new MaterialCamera(this)
                 /** all the previous methods can be called, but video ones would be ignored */
                 .stillShot() // launches the Camera in stillshot mode
@@ -81,6 +82,7 @@ public class CameraActivity extends AppCompatActivity {
         if (requestCode == CAMERA_RQ && resultCode == RESULT_OK) {
             Log.d("Camera Result", data.getDataString());
 
+            //Send captured image location to SaveNoteService.
             Intent saveNote = new Intent(getApplicationContext(), SaveNoteService.class);
             saveNote.putExtra(Constants.IMAGE, data.getDataString());
             saveNote.setAction(Constants.NEW_NOTE);

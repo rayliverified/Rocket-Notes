@@ -92,6 +92,7 @@ public class ImageOverlayView extends RelativeLayout {
 
     private void sendShareIntent() {
 
+        //Sharing image requires creating a content provider. Register provider and set image path.
         Uri provider = Uri.parse("content://" + Constants.AUTHORITY);
         Uri imageUri = Uri.parse(this.imageUri);
         String imagePath = imageUri.getPath();

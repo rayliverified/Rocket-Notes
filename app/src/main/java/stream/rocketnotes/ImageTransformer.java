@@ -7,6 +7,8 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Transformation;
 
+//Custom image transformation class used in MainActivity to display square images.
+//Images are center cropped square if height > width or original aspect ratio if width > height.
 public class ImageTransformer {
 
     public static Transformation getSquare(final ImageView imageView) {

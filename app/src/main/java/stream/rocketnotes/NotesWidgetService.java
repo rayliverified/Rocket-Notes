@@ -36,7 +36,7 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // for example downloading or creating content etc, should be deferred to onDataSetChanged()
         // or getViewAt(). Taking more than 20 seconds in this call will result in an ANR.
         DatabaseHelper dbHelper = new DatabaseHelper(mContext);
-        mNotesItems = dbHelper.GetTextNotes();
+        mNotesItems = dbHelper.GetTextNotes(Constants.RECENT_NOTES);
         Log.d("Note Widget", "Created");
         Log.d("Note Items Size", String.valueOf(mNotesItems.size()));
         mCount = mNotesItems.size();

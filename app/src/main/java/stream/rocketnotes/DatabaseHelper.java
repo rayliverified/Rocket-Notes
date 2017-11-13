@@ -50,7 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     }
 
     public void initiateContent() {
-        //Initiate note sequence
+        //Generate sample notes data.
         for (int i = 0; i < 20; i++) {
             NotesItem note = new NotesItem();
             note.setNotesNote("Note content: " + i);
@@ -59,7 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         }
     }
 
-    // Adding a new id to database.
+    //Method to add a note directly to database.
     public long AddNote(NotesItem note) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -75,7 +75,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return id;
     }
 
-    // Adding a new id to database.
+    //Add a note to database and return the added note object.
     public NotesItem AddNewNote(String note, Long date, String image) {
         NotesItem notesItem = new NotesItem();
         notesItem.setNotesNote(note);
@@ -86,7 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return notesItem;
     }
 
-    //Update note
+    //Update existing text note.
     public long UpdateNote(NotesItem note) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -113,7 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return db.delete(TABLE_NOTES, selection, selectionArgs);
     }
 
-    //Return notes sorted by last id date
+    //Return notes sorted by last note date. Used in MainActivity to return all notes.
     public ArrayList<NotesItem> GetNotesDate() {
         ArrayList<NotesItem> notes = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_NOTES + " ORDER BY " + KEY_DATE + " DESC";
@@ -143,7 +143,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return notes;
     }
 
-    //Return note
+    //Return single note.
     public NotesItem GetNote(Integer id) {
         String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_ID + " = '" + id + "'";
         SQLiteDatabase db = this.getReadableDatabase();
@@ -169,7 +169,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return note;
     }
 
-    //Return text notes
+    //Return text notes. Used in MainActivity to filter text notes.
     public ArrayList<NotesItem> GetTextNotes() {
         ArrayList<NotesItem> notes = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_NOTE + " NOT NULL ORDER BY " + KEY_DATE + " DESC";
@@ -196,7 +196,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return notes;
     }
 
-    //Return specified number of recent text notes
+    //Return specified number of recent text notes. Used in RecentNotesWidget and ShareActivity.
     public ArrayList<NotesItem> GetTextNotes(Integer limit) {
         ArrayList<NotesItem> notes = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_IMAGE + " IS NULL ORDER BY " + KEY_DATE + " DESC LIMIT " + limit;
@@ -223,7 +223,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return notes;
     }
 
-    //Return note
+    //Return latest noteID. Used in EditActivity to keep track of autosaved note and delete if necessary.
     public Integer GetLatestID() {
         String selectQuery = "SELECT * FROM " + TABLE_NOTES + " ORDER BY " + KEY_ID + " DESC LIMIT 1";
         SQLiteDatabase db = this.getReadableDatabase();
@@ -238,7 +238,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return id;
     }
 
-    //Return image notes
+    //Return image notes. Used in MainActivity to filter image notes.
     public ArrayList<NotesItem> GetImageNotes() {
         ArrayList<NotesItem> notes = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_IMAGE + " NOT NULL ORDER BY " + KEY_DATE + " DESC";
@@ -265,7 +265,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         return notes;
     }
 
-    //Return recent images
+    //Return recent images. Used in RecentImagesWidget.
     public ArrayList<NotesItem> GetRecentImages() {
         ArrayList<NotesItem> notes = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_IMAGE + " NOT NULL ORDER BY " + KEY_DATE + " DESC LIMIT " + Constants.RECENT_IMAGES;
