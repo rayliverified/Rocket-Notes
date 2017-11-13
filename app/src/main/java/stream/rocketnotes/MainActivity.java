@@ -245,8 +245,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
             @Override
             public void onActionMenuItemSelected(MenuItem item) {
 
-                switch (item.getItemId())
-                {
+                switch (item.getItemId()) {
                     case R.id.action_camera:
                         AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Camera");
                         Intent intent = new Intent(mContext, CameraActivity.class);
@@ -488,8 +487,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onMessageEvent(UpdateMainEvent event) {
         Log.d("MainActivity", event.getAction());
-        switch (event.getAction())
-        {
+        switch (event.getAction()) {
             case Constants.RECEIVED:
                 UpdateOnAdd(event);
                 break;

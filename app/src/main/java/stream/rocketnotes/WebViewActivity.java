@@ -98,14 +98,13 @@ public class WebViewActivity extends AppCompatActivity {
         mWebView.setWebChromeClient(new WebChromeClient() {
 
             public void onProgressChanged(WebView view, int progress) {
-                if(progress < 15) {
+                if (progress < 15) {
                     mProgressBar.setIndeterminate(true);
                     mProgressBar.setVisibility(View.VISIBLE);
                 }
-                if(progress >= 90) {
+                if (progress >= 90) {
                     mProgressBar.setVisibility(View.GONE);
-                }
-                else if(progress > 15) {
+                } else if (progress > 15) {
                     mProgressBar.setIndeterminate(false);
                     mProgressBar.setProgress(progress);
                 }
@@ -125,7 +124,7 @@ public class WebViewActivity extends AppCompatActivity {
             toolBar.setCustomView(R.layout.toolbar_default);
             toolBar.setElevation(0);
             Toolbar parent = (Toolbar) toolBar.getCustomView().getParent();
-            parent.setContentInsetsAbsolute(0,0);
+            parent.setContentInsetsAbsolute(0, 0);
         }
 
         TextView toolbarTitle = findViewById(R.id.toolbar_title);
@@ -140,34 +139,32 @@ public class WebViewActivity extends AppCompatActivity {
         });
     }
 
-    private void Refresh (final String urlString){
+    private void Refresh(final String urlString) {
         mWebView.loadUrl(urlString);
     }
 
     public void showLoadingScreen() {
 
-        Log.d("Screen", "Loading");
+        Log.d(mActivity, "Loading");
         mErrorText.setVisibility(View.GONE);
     }
 
     public void showErrorScreen() {
 
-        Log.d("Screen", "Error");
+        Log.d(mActivity, "Error");
         mWebView.setVisibility(View.GONE);
         mErrorText.setVisibility(View.VISIBLE);
     }
 
     public void showContentScreen() {
 
-        Log.d("Screen", "Content");
+        Log.d(mActivity, "Content");
         mWebView.setVisibility(View.VISIBLE);
         mErrorText.setVisibility(View.GONE);
     }
 
-    public void InitializeAnalytics()
-    {
-        if (!FlurryAgent.isSessionActive())
-        {
+    public void InitializeAnalytics() {
+        if (!FlurryAgent.isSessionActive()) {
             new FlurryAgent.Builder()
                     .withLogEnabled(true)
                     .build(this, Constants.FLURRY_API_KEY);

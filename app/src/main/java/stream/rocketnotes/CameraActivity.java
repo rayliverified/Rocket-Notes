@@ -56,9 +56,7 @@ public class CameraActivity extends AppCompatActivity {
             } else {
                 StartCamera();
             }
-        }
-        else
-        {
+        } else {
             StartCamera();
         }
     }

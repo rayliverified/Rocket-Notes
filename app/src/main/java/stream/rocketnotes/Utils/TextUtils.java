@@ -58,8 +58,7 @@ public class TextUtils {
         return output;
     }
 
-    public static void Share(Context context, String text)
-    {
+    public static void Share(Context context, String text) {
         String shareText = Clean(text);
         shareText = CleanShare(text);
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
@@ -68,8 +67,7 @@ public class TextUtils {
         context.startActivity(Intent.createChooser(sharingIntent, "Share Note"));
     }
 
-    public static void CopyText(Context context, String text)
-    {
+    public static void CopyText(Context context, String text) {
         String shareText = Clean(text);
         shareText = CleanShare(text);
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);

@@ -329,8 +329,7 @@ public class SettingsFragment extends PreferenceFragment {
         }
     }
 
-    public void RefreshMainActivity()
-    {
+    public void RefreshMainActivity() {
         //Refresh MainActivity
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sharedPref.edit();

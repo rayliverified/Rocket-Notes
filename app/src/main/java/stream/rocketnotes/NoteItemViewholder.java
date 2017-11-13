@@ -114,12 +114,9 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         showQuickActions = sharedPrefs.getBoolean("show_quickactions", true);
 
-        if (!showQuickActions)
-        {
+        if (!showQuickActions) {
             holder.menuContainer.setVisibility(View.GONE);
-        }
-        else
-        {
+        } else {
             holder.menuContainer.setVisibility(View.VISIBLE);
             holder.mBtnAdd.setOnClickListener(new View.OnClickListener() {
                 @Override

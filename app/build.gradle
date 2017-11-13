@@ -48,7 +48,7 @@ dependencies {
     compile 'eu.davidea:flexible-adapter:5.0.0-rc3' //https://github.com/davideas/FlexibleAdapter
     compile 'com.github.arimorty:floatingsearchview:2.1.1' //https://github.com/arimorty/floatingsearchview
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'org.greenrobot:eventbus:3.0.0' //https://github.com/greenrobot/EventBus
+    compile 'org.greenrobot:eventbus:3.1.0' //https://github.com/greenrobot/EventBus
     compile 'de.hdodenhof:circleimageview:2.1.0' //https://github.com/hdodenhof/CircleImageView
     compile 'me.xdrop:fuzzywuzzy:1.1.9' //https://github.com/xdrop/fuzzywuzzy
     compile 'io.github.yavski:fab-speed-dial:1.0.6' //https://github.com/yavski/fab-speed-dial
@@ -59,7 +59,7 @@ dependencies {
     compile 'com.github.ybq:Android-SpinKit:1.1.0' //https://github.com/ybq/Android-SpinKit
     compile 'com.commonsware.cwac:provider:0.5.2' //https://github.com/commonsguy/cwac-provider
     compile 'com.github.zcweng:switch-button:0.0.3' //https://github.com/zcweng/SwitchButton
-    compile 'org.zeroturnaround:zt-zip:1.12'
+    compile 'org.zeroturnaround:zt-zip:1.12' //https://github.com/zeroturnaround/zt-zip
     compile 'com.github.Kennyc1012:BottomSheet:2.3.4' //https://github.com/Kennyc1012/BottomSheet
     compile 'com.flurry.android:analytics:8.0.1'
     compile 'com.pyze:PyzeLibrary:3.0.0'

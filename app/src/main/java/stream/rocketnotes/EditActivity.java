@@ -3,7 +3,6 @@ package stream.rocketnotes;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ShareCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -228,9 +227,7 @@ public class EditActivity extends AppCompatActivity {
             DatabaseHelper dbHelper = new DatabaseHelper(this);
             noteID = dbHelper.GetLatestID();
             DeleteNote();
-        }
-        else if (savedNote == true)
-        {
+        } else if (savedNote == true) {
             DeleteNote();
         }
         finish();
