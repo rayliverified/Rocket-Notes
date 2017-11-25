@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
-    private static final int DBVersion = 1;
+    private static final int DBVersion = 2;
     private static final String DBName = "NotesDB";
 
     private static final String TABLE_NOTES = "notes";
@@ -19,6 +19,9 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     private static final String KEY_NOTE = "note";
     private static final String KEY_DATE = "date";
     private static final String KEY_IMAGE = "image";
+    private static final String KEY_IMAGEPREVIEW = "imagepreview";
+
+    private static final String DATABASE_V2 = "ALTER TABLE " + TABLE_NOTES + " ADD COLUMN imagepreview TEXT";
 
     public DatabaseHelper(Context context) {
         super(context, DBName, null, DBVersion);
@@ -27,10 +30,18 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //Table Query.
-        String notesTable = "CREATE TABLE IF NOT EXISTS notes (_id INTEGER PRIMARY KEY AUTOINCREMENT, note TEXT, date INTEGER, image TEXT);";
+        String notesTable = "CREATE TABLE IF NOT EXISTS notes (_id INTEGER PRIMARY KEY AUTOINCREMENT, note TEXT, date INTEGER, image TEXT, imagepreview TEXT);";
         //Execute Query
         db.execSQL(notesTable);
         Log.d("SQLite", "Tables created");
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        if (oldVersion < 2) {
+            db.execSQL(DATABASE_V2);
+        }
     }
 
     public void resetDatabase(Context context) {
@@ -40,13 +51,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         onCreate(db);
 
         db.close();
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        db.execSQL("DROP TABLE IF EXISTS notes");
-        onCreate(db);
     }
 
     public void initiateContent() {
@@ -123,20 +127,9 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
         if (c.moveToFirst()) {
             do {
-                NotesItem note = new NotesItem();
-                if (c.getString(c.getColumnIndexOrThrow("_id")) != null) {
-                    note.setNotesID(c.getInt(c.getColumnIndexOrThrow("_id")));
-                }
-                if (c.getString(c.getColumnIndexOrThrow("note")) != null) {
-                    note.setNotesNote(c.getString(c.getColumnIndexOrThrow("note")));
-                }
-                if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
-                    note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));
-                }
-                if (c.getString(c.getColumnIndexOrThrow("image")) != null) {
-                    note.setNotesImage(c.getString(c.getColumnIndexOrThrow("image")));
-                }
-                notes.add(note);
+                NotesItem item = new NotesItem();
+                item = GetNoteItem(item, c);
+                notes.add(item);
             } while (c.moveToNext());
         }
         c.close();
@@ -150,23 +143,12 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
         Cursor c = db.rawQuery(selectQuery, null);
 
-        NotesItem note = new NotesItem();
+        NotesItem item = new NotesItem();
         if (c.moveToFirst()) {
-            if (c.getString(c.getColumnIndexOrThrow("_id")) != null) {
-                note.setNotesID(c.getInt(c.getColumnIndexOrThrow("_id")));
-            }
-            if (c.getString(c.getColumnIndexOrThrow("note")) != null) {
-                note.setNotesNote(c.getString(c.getColumnIndexOrThrow("note")));
-            }
-            if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
-                note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));
-            }
-            if (c.getString(c.getColumnIndexOrThrow("image")) != null) {
-                note.setNotesImage(c.getString(c.getColumnIndexOrThrow("image")));
-            }
+            item = GetNoteItem(item, c);
         }
         c.close();
-        return note;
+        return item;
     }
 
     //Return text notes. Used in MainActivity to filter text notes.
@@ -179,17 +161,9 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
         if (c.moveToFirst()) {
             do {
-                NotesItem note = new NotesItem();
-                if (c.getString(c.getColumnIndexOrThrow("_id")) != null) {
-                    note.setNotesID(c.getInt(c.getColumnIndexOrThrow("_id")));
-                }
-                if (c.getString(c.getColumnIndexOrThrow("note")) != null) {
-                    note.setNotesNote(c.getString(c.getColumnIndexOrThrow("note")));
-                }
-                if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
-                    note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));
-                }
-                notes.add(note);
+                NotesItem item = new NotesItem();
+                item = GetNoteItem(item, c);
+                notes.add(item);
             } while (c.moveToNext());
         }
         c.close();
@@ -206,17 +180,9 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
         if (c.moveToFirst()) {
             do {
-                NotesItem note = new NotesItem();
-                if (c.getString(c.getColumnIndexOrThrow("_id")) != null) {
-                    note.setNotesID(c.getInt(c.getColumnIndexOrThrow("_id")));
-                }
-                if (c.getString(c.getColumnIndexOrThrow("note")) != null) {
-                    note.setNotesNote(c.getString(c.getColumnIndexOrThrow("note")));
-                }
-                if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
-                    note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));
-                }
-                notes.add(note);
+                NotesItem item = new NotesItem();
+                item = GetNoteItem(item, c);
+                notes.add(item);
             } while (c.moveToNext());
         }
         c.close();
@@ -248,17 +214,9 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
         if (c.moveToFirst()) {
             do {
-                NotesItem note = new NotesItem();
-                if (c.getString(c.getColumnIndexOrThrow("_id")) != null) {
-                    note.setNotesID(c.getInt(c.getColumnIndexOrThrow("_id")));
-                }
-                if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
-                    note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));
-                }
-                if (c.getString(c.getColumnIndexOrThrow("image")) != null) {
-                    note.setNotesImage(c.getString(c.getColumnIndexOrThrow("image")));
-                }
-                notes.add(note);
+                NotesItem item = new NotesItem();
+                item = GetNoteItem(item, c);
+                notes.add(item);
             } while (c.moveToNext());
         }
         c.close();
@@ -275,23 +233,22 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
         if (c.moveToFirst()) {
             do {
-                NotesItem note = new NotesItem();
-                if (c.getString(c.getColumnIndexOrThrow("_id")) != null) {
-                    note.setNotesID(c.getInt(c.getColumnIndexOrThrow("_id")));
-                }
-                if (c.getString(c.getColumnIndexOrThrow("note")) != null) {
-                    note.setNotesNote(c.getString(c.getColumnIndexOrThrow("note")));
-                }
-                if (c.getString(c.getColumnIndexOrThrow("date")) != null) {
-                    note.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow("date"))));
-                }
-                if (c.getString(c.getColumnIndexOrThrow("image")) != null) {
-                    note.setNotesImage(c.getString(c.getColumnIndexOrThrow("image")));
-                }
-                notes.add(note);
+                NotesItem item = new NotesItem();
+                item = GetNoteItem(item, c);
+                notes.add(item);
             } while (c.moveToNext());
         }
         c.close();
         return notes;
+    }
+
+    public NotesItem GetNoteItem(NotesItem item, Cursor c) {
+        item.setNotesID(c.getInt(c.getColumnIndexOrThrow(KEY_ID)));
+        item.setNotesNote(c.getString(c.getColumnIndexOrThrow(KEY_NOTE)));
+        item.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow(KEY_DATE))));
+        item.setNotesImage(c.getString(c.getColumnIndexOrThrow(KEY_IMAGE)));
+        item.setNotesImagePreview(c.getString(c.getColumnIndexOrThrow(KEY_IMAGEPREVIEW)));
+
+        return item;
     }
 }

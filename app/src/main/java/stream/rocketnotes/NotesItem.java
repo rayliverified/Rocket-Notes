@@ -11,6 +11,8 @@ public class NotesItem {
     String note = null;
     Long date = null;
     String image = null;
+
+    String imagePreview = null;
     boolean shared = false;
 
     public NotesItem() {
@@ -41,6 +43,8 @@ public class NotesItem {
         this.image = image;
     }
 
+    public void setNotesImagePreview(String imagePreview) { this.imagePreview = imagePreview; }
+
     public boolean getShared() {
         return shared;
     }
@@ -60,6 +64,8 @@ public class NotesItem {
     public String getNotesImage() {
         return this.image;
     }
+
+    public String getNotesImagePreview() { return imagePreview; }
 
     public void setShared(boolean shared) {
         this.shared = shared;
