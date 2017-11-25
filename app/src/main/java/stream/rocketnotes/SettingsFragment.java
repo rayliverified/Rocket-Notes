@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import es.dmoral.toasty.Toasty;
+import stream.crosspromotion.AdActivity;
 import stream.customalert.CustomAlertDialogue;
 import stream.rocketnotes.utils.AnalyticsUtils;
 import stream.rocketnotes.utils.FileUtils;
@@ -44,6 +45,7 @@ public class SettingsFragment extends PreferenceFragment {
     private PreferenceScreen mPreferenceScreen;
     private PreferenceCategory mAppearanceGroup;
     private PreferenceCategory mBackupGroup;
+    private PreferenceCategory mSocialGroup;
     private PreferenceCategory mAboutGroup;
 
     private SwitchPreference showQuickActions;
@@ -51,11 +53,13 @@ public class SettingsFragment extends PreferenceFragment {
     private Preference itemLocalBackup;
     private Preference itemLocalRestore;
 
+    private Preference itemMoreApps;
+    private Preference itemContactUs;
+
     private Preference itemVersion;
     private Preference itemTerms;
     private Preference itemPrivacy;
     private Preference itemThanks;
-    private Preference itemContactUs;
 
     Context mContext;
     private final String mActivity = getClass().getSimpleName();
@@ -72,7 +76,9 @@ public class SettingsFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.settings);
 
         mPreferenceScreen = (PreferenceScreen) findPreference("preferenceScreen");
-        mBackupGroup = (PreferenceCategory) findPreference("header_account");
+        mAppearanceGroup = (PreferenceCategory) findPreference("header_appearance");
+        mBackupGroup = (PreferenceCategory) findPreference("header_backup");
+        mSocialGroup = (PreferenceCategory) findPreference("header_social");
         mAboutGroup = (PreferenceCategory) findPreference("header_about");
 
         showQuickActions = (SwitchPreference) findPreference("show_quickactions");
@@ -80,11 +86,13 @@ public class SettingsFragment extends PreferenceFragment {
         itemLocalBackup = findPreference("settings_local_backup");
         itemLocalRestore = findPreference("settings_local_restore");
 
+        itemMoreApps = findPreference("settings_moreapps");
+        itemContactUs = findPreference("settings_contact_us");
+
         itemVersion = findPreference("settings_version");
         itemTerms = findPreference("settings_terms");
         itemPrivacy = findPreference("settings_privacy");
         itemThanks = findPreference("settings_thanks");
-        itemContactUs = findPreference("settings_contact_us");
 
         showQuickActions.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -168,6 +176,67 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
+        //Social
+        itemContactUs.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            public boolean onPreferenceClick(Preference arg0) {
+
+                ArrayList<String> boxHint = new ArrayList<>();
+                boxHint.add("Message");
+
+                CustomAlertDialogue.Builder alert = new CustomAlertDialogue.Builder(getActivity())
+                        .setStyle(CustomAlertDialogue.Style.INPUT)
+                        .setTitle(getString(R.string.settings_contact))
+                        .setMessage("Send us your feedback!")
+                        .setPositiveText("Submit")
+                        .setPositiveColor(R.color.positive)
+                        .setPositiveTypeface(Typeface.DEFAULT_BOLD)
+                        .setOnInputClicked(new CustomAlertDialogue.OnInputClicked() {
+                            @Override
+                            public void OnClick(View view, Dialog dialog, ArrayList<String> inputList) {
+                                Intent intent = new Intent(Intent.ACTION_SEND);
+                                intent.setType("message/rfc822");
+                                intent.setType("vnd.android.cursor.item/email");
+                                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{mContext.getString(R.string.email_mailto)});
+                                intent.putExtra(Intent.EXTRA_SUBJECT, mContext.getString(R.string.email_subject));
+                                intent.putExtra(Intent.EXTRA_TEXT, mContext.getString(R.string.email_message) + inputList.get(0));
+                                try {
+                                    Toasty.normal(mContext, "Send via email", Toast.LENGTH_SHORT).show();
+                                    mContext.startActivity(Intent.createChooser(intent, "Send email using..."));
+                                } catch (android.content.ActivityNotFoundException ex) {
+                                    Toasty.normal(mContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .setNegativeText("Close")
+                        .setNegativeColor(R.color.negative)
+                        .setOnNegativeClicked(new CustomAlertDialogue.OnNegativeClicked() {
+                            @Override
+                            public void OnClick(View view, Dialog dialog) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setBoxInputHint(boxHint)
+                        .build();
+                alert.show();
+
+                return true;
+            }
+        });
+        itemMoreApps.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            public boolean onPreferenceClick(Preference arg0) {
+
+                Intent intent = new Intent(mContext, stream.crosspromotion.AdActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(AdActivity.AD_DEVELOPER_ID, getString(R.string.developer_id));
+                intent.putExtra(AdActivity.AD_TITLE, "More Apps from Stream Inc");
+                mContext.startActivity(intent);
+
+                return true;
+            }
+        });
+
         //About
         Preference pref = findPreference("settings_version");
         pref.setTitle(getString(R.string.app_name) + " " + getString(R.string.app_version));
@@ -224,52 +293,6 @@ public class SettingsFragment extends PreferenceFragment {
                 intent.putExtra(Constants.TITLE, getText(R.string.settings_thanks));
                 intent.putExtra(Constants.URL, getString(R.string.url_thanks));
                 startActivity(intent);
-
-                return true;
-            }
-        });
-        itemContactUs.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-
-            public boolean onPreferenceClick(Preference arg0) {
-
-                ArrayList<String> boxHint = new ArrayList<>();
-                boxHint.add("Message");
-
-                CustomAlertDialogue.Builder alert = new CustomAlertDialogue.Builder(getActivity())
-                        .setStyle(CustomAlertDialogue.Style.INPUT)
-                        .setTitle(getString(R.string.settings_contact))
-                        .setMessage("Send us your feedback!")
-                        .setPositiveText("Submit")
-                        .setPositiveColor(R.color.positive)
-                        .setPositiveTypeface(Typeface.DEFAULT_BOLD)
-                        .setOnInputClicked(new CustomAlertDialogue.OnInputClicked() {
-                            @Override
-                            public void OnClick(View view, Dialog dialog, ArrayList<String> inputList) {
-                                Intent intent = new Intent(Intent.ACTION_SEND);
-                                intent.setType("message/rfc822");
-                                intent.setType("vnd.android.cursor.item/email");
-                                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{mContext.getString(R.string.email_mailto)});
-                                intent.putExtra(Intent.EXTRA_SUBJECT, mContext.getString(R.string.email_subject));
-                                intent.putExtra(Intent.EXTRA_TEXT, mContext.getString(R.string.email_message) + inputList.get(0));
-                                try {
-                                    Toasty.normal(mContext, "Send via email", Toast.LENGTH_SHORT).show();
-                                    mContext.startActivity(Intent.createChooser(intent, "Send email using..."));
-                                } catch (android.content.ActivityNotFoundException ex) {
-                                    Toasty.normal(mContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        })
-                        .setNegativeText("Close")
-                        .setNegativeColor(R.color.negative)
-                        .setOnNegativeClicked(new CustomAlertDialogue.OnNegativeClicked() {
-                            @Override
-                            public void OnClick(View view, Dialog dialog) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .setBoxInputHint(boxHint)
-                        .build();
-                alert.show();
 
                 return true;
             }

@@ -30,6 +30,21 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="header_social"
+        android:title="Social">
+
+        <Preference
+            android:key="settings_moreapps"
+            android:title="More Apps"
+            android:summary="Other great apps from Stream!"/>
+
+        <Preference
+            android:key="settings_contact_us"
+            android:title="Contact Us"
+            android:summary="Send us your feedback!"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="header_about"
         android:title="About">
 
@@ -48,10 +63,5 @@
         <Preference
             android:key="settings_thanks"
             android:title="Acknowledgements"/>
-
-        <Preference
-            android:key="settings_contact_us"
-            android:title="Contact Us"
-            android:summary="Send us your feedback!"/>
     </PreferenceCategory>
 </PreferenceScreen>
