@@ -43,8 +43,14 @@ public class DeleteNoteService extends Service {
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
                 }
-            } else {
-
+            }
+            if (note.getNotesImagePreview() != null) {
+                try {
+                    File imageFile = new File(new URI(note.getNotesImagePreview()));
+                    imageFile.delete();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
             }
             dbHelper.DeleteNote(noteID);
             Log.d("Deleted Note", String.valueOf(noteID));

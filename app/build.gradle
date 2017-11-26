@@ -7,8 +7,8 @@ android {
         applicationId "stream.rocketnotes"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 11
-        versionName "1.1.0"
+        versionCode 12
+        versionName "1.2.0"
     }
     buildTypes {
         release {
@@ -63,6 +63,7 @@ dependencies {
     implementation 'com.github.zcweng:switch-button:0.0.3' //https://github.com/zcweng/SwitchButton
     implementation 'org.zeroturnaround:zt-zip:1.12' //https://github.com/zeroturnaround/zt-zip
     implementation 'com.github.Kennyc1012:BottomSheet:2.3.4' //https://github.com/Kennyc1012/BottomSheet
+    compile 'com.zxy.android:tiny:0.1.0' //https://github.com/Sunzxyong/Tiny
     implementation 'com.flurry.android:analytics:8.0.1'
     implementation 'com.pyze:PyzeLibrary:3.0.0'
     //Custom filter chips from https://github.com/claudiodegio/MsvSearch

@@ -56,7 +56,15 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             bmOptions.inJustDecodeBounds = false;
             bmOptions.inSampleSize = 8;
             bmOptions.inPurgeable = false;
-            String imageURI = mNotesItems.get(position).getNotesImage();
+            String imageURI;
+            if (mNotesItems.get(position).getNotesImagePreview() != null)
+            {
+                imageURI = mNotesItems.get(position).getNotesImagePreview();
+            }
+            else
+            {
+                imageURI = mNotesItems.get(position).getNotesImage();
+            }
             Log.d("ImagePath", imageURI);
             File imageFile = null;
             String imagePath = "";

@@ -22,7 +22,7 @@ public class ResultActivity extends MainActivity {
             Calendar calendar = Calendar.getInstance();
             Long currentTime = calendar.getTimeInMillis();
             DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-            dbHelper.AddNewNote(newNote, currentTime, null);
+            dbHelper.AddNewNote(newNote, currentTime, null, null);
             int widgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), NotesWidget.class));
 
             for (int id : widgetIDs) {

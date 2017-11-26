@@ -74,4 +74,41 @@ public class FileUtils {
         inStream.close();
         outStream.close();
     }
+
+
+    /**
+     * @param path File path.
+     * @return Filename.
+     */
+    public static String GetFileNameFromPath(String path) {
+        if (path != null) {
+            return path.substring(path.lastIndexOf("/") + 1);
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * @param fileName Filename with extension.
+     * @return Filename without extension.
+     */
+    public static String GetFileNameNoExtension(String fileName) {
+        if (fileName.contains(".")) {
+            return fileName.substring(0, fileName.lastIndexOf("."));
+        } else {
+            return fileName;
+        }
+    }
+
+    public static String GetFileName(String filename) {
+        try {
+            int cut = filename.lastIndexOf('/');
+            if (cut != -1) {
+                filename = filename.substring(cut + 1);
+            }
+        } catch (Exception e) {
+            Log.d("GetFileNameFromUri", e.getMessage());
+        }
+        return filename;
+    }
 }

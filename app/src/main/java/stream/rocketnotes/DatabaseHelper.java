@@ -72,6 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         values.put(KEY_NOTE, note.getNotesNote());
         values.put(KEY_DATE, note.getNotesDate());
         values.put(KEY_IMAGE, note.getNotesImage());
+        values.put(KEY_IMAGEPREVIEW, note.getNotesImagePreview());
 
         long id = db.insert(TABLE_NOTES, null, values);
         Log.d("Database Saved ID", String.valueOf(id));
@@ -80,11 +81,12 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     }
 
     //Add a note to database and return the added note object.
-    public NotesItem AddNewNote(String note, Long date, String image) {
+    public NotesItem AddNewNote(String note, Long date, String image, String imagePreview) {
         NotesItem notesItem = new NotesItem();
         notesItem.setNotesNote(note);
         notesItem.setNotesDate(date);
         notesItem.setNotesImage(image);
+        notesItem.setNotesImagePreview(imagePreview);
         notesItem.setNotesID((int) AddNote(notesItem));
 
         return notesItem;

@@ -570,7 +570,14 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 list.add(new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote()));
             } else if (note.getNotesImage() != null) {
                 mImageCount += 1;
-                list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
+                if (note.getNotesImagePreview() != null)
+                {
+                    list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImagePreview()));
+                }
+                else
+                {
+                    list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
+                }
             }
         }
         //Display prompt for review if user has created 3 or more notes and not hidden widget.
