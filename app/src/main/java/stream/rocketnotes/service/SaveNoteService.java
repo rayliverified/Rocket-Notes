@@ -47,9 +47,9 @@ public class SaveNoteService extends Service {
             Bundle extras = intent.getExtras();
             body = extras.getString(Constants.BODY);
             image = extras.getString(Constants.IMAGE);
-            Uri imageUri = Uri.parse(image);
             if (image != null)
             {
+                Uri imageUri = Uri.parse(image);
                 String imageName = FileUtils.GetFileName(image);
                 imageName = FileUtils.GetFileNameNoExtension(imageName) + "_Compressed.jpg";
                 Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
