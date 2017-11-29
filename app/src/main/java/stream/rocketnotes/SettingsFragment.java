@@ -230,7 +230,7 @@ public class SettingsFragment extends PreferenceFragment {
                 Intent intent = new Intent(mContext, stream.crosspromotion.AdActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(AdActivity.AD_DEVELOPER_ID, getString(R.string.developer_id));
-                intent.putExtra(AdActivity.AD_TITLE, "More Apps from Stream Inc");
+                intent.putExtra(AdActivity.AD_TITLE, "More Apps from Stream");
                 mContext.startActivity(intent);
 
                 return true;
