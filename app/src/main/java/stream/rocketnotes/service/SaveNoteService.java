@@ -53,14 +53,14 @@ public class SaveNoteService extends Service {
                 String imageName = FileUtils.GetFileName(image);
                 imageName = FileUtils.GetFileNameNoExtension(imageName) + "_Compressed.jpg";
                 Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
-                options.size = 200;
+                options.size = 200000;
                 options.isKeepSampling = false;
                 options.overrideSource = false;
                 options.outfile = getFilesDir() + "/.Pictures/" + imageName;
                 Log.d("Outfile", getFilesDir() + "/.Pictures/" + imageName);
                 File file = new File(imageUri.getPath());
                 Log.d("File Size", String.valueOf(file.length()));
-                if (file.length() > 500000)
+                if (file.length() > 400000)
                 {
                     Tiny.getInstance().source(imageUri.getPath()).asFile().withOptions(options).compress(new FileCallback() {
                         @Override

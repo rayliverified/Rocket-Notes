@@ -5,9 +5,21 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.zxy.tiny.Tiny;
+import com.zxy.tiny.callback.FileCallback;
+
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Calendar;
+
+import es.dmoral.toasty.Toasty;
+import stream.rocketnotes.utils.FileUtils;
 
 public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
@@ -252,5 +264,76 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         item.setNotesImagePreview(c.getString(c.getColumnIndexOrThrow(KEY_IMAGEPREVIEW)));
 
         return item;
+    }
+
+    public void DeleteImagePreview()
+    {
+        String selectQuery = "SELECT " + KEY_IMAGE + ", " + KEY_IMAGEPREVIEW + " FROM " + TABLE_NOTES + " WHERE " + KEY_IMAGEPREVIEW + " NOT NULL";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c.moveToFirst()) {
+            do {
+                try {
+                    String imagePreview = c.getString(c.getColumnIndexOrThrow(KEY_IMAGEPREVIEW));
+                    Log.d("Image Preview", imagePreview);
+                    File imageFile = new File(new URI(imagePreview));
+                    imageFile.delete();
+                    UpdateImagePreview(c.getString(c.getColumnIndexOrThrow(KEY_IMAGE)), null);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            } while (c.moveToNext());
+        }
+        c.close();
+    }
+
+    public void CreateImagePreview(Context context) {
+        String selectQuery = "SELECT " + KEY_IMAGE + " FROM " + TABLE_NOTES + " WHERE " + KEY_IMAGE + " NOT NULL";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c.moveToFirst()) {
+            do {
+                Log.d("Image", c.getString(c.getColumnIndexOrThrow(KEY_IMAGE)));
+                final String image = c.getString(c.getColumnIndexOrThrow(KEY_IMAGE));
+                Uri imageUri = Uri.parse(image);
+                String imageName = FileUtils.GetFileName(image);
+                imageName = FileUtils.GetFileNameNoExtension(imageName) + "_Compressed.jpg";
+                Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
+                options.size = 200000;
+                options.isKeepSampling = false;
+                options.overrideSource = false;
+                options.outfile = context.getFilesDir() + "/.Pictures/" + imageName;
+                Log.d("Outfile", context.getFilesDir() + "/.Pictures/" + imageName);
+                File file = new File(imageUri.getPath());
+                Log.d("File Size", String.valueOf(file.length()));
+                if (file.length() > 400000) {
+                    Tiny.getInstance().source(imageUri.getPath()).asFile().withOptions(options).compress(new FileCallback() {
+                        @Override
+                        public void callback(boolean isSuccess, String outfile, Throwable t) {
+                            //Return the compressed file path
+                            if (isSuccess) {
+                                Log.d("Compressed Path", outfile);
+                                UpdateImagePreview(image, "file://" + outfile);
+                            }
+                        }
+                    });
+                }
+            }
+            while (c.moveToNext());
+        }
+        c.close();
+    }
+
+    public void UpdateImagePreview(String image, String imagepreview)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_IMAGEPREVIEW, imagepreview);
+        db.update(TABLE_NOTES, values, KEY_IMAGE + "=?", new String[]{image});
     }
 }

@@ -1,6 +1,7 @@
 package stream.rocketnotes;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
@@ -42,6 +44,8 @@ import stream.rocketnotes.utils.FileUtils;
 
 public class SettingsFragment extends PreferenceFragment {
 
+    private ProgressDialog pDialog;
+
     private PreferenceScreen mPreferenceScreen;
     private PreferenceCategory mAppearanceGroup;
     private PreferenceCategory mBackupGroup;
@@ -52,6 +56,7 @@ public class SettingsFragment extends PreferenceFragment {
 
     private Preference itemLocalBackup;
     private Preference itemLocalRestore;
+    private Preference itemCacheImage;
 
     private Preference itemMoreApps;
     private Preference itemContactUs;
@@ -61,6 +66,8 @@ public class SettingsFragment extends PreferenceFragment {
     private Preference itemPrivacy;
     private Preference itemThanks;
 
+    DatabaseHelper dbHelper;
+
     Context mContext;
     private final String mActivity = getClass().getSimpleName();
 
@@ -69,6 +76,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         super.onCreate(savedInstanceState);
         mContext = getActivity().getApplicationContext();
+        dbHelper = new DatabaseHelper(mContext);
 
         setRetainInstance(true);
 
@@ -85,6 +93,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         itemLocalBackup = findPreference("settings_local_backup");
         itemLocalRestore = findPreference("settings_local_restore");
+        itemCacheImage = findPreference("settings_cache_image");
 
         itemMoreApps = findPreference("settings_moreapps");
         itemContactUs = findPreference("settings_contact_us");
@@ -107,6 +116,8 @@ public class SettingsFragment extends PreferenceFragment {
         itemLocalBackup.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference arg0) {
+
+//                showpDialog();
 
                 AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Backup Database");
                 DialogProperties properties = new DialogProperties();
@@ -171,6 +182,28 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                 });
                 dialog.show();
+
+                return false;
+            }
+        });
+        itemCacheImage.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            public boolean onPreferenceClick(Preference arg0) {
+
+                AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Refresh Cache");
+                showpDialog(getString(R.string.loading_cache));
+                Handler handler = new Handler();
+                Runnable r1 = new Runnable() {
+                    public void run() {
+                        dbHelper.DeleteImagePreview();
+                        dbHelper.CreateImagePreview(mContext);
+                        RefreshMainActivity();
+                        hidepDialog();
+                        Toasty.success(mContext, "Cache Rebuilt", Toast.LENGTH_SHORT).show();
+                    }
+
+                };
+                handler.postDelayed(r1, 100);
 
                 return false;
             }
@@ -297,59 +330,98 @@ public class SettingsFragment extends PreferenceFragment {
                 return true;
             }
         });
+
+        initpDialog();
     }
 
-    public void BackupDatabase(String savePath) {
-        try {
-            //Make sure Pictures folder exists. User could have no picture notes.
-            FileUtils.InitializePicturesFolder(mContext);
+    protected void initpDialog() {
 
-            //Copy notes database to Pictures folder.
-            final String inFileName = mContext.getDatabasePath("NotesDB").getPath();
-            File dbFile = new File(inFileName);
-            FileInputStream fis = new FileInputStream(dbFile);
-            String outFileName = mContext.getFilesDir() + "/" + ".Pictures/" + "NotesDB.db";
-            // Open the empty db as the output stream
-            OutputStream output = new FileOutputStream(outFileName);
-            // Transfer bytes from the inputfile to the outputfile
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = fis.read(buffer)) > 0) {
-                output.write(buffer, 0, length);
+        pDialog = new ProgressDialog(getActivity());
+        pDialog.setMessage(getString(R.string.loading));
+        pDialog.setCancelable(false);
+    }
+
+    protected void showpDialog(String message) {
+
+        pDialog.setMessage(message);
+        if (!pDialog.isShowing()) pDialog.show();
+    }
+
+    protected void hidepDialog() {
+
+        if (pDialog.isShowing()) pDialog.dismiss();
+    }
+
+    public void BackupDatabase(final String savePath) {
+
+        showpDialog(getString(R.string.loading_backup_database));
+        Handler handler = new Handler();
+        Runnable r1 = new Runnable() {
+            public void run() {
+                try {
+                    //Make sure Pictures folder exists. User could have no picture notes.
+                    FileUtils.InitializePicturesFolder(mContext);
+
+                    //Copy notes database to Pictures folder.
+                    final String inFileName = mContext.getDatabasePath("NotesDB").getPath();
+                    File dbFile = new File(inFileName);
+                    FileInputStream fis = new FileInputStream(dbFile);
+                    String outFileName = mContext.getFilesDir() + "/" + ".Pictures/" + "NotesDB.db";
+                    // Open the empty db as the output stream
+                    OutputStream output = new FileOutputStream(outFileName);
+                    // Transfer bytes from the inputfile to the outputfile
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = fis.read(buffer)) > 0) {
+                        output.write(buffer, 0, length);
+                    }
+                    // Close the streams
+                    output.flush();
+                    output.close();
+                    fis.close();
+
+                    //Zip Pictures folder and save to user specified location.
+                    File storageDir = new File(mContext.getFilesDir(), ".Pictures");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                    String currentDate = sdf.format(new Date());
+                    String saveFilePath = savePath + "/" + "RocketNotes_" + currentDate + ".zip";
+                    ZipUtil.pack(storageDir, new File(saveFilePath));
+
+                    Toasty.success(mContext, "Backup Successful", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toasty.error(mContext, "Backup Failed", Toast.LENGTH_SHORT).show();
+                }
+                hidepDialog();
             }
-            // Close the streams
-            output.flush();
-            output.close();
-            fis.close();
-
-            //Zip Pictures folder and save to user specified location.
-            File storageDir = new File(mContext.getFilesDir(), ".Pictures");
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            String currentDate = sdf.format(new Date());
-            String saveFilePath = savePath + "/" + "RocketNotes_" + currentDate + ".zip";
-            ZipUtil.pack(storageDir, new File(saveFilePath));
-
-            Toasty.success(mContext, "Backup Successful", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toasty.error(mContext, "Backup Failed", Toast.LENGTH_SHORT).show();
-        }
+        };
+        handler.postDelayed(r1, 100);
     }
 
-    public void RestoreDatabase(String restorePath) {
-        //Make sure Pictures folder exists. User could have no picture notes.
-        FileUtils.InitializePicturesFolder(mContext);
-        //Restoring backup requires NotesDB. If no NotesDB found, backup file is not valid.
-        boolean validBackup = ZipUtil.containsEntry(new File(restorePath), "NotesDB.db");
-        if (validBackup) {
-            ZipUtil.unpackEntry(new File(restorePath), "NotesDB.db", new File(mContext.getDatabasePath("NotesDB").getPath()));
-            ZipUtil.unpack(new File(restorePath), new File(mContext.getFilesDir(), ".Pictures"));
-            File file = new File(mContext.getFilesDir(), ".Pictures/NotesDB.db");
-            file.delete();
-            Toasty.success(mContext, "Backup Restored", Toast.LENGTH_SHORT).show();
-        } else {
-            Toasty.error(mContext, "Invalid Backup File", Toast.LENGTH_SHORT).show();
-        }
+    public void RestoreDatabase(final String restorePath) {
+
+        showpDialog(getString(R.string.loading_restore_database));
+        Handler handler = new Handler();
+        Runnable r1 = new Runnable() {
+            public void run() {
+                //Make sure Pictures folder exists. User could have no picture notes.
+                FileUtils.InitializePicturesFolder(mContext);
+                //Restoring backup requires NotesDB. If no NotesDB found, backup file is not valid.
+                boolean validBackup = ZipUtil.containsEntry(new File(restorePath), "NotesDB.db");
+                if (validBackup) {
+                    ZipUtil.unpackEntry(new File(restorePath), "NotesDB.db", new File(mContext.getDatabasePath("NotesDB").getPath()));
+                    ZipUtil.unpack(new File(restorePath), new File(mContext.getFilesDir(), ".Pictures"));
+                    File file = new File(mContext.getFilesDir(), ".Pictures/NotesDB.db");
+                    file.delete();
+                    Toasty.success(mContext, "Backup Restored", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toasty.error(mContext, "Invalid Backup File", Toast.LENGTH_SHORT).show();
+                }
+                hidepDialog();
+            }
+
+        };
+        handler.postDelayed(r1, 100);
     }
 
     public void RefreshMainActivity() {

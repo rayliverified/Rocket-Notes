@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">Rocket Notes</string>
-    <string name="app_version">v1.1.0</string>
+    <string name="app_version">v1.2.2</string>
     <string name="app_package">stream.rocketnotes</string>
 
     <!-- Settings Page -->
+    <string name="loading">Loading&#8230;</string>
+    <string name="loading_backup_database">Backing up notes&#8230;</string>
+    <string name="loading_restore_database">Restoring notes&#8230;</string>
+    <string name="loading_cache">Refreshing cache&#8230;</string>
     <string name="settings_tos">Terms of Service</string>
     <string name="settings_privacy">Privacy Policy</string>
     <string name="settings_thanks">Acknowledgements</string>
