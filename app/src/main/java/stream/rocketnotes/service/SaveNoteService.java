@@ -90,6 +90,7 @@ public class SaveNoteService extends Service {
                     DatabaseHelper dbHelper = new DatabaseHelper(mContext);
                     NotesItem savedNote = dbHelper.AddNewNote(body, currentTime, image, null);
                     NotificationSender(savedNote);
+                    UpdateImageWidget();
                 }
             }
             else
