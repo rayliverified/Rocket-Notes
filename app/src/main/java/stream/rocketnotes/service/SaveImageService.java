@@ -26,6 +26,7 @@ import java.net.URLDecoder;
 import es.dmoral.toasty.Toasty;
 import stream.rocketnotes.Constants;
 import stream.rocketnotes.R;
+import stream.rocketnotes.utils.FileUtils;
 
 public class SaveImageService extends Service {
 
@@ -95,7 +96,7 @@ public class SaveImageService extends Service {
             }
 
             //Save file in Pictures folder.
-            String outputfile = getFilesDir() + "/.Pictures/" + sourceName;
+            String outputfile = getFilesDir() + "/.Pictures/" + sourceName + FileUtils.getExtension(sourcePath);
             Log.d("OutputFile", outputfile);
             File f = new File(outputfile);
             if (!f.exists()) {
@@ -115,6 +116,8 @@ public class SaveImageService extends Service {
                     return outputfile;
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Message message = mHandler.obtainMessage(0, "Save Error");
+                    message.sendToTarget();
                 }
             } else {
                 Log.d("Save File", "File Exists");

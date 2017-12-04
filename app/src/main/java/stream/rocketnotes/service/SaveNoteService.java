@@ -56,28 +56,41 @@ public class SaveNoteService extends Service {
                 options.size = 200;
                 options.isKeepSampling = false;
                 options.overrideSource = false;
-                options.outfile = getFilesDir() + imageName;
-                Log.d("Outfile", imageName);
-                Tiny.getInstance().source(imageUri.getPath()).asFile().withOptions(options).compress(new FileCallback() {
-                    @Override
-                    public void callback(boolean isSuccess, String outfile, Throwable t) {
-                        //Return the compressed file path
-                        if (isSuccess)
-                        {
-                            Log.d("Compressed Path", outfile);
-                            Calendar calendar = Calendar.getInstance();
-                            Long currentTime = calendar.getTimeInMillis();
-                            DatabaseHelper dbHelper = new DatabaseHelper(mContext);
-                            NotesItem savedNote = dbHelper.AddNewNote(body, currentTime, image, "file://" + outfile);
-                            NotificationSender(savedNote);
-                            UpdateImageWidget();
+                options.outfile = getFilesDir() + "/.Pictures/" + imageName;
+                Log.d("Outfile", getFilesDir() + "/.Pictures/" + imageName);
+                File file = new File(imageUri.getPath());
+                Log.d("File Size", String.valueOf(file.length()));
+                if (file.length() > 500000)
+                {
+                    Tiny.getInstance().source(imageUri.getPath()).asFile().withOptions(options).compress(new FileCallback() {
+                        @Override
+                        public void callback(boolean isSuccess, String outfile, Throwable t) {
+                            //Return the compressed file path
+                            if (isSuccess)
+                            {
+                                Log.d("Compressed Path", outfile);
+                                Calendar calendar = Calendar.getInstance();
+                                Long currentTime = calendar.getTimeInMillis();
+                                DatabaseHelper dbHelper = new DatabaseHelper(mContext);
+                                NotesItem savedNote = dbHelper.AddNewNote(body, currentTime, image, "file://" + outfile);
+                                NotificationSender(savedNote);
+                                UpdateImageWidget();
+                            }
+                            else
+                            {
+                                Toasty.error(mContext, "Error", Toast.LENGTH_SHORT, false).show();
+                            }
                         }
-                        else
-                        {
-                            Log.d("Error", t.toString());
-                        }
-                    }
-                });
+                    });
+                }
+                else
+                {
+                    Calendar calendar = Calendar.getInstance();
+                    Long currentTime = calendar.getTimeInMillis();
+                    DatabaseHelper dbHelper = new DatabaseHelper(mContext);
+                    NotesItem savedNote = dbHelper.AddNewNote(body, currentTime, image, null);
+                    NotificationSender(savedNote);
+                }
             }
             else
             {

@@ -35,7 +35,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.github.searchy2:CustomPermissionsDialogue:1.3'
     implementation 'com.github.searchy2:CustomAlertViewDialogue:1.8.1'
-    implementation 'com.github.searchy2:AndroidCrossPromotion:1.3.1'
+    implementation 'com.github.searchy2:AndroidCrossPromotion:1.3.3'
 
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:support-v4:26.1.0'
@@ -63,8 +63,8 @@ dependencies {
     implementation 'com.github.zcweng:switch-button:0.0.3' //https://github.com/zcweng/SwitchButton
     implementation 'org.zeroturnaround:zt-zip:1.12' //https://github.com/zeroturnaround/zt-zip
     implementation 'com.github.Kennyc1012:BottomSheet:2.3.4' //https://github.com/Kennyc1012/BottomSheet
-    compile 'com.zxy.android:tiny:0.1.0' //https://github.com/Sunzxyong/Tiny
-    implementation 'com.flurry.android:analytics:8.0.1'
+    implementation 'com.zxy.android:tiny:0.1.0' //https://github.com/Sunzxyong/Tiny
+    implementation 'com.flurry.android:analytics:8.1.0'
     implementation 'com.pyze:PyzeLibrary:3.0.0'
     //Custom filter chips from https://github.com/claudiodegio/MsvSearch
     //Image viewer from https://github.com/stfalcon-studio/FrescoImageViewer

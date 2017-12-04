@@ -382,13 +382,8 @@ public class ShareActivity extends Activity {
 
     private void setImageName() {
         //Use editText to display image name.
-        try {
-            //Get File Name from URI and encode into readable format
-            imageName = URLDecoder.decode(String.valueOf(imageUri), "UTF-8");
-            imageName = imageName.substring(imageName.lastIndexOf("/") + 1);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        //Get File Name from URI and encode into readable format
+        imageName = FileUtils.GetFileNameFromUri(mContext, imageUri);
         if (imageName != null) {
             editText.setText(imageName);
             editText.setEnabled(false);

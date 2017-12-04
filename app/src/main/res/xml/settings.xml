@@ -27,6 +27,11 @@
             android:key="settings_local_restore"
             android:title="Restore Notes"
             android:summary="Restore notes from backup file"/>
+
+        <Preference
+            android:key="settings_cache_image"
+            android:title="Refresh Image Cache"
+            android:summary="Delete and then regenerate image thumbnails"/>
     </PreferenceCategory>
 
     <PreferenceCategory

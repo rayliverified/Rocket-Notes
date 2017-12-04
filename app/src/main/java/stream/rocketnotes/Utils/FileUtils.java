@@ -1,9 +1,12 @@
 package stream.rocketnotes.utils;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.OpenableColumns;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -110,5 +113,78 @@ public class FileUtils {
             Log.d("GetFileNameFromUri", e.getMessage());
         }
         return filename;
+    }
+
+    /**
+     * Returns the content type by reading Content Resolver for content:// URIs.
+     * Otherwise, uses MimeTypeMap getSingleton to obtain MimeType from extension.
+     */
+    public static String GetMimeTypeFromUri(Context context, Uri uri)
+    {
+        Log.d("URI Scheme", uri.getScheme());
+        String extension;
+        //Check uri format to avoid null
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            //If scheme is a content
+            extension = context.getContentResolver().getType(uri);
+        } else {
+            String fileExtension = getExtension(uri.toString());
+            Log.d("File Extension", fileExtension);
+            if (fileExtension.length() > 0)
+                extension = android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension.substring(1));
+            else
+                extension = null;
+        }
+        return extension;
+    }
+
+    /**
+     * Gets the extension of a file name, like ".png" or ".jpg".
+     *
+     * @param uri
+     * @return Extension including the dot("."); "" if there is no extension;
+     *         null if uri was null.
+     */
+    public static String getExtension(String uri) {
+        if (uri == null) {
+            return null;
+        }
+
+        int dot = uri.lastIndexOf(".");
+        if (dot >= 0) {
+            return uri.substring(dot);
+        } else {
+            // No extension.
+            return "";
+        }
+    }
+
+    public static String GetFileNameFromUri(Context context, Uri imageUri)
+    {
+        String result = null;
+        try {
+            if (imageUri.getScheme().equals("content")) {
+                Cursor cursor = context.getContentResolver().query(imageUri, null, null, null, null);
+                try {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    }
+                } finally {
+                    cursor.close();
+                }
+            }
+            if (result == null) {
+                result = imageUri.getPath();
+                int cut = result.lastIndexOf('/');
+                if (cut != -1) {
+                    result = result.substring(cut + 1);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Log.d("GetFileNameFromUri", e.getMessage());
+        }
+        return result;
     }
 }

@@ -369,7 +369,14 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         ArrayList<NotesItem> notesItems = dbHelper.GetImageNotes();
         Log.d("NotesItem Size", String.valueOf(notesItems.size()));
         for (NotesItem note : notesItems) {
-            list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
+            if (note.getNotesImagePreview() != null)
+            {
+                list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImagePreview()));
+            }
+            else
+            {
+                list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
+            }
         }
         mAdapter.updateDataSet(list);
         RemoveSticky();
