@@ -142,12 +142,10 @@ public class PopupActivity extends Activity {
                     Log.d("Note Title", noteText[0]);
                 }
 
-                public void beforeTextChanged(CharSequence s, int start,
-                                              int count, int after) {
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 }
 
-                public void onTextChanged(CharSequence s, int start,
-                                          int before, int count) {
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if (s.length() >= 1) {
                         float scale = getResources().getDisplayMetrics().density;
                         int dpAsPixels = (int) (12 * scale + 0.5f);

@@ -1,5 +1,6 @@
 package stream.rocketnotes;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -7,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,6 +29,7 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.helpers.AnimatorHelper;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 import stream.customalert.CustomAlertDialogue;
@@ -229,6 +233,21 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
             body = view.findViewById(R.id.item_widgetreview_body);
             rateYesText = view.findViewById(R.id.smiley_yes_text);
             switchButton = view.findViewById(R.id.hide_switch);
+        }
+
+        @Override
+        public void scrollAnimators(@NonNull List<Animator> animators, int position, boolean isForward) {
+            if (mAdapter.getRecyclerView().getLayoutManager() instanceof GridLayoutManager) {
+                if (position % 2 != 0)
+                    AnimatorHelper.slideInFromRightAnimator(animators, itemView, mAdapter.getRecyclerView(), 0.5f);
+                else
+                    AnimatorHelper.slideInFromLeftAnimator(animators, itemView, mAdapter.getRecyclerView(), 0.5f);
+            } else {
+                if (isForward)
+                    AnimatorHelper.slideInFromBottomAnimator(animators, itemView, mAdapter.getRecyclerView());
+                else
+                    AnimatorHelper.slideInFromTopAnimator(animators, itemView, mAdapter.getRecyclerView());
+            }
         }
     }
 

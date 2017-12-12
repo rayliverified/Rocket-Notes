@@ -1,7 +1,10 @@
 package stream.rocketnotes;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -10,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.helpers.AnimatorHelper;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
@@ -98,6 +102,21 @@ public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholde
         public ImageViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
             noteImage = view.findViewById(R.id.item_image);
+        }
+
+        @Override
+        public void scrollAnimators(@NonNull List<Animator> animators, int position, boolean isForward) {
+            if (mAdapter.getRecyclerView().getLayoutManager() instanceof GridLayoutManager) {
+                if (position % 2 != 0)
+                    AnimatorHelper.slideInFromRightAnimator(animators, itemView, mAdapter.getRecyclerView(), 0.5f);
+                else
+                    AnimatorHelper.slideInFromLeftAnimator(animators, itemView, mAdapter.getRecyclerView(), 0.5f);
+            } else {
+                if (isForward)
+                    AnimatorHelper.slideInFromBottomAnimator(animators, itemView, mAdapter.getRecyclerView());
+                else
+                    AnimatorHelper.slideInFromTopAnimator(animators, itemView, mAdapter.getRecyclerView());
+            }
         }
     }
 }

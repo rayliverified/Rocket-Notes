@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.design.internal.NavigationMenu;
@@ -20,6 +21,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.common.FlexibleItemAnimator;
 import eu.davidea.flexibleadapter.common.SmoothScrollStaggeredLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
@@ -50,6 +53,7 @@ import stream.custompermissionsdialogue.PermissionsDialogue;
 import stream.custompermissionsdialogue.utils.PermissionUtils;
 import stream.rocketnotes.filter.FilterMaterialSearchView;
 import stream.rocketnotes.filter.model.Filter;
+import stream.rocketnotes.ui.LandingItemAnimator;
 import stream.rocketnotes.utils.AnalyticsUtils;
 
 public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
@@ -98,18 +102,19 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         dbHelper = new DatabaseHelper(mContext);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         //Checks for first launch
-        if (sharedPref.getBoolean("prefs_first_start", true)) {
-
-            //Start sequence finished
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean("prefs_tutorial_intro", false);
-            editor.apply();
-        }
+//        if (sharedPref.getBoolean("prefs_first_start", true)) {
+//
+//            //Start sequence finished
+//            SharedPreferences.Editor editor = sharedPref.edit();
+//            editor.putBoolean("prefs_tutorial_intro", false);
+//            editor.apply();
+//        }
 
         mAppBar = findViewById(R.id.app_bar);
         mAppBar.addOnOffsetChangedListener(this);
 
-        InitializeRecyclerView(savedInstanceState);
+        InitializeRecyclerView();
+
 //        checkVoiceRecognition();
         mFilterView = findViewById(R.id.sv);
         SetupSearchBar();
@@ -135,17 +140,23 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         super.onSaveInstanceState(outState);
     }
 
-    private void InitializeRecyclerView(Bundle savedInstanceState) {
+    private void InitializeRecyclerView() {
 
         // Optional but strongly recommended: Compose the initial list
         List<IFlexible> myItems = getDatabaseList();
 
         // Initialize the Adapter
         mAdapter = new FlexibleAdapter<>(myItems);
+        mAdapter.setAnimationOnScrolling(true)
+                .setAnimationEntryStep(true)
+                .setAnimationOnReverseScrolling(true)
+                .setAnimationInterpolator(new DecelerateInterpolator())
+                .setAnimationDuration(300L);
         mStaggeredLayoutManager = createNewStaggeredGridLayoutManager();
 
         // Prepare the RecyclerView and attach the Adapter to it
         mRecyclerView = findViewById(R.id.recycler_view);
+        mRecyclerView.setItemViewCacheSize(0); //Setting ViewCache to 0 (default=2) will animate items better while scrolling down+up with LinearLayout
         mRecyclerView.setLayoutManager(mStaggeredLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }

@@ -1,10 +1,12 @@
 package stream.rocketnotes;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -23,6 +25,7 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.helpers.AnimatorHelper;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.viewholders.FlexibleViewHolder;
@@ -41,6 +44,8 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
         this.id = id;
         this.noteText = noteText;
     }
+
+
 
     /**
      * When an item is equals to another?
@@ -204,6 +209,21 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
             menuContainer = view.findViewById(R.id.menu_container);
             mBtnAdd = view.findViewById(R.id.btn_add);
             mBtnMore = view.findViewById(R.id.btn_more);
+        }
+
+        @Override
+        public void scrollAnimators(@NonNull List<Animator> animators, int position, boolean isForward) {
+            if (mAdapter.getRecyclerView().getLayoutManager() instanceof GridLayoutManager) {
+                if (position % 2 != 0)
+                    AnimatorHelper.slideInFromRightAnimator(animators, itemView, mAdapter.getRecyclerView(), 0.5f);
+                else
+                    AnimatorHelper.slideInFromLeftAnimator(animators, itemView, mAdapter.getRecyclerView(), 0.5f);
+            } else {
+                if (isForward)
+                    AnimatorHelper.slideInFromBottomAnimator(animators, itemView, mAdapter.getRecyclerView());
+                else
+                    AnimatorHelper.slideInFromTopAnimator(animators, itemView, mAdapter.getRecyclerView());
+            }
         }
     }
 }
