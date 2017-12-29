@@ -4,5 +4,5 @@
                     android:minHeight="36dp"
                     android:initialLayout="@layout/widget_newnote"
                     android:widgetCategory="home_screen|keyguard"
-                    android:previewImage="@drawable/icon_rocket_image_round">
+                    android:previewImage="@drawable/icon_edit_shortcut">
 </appwidget-provider>

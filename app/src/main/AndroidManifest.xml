@@ -92,7 +92,7 @@
         <!-- Widgets -->
         <receiver
             android:name=".NewNoteWidget"
-            android:icon="@drawable/icon_rocket_image_round"
+            android:icon="@drawable/icon_edit_shortcut"
             android:label="•Quick Note•">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>

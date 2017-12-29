@@ -55,7 +55,7 @@ dependencies {
     implementation 'me.xdrop:fuzzywuzzy:1.1.9' //https://github.com/xdrop/fuzzywuzzy
     implementation 'io.github.yavski:fab-speed-dial:1.0.6' //https://github.com/yavski/fab-speed-dial
     implementation 'com.github.angads25:filepicker:1.1.1' //https://github.com/Angads25/android-filepicker
-    implementation 'com.github.GrenderG:Toasty:1.2.5' //https://github.com/GrenderG/Toasty
+    implementation 'com.github.GrenderG:Toasty:1.2.8' //https://github.com/GrenderG/Toasty
     implementation 'jp.wasabeef:richeditor-android:1.2.2' //https://github.com/wasabeef/richeditor-android
     implementation 'com.koushikdutta.ion:ion:2.2.1' //https://github.com/koush/ion
     implementation 'com.github.ybq:Android-SpinKit:1.1.0' //https://github.com/ybq/Android-SpinKit

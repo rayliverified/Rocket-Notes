@@ -373,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     }
 
     public void FilterImages() {
-        Filter filter = new Filter(1, "Image", 0, R.drawable.image_picture, ContextCompat.getColor(mContext, R.color.colorPrimary));
+        Filter filter = new Filter(1, "Image", 0, R.drawable.icon_camera_shortcut, ContextCompat.getColor(mContext, R.color.colorPrimary));
         mFilterView.setVisibility(View.VISIBLE);
         mFilterView.addFilter(filter);
         List<IFlexible> list = new ArrayList<>();
@@ -395,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     }
 
     public void FilterText() {
-        Filter filter = new Filter(1, "Text", 0, R.drawable.icon_rocket_image, ContextCompat.getColor(mContext, R.color.colorPrimary));
+        Filter filter = new Filter(1, "Text", 0, R.drawable.icon_edit_shortcut, ContextCompat.getColor(mContext, R.color.colorPrimary));
         mFilterView.setVisibility(View.VISIBLE);
         mFilterView.addFilter(filter);
         List<IFlexible> list = new ArrayList<>();
