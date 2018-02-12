@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.1"
+    buildToolsVersion "27.0.2"
     defaultConfig {
         applicationId "stream.rocketnotes"
         minSdkVersion 16
@@ -50,7 +50,7 @@ dependencies {
     implementation 'eu.davidea:flexible-adapter:5.0.0-rc3' //https://github.com/davideas/FlexibleAdapter
     implementation 'com.github.arimorty:floatingsearchview:2.1.1' //https://github.com/arimorty/floatingsearchview
     implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation 'org.greenrobot:eventbus:3.1.0' //https://github.com/greenrobot/EventBus
+    implementation 'org.greenrobot:eventbus:3.1.1' //https://github.com/greenrobot/EventBus
     implementation 'de.hdodenhof:circleimageview:2.1.0' //https://github.com/hdodenhof/CircleImageView
     implementation 'me.xdrop:fuzzywuzzy:1.1.9' //https://github.com/xdrop/fuzzywuzzy
     implementation 'io.github.yavski:fab-speed-dial:1.0.6' //https://github.com/yavski/fab-speed-dial
@@ -65,7 +65,7 @@ dependencies {
     implementation 'com.github.Kennyc1012:BottomSheet:2.3.4' //https://github.com/Kennyc1012/BottomSheet
     implementation 'com.zxy.android:tiny:0.1.0' //https://github.com/Sunzxyong/Tiny
     implementation 'com.flurry.android:analytics:8.1.0'
-    implementation 'com.pyze:PyzeLibrary:3.0.0'
+    implementation 'com.pyze:PyzeLibrary:3.0.4'
     //Custom filter chips from https://github.com/claudiodegio/MsvSearch
     //Image viewer from https://github.com/stfalcon-studio/FrescoImageViewer
 }

@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.design.internal.NavigationMenu;
@@ -43,7 +42,6 @@ import java.util.List;
 import java.util.Map;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.common.FlexibleItemAnimator;
 import eu.davidea.flexibleadapter.common.SmoothScrollStaggeredLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
@@ -53,7 +51,6 @@ import stream.custompermissionsdialogue.PermissionsDialogue;
 import stream.custompermissionsdialogue.utils.PermissionUtils;
 import stream.rocketnotes.filter.FilterMaterialSearchView;
 import stream.rocketnotes.filter.model.Filter;
-import stream.rocketnotes.ui.LandingItemAnimator;
 import stream.rocketnotes.utils.AnalyticsUtils;
 
 public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
