@@ -4,7 +4,7 @@
 ---
 Fast. Simple. Create a note in one tap! Create image and text notes directly from your home screen! 
 
-![Rocket Notes Cover](https://lh3.googleusercontent.com/s1IcJ6DUCPUgl2ZxGLqld8ROsARVBPDemnsfcfda0vJ8SQsoAOmbinTCcqpFfc48IA=h480-rw)
+![Rocket Notes Cover](https://lh3.googleusercontent.com/s1IcJ6DUCPUgl2ZxGLqld8ROsARVBPDemnsfcfda0vJ8SQsoAOmbinTCcqpFfc48IA=h480)
 
 # Download
 
@@ -14,14 +14,14 @@ Fast. Simple. Create a note in one tap! Create image and text notes directly fro
 </a>
 <a href="https://www.amazon.com/Rocket-Notes-Worlds-Fastest-Taking/dp/B072P6HN1F/ref=sr_1_1?s=mobile-apps&ie=UTF8&qid=1494869116&sr=1-1&keywords=rocket+notes">
   <img alt="Get Rocket Notes on Amazon App Store"
-       src="https://lh3.googleusercontent.com/Pzhl8z9sJAQk8e1ZiL_XnX3WZPEminhbw5I0S5nrqmTtzdbzb1TCydGZJ9FoUmlD_WjO=w64-rw" />
+       src="https://lh3.googleusercontent.com/Pzhl8z9sJAQk8e1ZiL_XnX3WZPEminhbw5I0S5nrqmTtzdbzb1TCydGZJ9FoUmlD_WjO=w64" />
 </a>
 
 # Screenshots
 
-![Rocket Notes Fast](https://lh3.googleusercontent.com/_SpL_DjZHAsBtBxm_lYqdFedEEyXuqyQiWT2ldd_a2Nx1AVnJxH1zQLQrfz8XmupSZo=h480-rw)
+![Rocket Notes Fast](https://lh3.googleusercontent.com/_SpL_DjZHAsBtBxm_lYqdFedEEyXuqyQiWT2ldd_a2Nx1AVnJxH1zQLQrfz8XmupSZo=h480)
 
-![Rocket Notes Easy](https://lh3.googleusercontent.com/mrBBUPnrSu3Wv9bhTQ7iJkDUhSEf-YduvSgeserLPBSJWmmEtFfzKryJjMnfi99JmRI=h480-rw)
+![Rocket Notes Easy](https://lh3.googleusercontent.com/mrBBUPnrSu3Wv9bhTQ7iJkDUhSEf-YduvSgeserLPBSJWmmEtFfzKryJjMnfi99JmRI=h480)
 
 # Features
 
@@ -41,10 +41,10 @@ Fast. Simple. Create a note in one tap! Create image and text notes directly fro
 
 🚀 No more opening an app to take notes; just start writing instead!
 
-![Rocket Notes Main Screen Minimalistic](https://lh3.googleusercontent.com/sE9OEdjOIdW_bnUMzpLVaVW9Tj7_azIfCxybWhFA4emfB-x2O7Bp2Ktt_nZfkUvrmwNp=h560-rw)
-![Rocket Notes Widgets](https://lh3.googleusercontent.com/BmJRzS6kcmDVYN_UiPUNPIM0PHaakt-T4y2tJ1rgDLfZITlqtRs8ddwoQqRSyBvvgYUg=h560-rw)
-![Rocket Notes Popup Quick Note](https://lh3.googleusercontent.com/q_2iVBT-Grq6J_MO0jC4evd0NfoGaDxLhNgZRv0nZJBlbQFLOrQWW2H2CDf5MKVCjCQ=h560-rw)
-![Rocket Notes Quick Share](https://lh3.googleusercontent.com/rN8xfT9QAsPyO4s4qWHJ5gKJD9D5_x53qjLpXknmVxKvZ-KhcTiCRSkTP1qBnZtlbmc=h560-rw)
+![Rocket Notes Main Screen Minimalistic](https://lh3.googleusercontent.com/sE9OEdjOIdW_bnUMzpLVaVW9Tj7_azIfCxybWhFA4emfB-x2O7Bp2Ktt_nZfkUvrmwNp=h560)
+![Rocket Notes Widgets](https://lh3.googleusercontent.com/BmJRzS6kcmDVYN_UiPUNPIM0PHaakt-T4y2tJ1rgDLfZITlqtRs8ddwoQqRSyBvvgYUg=h560)
+![Rocket Notes Popup Quick Note](https://lh3.googleusercontent.com/q_2iVBT-Grq6J_MO0jC4evd0NfoGaDxLhNgZRv0nZJBlbQFLOrQWW2H2CDf5MKVCjCQ=h560)
+![Rocket Notes Quick Share](https://lh3.googleusercontent.com/rN8xfT9QAsPyO4s4qWHJ5gKJD9D5_x53qjLpXknmVxKvZ-KhcTiCRSkTP1qBnZtlbmc=h560)
 
 ### Rocket Images Features:
 ☆ Forget writing, snap a picture instead! 
@@ -69,27 +69,27 @@ Fast. Simple. Create a note in one tap! Create image and text notes directly fro
 # ★ Get in Touch ★
 <a href="mailto:ray.li.verified@gmail.com">
   <img alt="Ray Li Email"
-       src="https://lh3.googleusercontent.com/yN_m90WN_HSCohXdgC2k91uSTk9dnYfoxTYwG_mv_l5_05dV2CzkQ1B6rEqH4uqdgjA=w96-rw" />
+       src="https://lh3.googleusercontent.com/yN_m90WN_HSCohXdgC2k91uSTk9dnYfoxTYwG_mv_l5_05dV2CzkQ1B6rEqH4uqdgjA=w96" />
 </a>
 <a href="https://rayliverified.com">
   <img alt="Ray Li Website"
-       src="https://lh3.googleusercontent.com/YmMGcgeO7Km9-J9vFRByov5sb7OUKetnKs8pTi0JZMDj3GVJ61GMTcTlHB7u9uHDHag=w96-rw" />
+       src="https://lh3.googleusercontent.com/YmMGcgeO7Km9-J9vFRByov5sb7OUKetnKs8pTi0JZMDj3GVJ61GMTcTlHB7u9uHDHag=w96" />
 </a>
 <a href="https://twitter.com/RayLiVerified">
   <img alt="Ray Li Twitter"
-       src="https://lh3.ggpht.com/lSLM0xhCA1RZOwaQcjhlwmsvaIQYaP3c5qbDKCgLALhydrgExnaSKZdGa8S3YtRuVA=w96-rw" />
+       src="https://lh3.ggpht.com/lSLM0xhCA1RZOwaQcjhlwmsvaIQYaP3c5qbDKCgLALhydrgExnaSKZdGa8S3YtRuVA=w96" />
 </a>
 <a href="https://linkedin.com/in/rayliverified/">
   <img alt="Ray Li LinkedIn"
-       src="https://lh3.googleusercontent.com/00APBMVQh3yraN704gKCeM63KzeQ-zHUi5wK6E9TjRQ26McyqYBt-zy__4i8GXDAfeys=w90-rw" />
+       src="https://lh3.googleusercontent.com/00APBMVQh3yraN704gKCeM63KzeQ-zHUi5wK6E9TjRQ26McyqYBt-zy__4i8GXDAfeys=w90" />
 </a>
 <a href="https://www.uplabs.com/ray">
   <img alt="Ray Li UpLabs"
-       src="https://lh3.googleusercontent.com/fDJB4jtIgZQF_Dj7AFAPEv2dJOJE8LaLSbaiOOFejQJl3oFbkOLLScstkp699oMDcEU=w90-rw" />
+       src="https://lh3.googleusercontent.com/fDJB4jtIgZQF_Dj7AFAPEv2dJOJE8LaLSbaiOOFejQJl3oFbkOLLScstkp699oMDcEU=w90" />
 </a>
 <a href="https://github.com/searchy2">
   <img alt="Ray Li GitHub"
-       src="https://lh3.googleusercontent.com/L15QqmKK7Vl-Ag1ZxaBqNQlXVEw58JT2BDb-ef5t2eboDh0pPSLjDgi3-aQ3Opdhhyk=w96-rw" />
+       src="https://lh3.googleusercontent.com/L15QqmKK7Vl-Ag1ZxaBqNQlXVEw58JT2BDb-ef5t2eboDh0pPSLjDgi3-aQ3Opdhhyk=w96" />
 </a>
 
 # Libraries Used
