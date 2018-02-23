@@ -250,6 +250,7 @@ public class SettingsFragment extends PreferenceFragment {
                             }
                         })
                         .setBoxInputHint(boxHint)
+                        .setDecorView(getActivity().getWindow().getDecorView())
                         .build();
                 alert.show();
 
@@ -289,6 +290,7 @@ public class SettingsFragment extends PreferenceFragment {
                                 dialog.dismiss();
                             }
                         })
+                        .setDecorView(getActivity().getWindow().getDecorView())
                         .build();
                 alert.show();
                 return false;

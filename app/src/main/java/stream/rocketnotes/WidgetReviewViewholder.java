@@ -172,6 +172,7 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
                                 }
                             })
                             .setBoxInputHint(boxHint)
+                            .setDecorView(activity.getWindow().getDecorView())
                             .build();
                     alert.show();
                 }

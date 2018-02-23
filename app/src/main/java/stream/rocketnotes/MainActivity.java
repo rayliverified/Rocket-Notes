@@ -164,10 +164,11 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         //Create FastScroller.
         FastScroller fastScroller = findViewById(R.id.fast_scroller);
         fastScroller.setAutoHideEnabled(true);             //true is the default value
-        fastScroller.setAutoHideDelayInMillis(1000L);      //1000ms is the default value
+        fastScroller.setAutoHideDelayInMillis(500L);      //1000ms is the default value
         fastScroller.setIgnoreTouchesOutsideHandle(false); //false is the default value
         //0 pixel is the default value. When > 0 it mimics the fling gesture
-        fastScroller.setMinimumScrollThreshold(70);
+        fastScroller.setMinimumScrollThreshold(100);
+        fastScroller.setBubbleAndHandleColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         fastScroller.addOnScrollStateChangeListener(new FastScroller.OnScrollStateChangeListener() {
             @Override
             public void onFastScrollerStateChange(boolean scrolling) {
