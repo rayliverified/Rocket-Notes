@@ -161,28 +161,31 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         mRecyclerView.setLayoutManager(mStaggeredLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
-        //Create FastScroller.
-        FastScroller fastScroller = findViewById(R.id.fast_scroller);
-        fastScroller.setAutoHideEnabled(true);             //true is the default value
-        fastScroller.setAutoHideDelayInMillis(500L);      //1000ms is the default value
-        fastScroller.setIgnoreTouchesOutsideHandle(false); //false is the default value
-        //0 pixel is the default value. When > 0 it mimics the fling gesture
-        fastScroller.setMinimumScrollThreshold(100);
-        fastScroller.setBubbleAndHandleColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
-        fastScroller.addOnScrollStateChangeListener(new FastScroller.OnScrollStateChangeListener() {
-            @Override
-            public void onFastScrollerStateChange(boolean scrolling) {
-                if (scrolling)
-                {
-                    mFAB.hide();
+        if (myItems.size() >= 20)
+        {
+            //Create FastScroller.
+            FastScroller fastScroller = findViewById(R.id.fast_scroller);
+            fastScroller.setAutoHideEnabled(true);             //true is the default value
+            fastScroller.setAutoHideDelayInMillis(500L);      //1000ms is the default value
+            fastScroller.setIgnoreTouchesOutsideHandle(false); //false is the default value
+            //0 pixel is the default value. When > 0 it mimics the fling gesture
+            fastScroller.setMinimumScrollThreshold(100);
+            fastScroller.setBubbleAndHandleColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
+            fastScroller.addOnScrollStateChangeListener(new FastScroller.OnScrollStateChangeListener() {
+                @Override
+                public void onFastScrollerStateChange(boolean scrolling) {
+                    if (scrolling)
+                    {
+                        mFAB.hide();
+                    }
+                    else
+                    {
+                        mFAB.show();
+                    }
                 }
-                else
-                {
-                    mFAB.show();
-                }
-            }
-        });
-        mAdapter.setFastScroller(fastScroller);
+            });
+            mAdapter.setFastScroller(fastScroller);
+        }
     }
 
     private void SetupSearchBar() {
