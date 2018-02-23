@@ -52,6 +52,7 @@ public class CameraActivity extends AppCompatActivity {
                                 StartCamera();
                             }
                         })
+                        .setDecorView(getWindow().getDecorView())
                         .build();
                 alertPermissions.show();
             } else {

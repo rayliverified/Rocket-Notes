@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollStaggeredLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     FilterMaterialSearchView mFilterView;
     MenuItem mActionVoice;
     MenuItem mActionCamera;
+    FabSpeedDial mFAB;
 
     Context mContext;
     private String mActivity = this.getClass().getSimpleName();
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         mContext = getApplicationContext();
         if (!PermissionUtils.IsPermissionEnabled(mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             PermissionsDialogue.Builder alertPermissions = new PermissionsDialogue.Builder(MainActivity.this)
+                    .setCancelable(false)
                     .setMessage(getString(R.string.app_name) + " requires the following permissions to save notes: ")
                     .setIcon(R.mipmap.ic_launcher)
                     .setRequireStorage(PermissionsDialogue.REQUIRED)
@@ -91,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                             dialog.dismiss();
                         }
                     })
+                    .setDecorView(getWindow().getDecorView())
                     .build();
             alertPermissions.show();
         }
@@ -144,9 +148,9 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
 
         // Initialize the Adapter
         mAdapter = new FlexibleAdapter<>(myItems);
-        mAdapter.setAnimationOnScrolling(true)
-                .setAnimationEntryStep(true)
+        mAdapter.setAnimationOnForwardScrolling(true)
                 .setAnimationOnReverseScrolling(true)
+                .setAnimationEntryStep(true)
                 .setAnimationInterpolator(new DecelerateInterpolator())
                 .setAnimationDuration(300L);
         mStaggeredLayoutManager = createNewStaggeredGridLayoutManager();
@@ -156,6 +160,28 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         mRecyclerView.setItemViewCacheSize(0); //Setting ViewCache to 0 (default=2) will animate items better while scrolling down+up with LinearLayout
         mRecyclerView.setLayoutManager(mStaggeredLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
+
+        //Create FastScroller.
+        FastScroller fastScroller = findViewById(R.id.fast_scroller);
+        fastScroller.setAutoHideEnabled(true);             //true is the default value
+        fastScroller.setAutoHideDelayInMillis(1000L);      //1000ms is the default value
+        fastScroller.setIgnoreTouchesOutsideHandle(false); //false is the default value
+        //0 pixel is the default value. When > 0 it mimics the fling gesture
+        fastScroller.setMinimumScrollThreshold(70);
+        fastScroller.addOnScrollStateChangeListener(new FastScroller.OnScrollStateChangeListener() {
+            @Override
+            public void onFastScrollerStateChange(boolean scrolling) {
+                if (scrolling)
+                {
+                    mFAB.hide();
+                }
+                else
+                {
+                    mFAB.show();
+                }
+            }
+        });
+        mAdapter.setFastScroller(fastScroller);
     }
 
     private void SetupSearchBar() {
@@ -339,8 +365,8 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     }
 
     public void SetupFAB() {
-        FabSpeedDial fabSpeedDial = findViewById(R.id.main_fab);
-        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+        mFAB = findViewById(R.id.main_fab);
+        mFAB.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.action_text) {
