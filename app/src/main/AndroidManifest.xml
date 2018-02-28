@@ -23,6 +23,10 @@
             android:name="PyzeAppKey"
             android:value="ERdy22a6SxORk6ndRxsEUA"/>
 
+        <meta-data
+            android:name="CustomAds"
+            android:value="http://apprewards.org/crosspromotion/"/>
+
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppThemeHome">
