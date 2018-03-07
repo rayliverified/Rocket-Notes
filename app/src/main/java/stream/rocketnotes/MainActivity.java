@@ -203,9 +203,9 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                     mSearchView.clearSuggestions();
                     FilterReset(true);
                 } else {
-                    if (mAdapter.hasNewSearchText(newQuery)) {
+                    if (mAdapter.hasNewFilter(newQuery)) {
                         Log.d(TAG, "onQueryTextChange newText: " + newQuery);
-                        mAdapter.setSearchText(newQuery);
+                        mAdapter.setFilter(newQuery);
                         // Fill and Filter mItems with your custom list and automatically animate the changes
                         // Watch out! The original list must be a copy
                         mAdapter.filterItems(getDatabaseList(), 200);

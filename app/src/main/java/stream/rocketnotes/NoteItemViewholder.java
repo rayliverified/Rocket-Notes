@@ -32,7 +32,7 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import stream.rocketnotes.service.DeleteNoteService;
 
-public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.MyViewHolder> implements IFilterable {
+public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.MyViewHolder> implements IFilterable<String> {
 
     private String id;
     private String noteText;
