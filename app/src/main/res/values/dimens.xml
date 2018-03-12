@@ -5,14 +5,14 @@
     <dimen name="title_size">18sp</dimen>
     <dimen name="body_size">14sp</dimen>
 
-    <dimen name="msv_horizontal_margin">8dip</dimen>
-    <dimen name="msv_filter_height">32dip</dimen>
-    <dimen name="msv_filter_margin">2dip</dimen>
-    <dimen name="msv_filter_rv_height">40dip</dimen>
-    <dimen name="msv_filter_close_button_horizontal_margin">4dip</dimen>
+    <dimen name="msv_horizontal_margin">8dp</dimen>
+    <dimen name="msv_filter_height">32dp</dimen>
+    <dimen name="msv_filter_margin">2dp</dimen>
+    <dimen name="msv_filter_rv_height">40dp</dimen>
+    <dimen name="msv_filter_close_button_horizontal_margin">4dp</dimen>
     <dimen name="msv_select_filter_left_margin">16dp</dimen>
-    <dimen name="msv_select_filter_text_left_margin">72dip</dimen>
-    <dimen name="msv_select_filter_icon_size">36dip</dimen>
-    <dimen name="msv_select_filter_section_height">48dip</dimen>
-    <dimen name="msv_select_filter_my_filter_height">48dip</dimen>
+    <dimen name="msv_select_filter_text_left_margin">72dp</dimen>
+    <dimen name="msv_select_filter_icon_size">36dp</dimen>
+    <dimen name="msv_select_filter_section_height">48dp</dimen>
+    <dimen name="msv_select_filter_my_filter_height">48dp</dimen>
 </resources>
