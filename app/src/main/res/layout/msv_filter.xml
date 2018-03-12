@@ -1,29 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-    android:id="@+id/search_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:clipChildren="false">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_filter"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/msv_filter_rv_height"
+            android:layout_height="wrap_content"
             android:paddingLeft="6dp"
             android:paddingRight="6dp"
             android:paddingBottom="6dp"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/transparent"
+            android:clipChildren="false"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:layout_gravity="bottom"
-            android:background="#FFFFFF"
-            android:backgroundTint="#10000000"/>
-    </FrameLayout>
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dip"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:background="#FFFFFF"-->
+            <!--android:backgroundTint="#10000000"/>-->
 </FrameLayout>

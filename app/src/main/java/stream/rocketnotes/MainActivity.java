@@ -1,5 +1,7 @@
 package stream.rocketnotes;
 
+import android.*;
+import android.Manifest;
 import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -8,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
@@ -19,6 +22,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -48,13 +52,17 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
+import stream.crosspromotion.Utils;
 import stream.custompermissionsdialogue.PermissionsDialogue;
 import stream.custompermissionsdialogue.utils.PermissionUtils;
 import stream.rocketnotes.filter.FilterMaterialSearchView;
 import stream.rocketnotes.filter.model.Filter;
+import stream.rocketnotes.ui.HideViewOnScrollListener;
+import stream.rocketnotes.ui.MoveViewOnScrollListener;
 import stream.rocketnotes.utils.AnalyticsUtils;
+import stream.rocketnotes.utils.Units;
 
-public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
+public class MainActivity extends AppCompatActivity {
 
     private Integer mNoteCount;
     private Integer mImageCount;
@@ -82,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         setContentView(R.layout.activity_main);
 
         mContext = getApplicationContext();
-        if (!PermissionUtils.IsPermissionEnabled(mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (!PermissionUtils.IsPermissionEnabled(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             PermissionsDialogue.Builder alertPermissions = new PermissionsDialogue.Builder(MainActivity.this)
                     .setCancelable(false)
                     .setMessage(getString(R.string.app_name) + " requires the following permissions to save notes: ")
@@ -111,14 +119,11 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
 //            editor.apply();
 //        }
 
-        mAppBar = findViewById(R.id.app_bar);
-        mAppBar.addOnOffsetChangedListener(this);
-
-        InitializeRecyclerView();
-
 //        checkVoiceRecognition();
+        mAppBar = findViewById(R.id.app_bar);
         mFilterView = findViewById(R.id.sv);
         SetupSearchBar();
+        InitializeRecyclerView();
         SetupFAB();
         if (getIntent().getAction() != null && getIntent().getAction() != Intent.ACTION_MAIN) {
             Log.d("MainActivity", getIntent().getAction());
@@ -186,6 +191,29 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
             });
             mAdapter.setFastScroller(fastScroller);
         }
+
+//        mRecyclerView.setY(Units.dpToPx(mContext, 56));
+//        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                switch (motionEvent.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        break;
+//                    case MotionEvent.ACTION_POINTER_DOWN:
+//                        break;
+//                    case MotionEvent.ACTION_POINTER_UP:
+//                        break;
+//                    case MotionEvent.ACTION_MOVE:
+//                        mRecyclerView.get()
+//                        break;
+//                }
+//                ret
+//                urn false;
+//            }
+//        });
+//        mRecyclerView.addOnScrollListener(new MoveViewOnScrollListener(mRecyclerView));
     }
 
     private void SetupSearchBar() {
@@ -592,11 +620,6 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
             mSearchView.setSearchText(results.get(0));
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        mSearchView.setTranslationY(verticalOffset);
     }
 
     protected StaggeredGridLayoutManager createNewStaggeredGridLayoutManager() {

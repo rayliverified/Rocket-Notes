@@ -25,7 +25,7 @@
 
         <meta-data
             android:name="CustomAds"
-            android:value="http://apprewards.org/crosspromotion/"/>
+            android:value="https://apprewards.org/crosspromotion/"/>
 
         <activity
             android:name=".MainActivity"

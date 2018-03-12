@@ -49,6 +49,11 @@
         <item name="colorControlNormal">@color/white</item>
     </style>
 
+    <style name="TransparentActionBar" parent="AppTheme">
+        <item name="colorPrimary">@color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
     <style name="AdTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>

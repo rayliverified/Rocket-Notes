@@ -16,21 +16,14 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Light">
+            android:theme="@style/TransparentActionBar"
+            app:elevation="0dp">
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="62dp"
-                android:background="@color/colorPrimary"
+                android:background="@color/transparent"
                 app:layout_scrollFlags="scroll|enterAlways"/>
-
-            <stream.rocketnotes.filter.FilterMaterialSearchView
-                android:id="@+id/sv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                app:msvIsContainEnabled="false"
-                android:elevation="4dp"/>
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v7.widget.RecyclerView
@@ -71,4 +64,13 @@
         app:floatingSearch_menu="@menu/menu_search_view"
         app:floatingSearch_close_search_on_keyboard_dismiss="true"
         app:floatingSearch_dimBackground="false"/>
+
+    <stream.rocketnotes.filter.FilterMaterialSearchView
+        android:id="@+id/sv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="62dp"
+        android:visibility="gone"
+        app:msvIsContainEnabled="false"
+        android:elevation="4dp"/>
 </RelativeLayout>
