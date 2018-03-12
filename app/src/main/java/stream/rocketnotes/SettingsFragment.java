@@ -273,13 +273,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         //About
         Preference pref = findPreference("settings_version");
-        pref.setTitle(getString(R.string.app_name) + " " + getString(R.string.app_version));
+        pref.setTitle(getString(R.string.app_name) + " " + BuildConfig.VERSION_NAME);
         itemVersion.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference arg0) {
                 CustomAlertDialogue.Builder alert = new CustomAlertDialogue.Builder(getActivity())
                         .setStyle(CustomAlertDialogue.Style.DIALOGUE)
-                        .setTitle(mContext.getString(R.string.app_name) + " " + mContext.getString(R.string.app_version))
+                        .setTitle(mContext.getString(R.string.app_name) + " " + BuildConfig.VERSION_NAME)
                         .setMessage("© Copyright 2017-2018 Stream Inc")
                         .setNegativeText("OK")
                         .setNegativeColor(R.color.positive)

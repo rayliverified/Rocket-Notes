@@ -111,7 +111,7 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
                         try {
                             context.startActivity(intent);
                         } catch (android.content.ActivityNotFoundException ex) {
-                            intent.setData(Uri.parse(String.format("https://play.google.com/store/apps/details?id=%s", context.getString(R.string.app_package))));
+                            intent.setData(Uri.parse(String.format("https://play.google.com/store/apps/details?id=%s", BuildConfig.APPLICATION_ID)));
                             context.startActivity(intent);
                         }
                     } else if (PermissionUtils.isAppInstalled(context, "com.amazon.venezia")) {
@@ -123,7 +123,7 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
                             context.startActivity(intent);
                         }
                     } else {
-                        intent.setData(Uri.parse(String.format("https://play.google.com/store/apps/details?id=%s", context.getString(R.string.app_package))));
+                        intent.setData(Uri.parse(String.format("https://play.google.com/store/apps/details?id=%s", BuildConfig.APPLICATION_ID)));
                         context.startActivity(intent);
                     }
                 }

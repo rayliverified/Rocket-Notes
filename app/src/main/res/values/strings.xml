@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Rocket Notes</string>
-    <string name="app_version">v1.4.0</string>
-    <string name="app_package">stream.rocketnotes</string>
 
     <!-- Settings Page -->
     <string name="loading">Loading&#8230;</string>
