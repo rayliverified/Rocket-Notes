@@ -280,7 +280,7 @@ public class SettingsFragment extends PreferenceFragment {
                 CustomAlertDialogue.Builder alert = new CustomAlertDialogue.Builder(getActivity())
                         .setStyle(CustomAlertDialogue.Style.DIALOGUE)
                         .setTitle(mContext.getString(R.string.app_name) + " " + BuildConfig.VERSION_NAME)
-                        .setMessage("© Copyright 2017-2018 Stream Inc")
+                        .setMessage("© Copyright 2018-2019 Stream Inc")
                         .setNegativeText("OK")
                         .setNegativeColor(R.color.positive)
                         .setNegativeTypeface(Typeface.DEFAULT_BOLD)

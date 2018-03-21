@@ -53,7 +53,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'org.greenrobot:eventbus:3.1.1' //https://github.com/greenrobot/EventBus
     implementation 'de.hdodenhof:circleimageview:2.1.0' //https://github.com/hdodenhof/CircleImageView
-    implementation 'me.xdrop:fuzzywuzzy:1.1.9' //https://github.com/xdrop/fuzzywuzzy
+    implementation 'me.xdrop:fuzzywuzzy:1.1.10' //https://github.com/xdrop/fuzzywuzzy
     implementation 'io.github.yavski:fab-speed-dial:1.0.6' //https://github.com/yavski/fab-speed-dial
     implementation 'com.github.angads25:filepicker:1.1.1' //https://github.com/Angads25/android-filepicker
     implementation 'com.github.GrenderG:Toasty:1.2.8' //https://github.com/GrenderG/Toasty
