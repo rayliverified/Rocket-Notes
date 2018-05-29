@@ -7,8 +7,8 @@ android {
         applicationId "stream.rocketnotes"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 19
-        versionName "1.5.0"
+        versionCode 20
+        versionName "1.5.1"
     }
     buildTypes {
         release {
@@ -50,7 +50,7 @@ dependencies {
     implementation 'com.afollestad:material-camera:0.4.5' //https://github.com/afollestad/material-camera
     implementation 'com.facebook.fresco:fresco:1.5.0'
     implementation 'me.relex:photodraweeview:1.1.3'
-    implementation 'eu.davidea:flexible-adapter:5.0.0' //https://github.com/davideas/FlexibleAdapter
+    implementation 'eu.davidea:flexible-adapter:5.0.4' //https://github.com/davideas/FlexibleAdapter
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0-b1'
     implementation 'com.github.arimorty:floatingsearchview:2.1.1' //https://github.com/arimorty/floatingsearchview
     implementation 'com.squareup.picasso:picasso:2.71828'
@@ -59,7 +59,7 @@ dependencies {
     implementation 'me.xdrop:fuzzywuzzy:1.1.10' //https://github.com/xdrop/fuzzywuzzy
     implementation 'io.github.yavski:fab-speed-dial:1.0.6' //https://github.com/yavski/fab-speed-dial
     implementation 'com.github.angads25:filepicker:1.1.1' //https://github.com/Angads25/android-filepicker
-    implementation 'com.github.GrenderG:Toasty:1.2.8' //https://github.com/GrenderG/Toasty
+    implementation 'com.github.GrenderG:Toasty:1.3.0' //https://github.com/GrenderG/Toasty
     implementation 'jp.wasabeef:richeditor-android:1.2.2' //https://github.com/wasabeef/richeditor-android
     implementation 'com.koushikdutta.ion:ion:2.2.1' //https://github.com/koush/ion
     implementation 'com.github.ybq:Android-SpinKit:1.1.0' //https://github.com/ybq/Android-SpinKit
