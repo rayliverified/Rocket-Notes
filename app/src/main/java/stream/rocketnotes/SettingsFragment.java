@@ -53,6 +53,7 @@ public class SettingsFragment extends PreferenceFragment {
     private PreferenceCategory mAboutGroup;
 
     private SwitchPreference showQuickActions;
+    private SwitchPreference enableFastScroller;
 
     private Preference itemLocalBackup;
     private Preference itemLocalRestore;
@@ -90,6 +91,7 @@ public class SettingsFragment extends PreferenceFragment {
         mAboutGroup = (PreferenceCategory) findPreference("header_about");
 
         showQuickActions = (SwitchPreference) findPreference("show_quickactions");
+        enableFastScroller = (SwitchPreference) findPreference("enable_fastscroller");
 
         itemLocalBackup = findPreference("settings_local_backup");
         itemLocalRestore = findPreference("settings_local_restore");
@@ -104,6 +106,14 @@ public class SettingsFragment extends PreferenceFragment {
         itemThanks = findPreference("settings_thanks");
 
         showQuickActions.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+                RefreshMainActivity();
+                return false;
+            }
+        });
+        enableFastScroller.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
 

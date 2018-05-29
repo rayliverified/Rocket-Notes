@@ -1,6 +1,5 @@
 package stream.rocketnotes;
 
-import android.*;
 import android.Manifest;
 import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
@@ -22,7 +20,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -52,15 +49,11 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
-import stream.crosspromotion.Utils;
 import stream.custompermissionsdialogue.PermissionsDialogue;
 import stream.custompermissionsdialogue.utils.PermissionUtils;
 import stream.rocketnotes.filter.FilterMaterialSearchView;
 import stream.rocketnotes.filter.model.Filter;
-import stream.rocketnotes.ui.HideViewOnScrollListener;
-import stream.rocketnotes.ui.MoveViewOnScrollListener;
 import stream.rocketnotes.utils.AnalyticsUtils;
-import stream.rocketnotes.utils.Units;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -70,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     FlexibleAdapter<IFlexible> mAdapter;
     StaggeredGridLayoutManager mStaggeredLayoutManager;
+    FastScroller mFastScroller;
     DatabaseHelper dbHelper;
 
     AppBarLayout mAppBar;
@@ -166,17 +160,17 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mStaggeredLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
-        if (myItems.size() >= 20)
+        if (sharedPref.getBoolean("enable_fastscroller", false))
         {
             //Create FastScroller.
-            FastScroller fastScroller = findViewById(R.id.fast_scroller);
-            fastScroller.setAutoHideEnabled(true);             //true is the default value
-            fastScroller.setAutoHideDelayInMillis(500L);      //1000ms is the default value
-            fastScroller.setIgnoreTouchesOutsideHandle(false); //false is the default value
+            mFastScroller = findViewById(R.id.fast_scroller);
+            mFastScroller.setAutoHideEnabled(true);             //true is the default value
+            mFastScroller.setAutoHideDelayInMillis(500L);      //1000ms is the default value
+            mFastScroller.setIgnoreTouchesOutsideHandle(false); //false is the default value
             //0 pixel is the default value. When > 0 it mimics the fling gesture
-            fastScroller.setMinimumScrollThreshold(100);
-            fastScroller.setBubbleAndHandleColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
-            fastScroller.addOnScrollStateChangeListener(new FastScroller.OnScrollStateChangeListener() {
+            mFastScroller.setMinimumScrollThreshold(100);
+            mFastScroller.setBubbleAndHandleColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
+            mFastScroller.addOnScrollStateChangeListener(new FastScroller.OnScrollStateChangeListener() {
                 @Override
                 public void onFastScrollerStateChange(boolean scrolling) {
                     if (scrolling)
@@ -189,7 +183,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
-            mAdapter.setFastScroller(fastScroller);
+            mAdapter.setFastScroller(mFastScroller);
+        }
+        else
+        {
+            if (mAdapter.getFastScroller() != null)
+            {
+                mAdapter.getFastScroller().hideScrollbar();
+            }
         }
 
 //        mRecyclerView.setY(Units.dpToPx(mContext, 56));
@@ -592,7 +593,7 @@ public class MainActivity extends AppCompatActivity {
         if (sharedPref.getBoolean(Constants.REFRESH, false)) {
             if (mAdapter != null) {
                 Log.d("MainActivity", "Refresh");
-                FilterReset(true);
+                InitializeRecyclerView();
             }
             //Reset REFRESH flag
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -659,7 +660,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void SessionDetails() {
         Map<String, String> params = new HashMap<String, String>();
-        HashMap<String, String> attributes = new HashMap<String, String>();
+        HashMap<String, Object> attributes = new HashMap<>();
 
         int ids[] = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, ImageWidget.class));
         if (ids.length > 0) {

@@ -12,6 +12,13 @@
             android:summary="Display quick actions on note cards"
             android:defaultValue="true">
         </SwitchPreference>
+
+        <SwitchPreference
+            android:key="enable_fastscroller"
+            android:title="Enable fast scroller"
+            android:summary="Enable a draggable handle to scroll through notes quickly"
+            android:defaultValue="false">
+        </SwitchPreference>
     </PreferenceCategory>
 
     <PreferenceCategory
