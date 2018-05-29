@@ -325,7 +325,7 @@ public class ShareActivity extends Activity {
             setImageName();
             //Enable imageView and display shared image.
             editImage.setVisibility(View.VISIBLE);
-            Picasso.with(mContext).load(imageUri).into(editImage);
+            Picasso.get().load(imageUri).into(editImage);
             //Create Pictures folder to prepare to copy file into folder on savedNote clicked.
             FileUtils.InitializePicturesFolder(mContext);
         }

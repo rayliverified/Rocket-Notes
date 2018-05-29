@@ -33,9 +33,9 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.github.searchy2:CustomPermissionsDialogue:1.7'
-    implementation 'com.github.searchy2:CustomAlertViewDialogue:2.2'
-    implementation 'com.github.searchy2:AndroidCrossPromotion:1.5'
+    implementation 'com.github.searchy2:CustomPermissionsDialogue:1.8.1'
+    implementation 'com.github.searchy2:CustomAlertViewDialogue:2.3.1'
+    implementation 'com.github.searchy2:AndroidCrossPromotion:1.6'
 
     implementation 'com.android.support:appcompat-v7:27.0.2'
     implementation 'com.android.support:support-v4:27.0.2'
@@ -50,7 +50,7 @@ dependencies {
     implementation 'eu.davidea:flexible-adapter:5.0.0' //https://github.com/davideas/FlexibleAdapter
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0-b1'
     implementation 'com.github.arimorty:floatingsearchview:2.1.1' //https://github.com/arimorty/floatingsearchview
-    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'org.greenrobot:eventbus:3.1.1' //https://github.com/greenrobot/EventBus
     implementation 'de.hdodenhof:circleimageview:2.2.0' //https://github.com/hdodenhof/CircleImageView
     implementation 'me.xdrop:fuzzywuzzy:1.1.10' //https://github.com/xdrop/fuzzywuzzy
