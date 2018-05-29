@@ -25,7 +25,7 @@ public class AnalyticsUtils {
         //UXCam
 //        UXCam.addTagWithProperties(activity, params);
         //Pyze
-        HashMap<String, String> attributes = new HashMap<String, String>();
+        HashMap<String, Object> attributes = new HashMap<>();
         attributes.put(object, String.valueOf(value));
         PyzeEvents.postCustomEventWithAttributes(activity, attributes);
     }
