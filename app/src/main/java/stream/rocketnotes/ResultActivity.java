@@ -4,7 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.RemoteInput;
+import androidx.core.app.RemoteInput;
 
 import java.util.Calendar;
 

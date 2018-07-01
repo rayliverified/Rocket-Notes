@@ -3,8 +3,8 @@ package stream.rocketnotes;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
 

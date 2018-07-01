@@ -12,12 +12,6 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
-import android.support.design.internal.NavigationMenu;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +24,7 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.flurry.android.FlurryAgent;
+import com.google.android.material.appbar.AppBarLayout;
 import com.pyze.android.Pyze;
 import com.pyze.android.PyzeEvents;
 
@@ -42,6 +37,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollStaggeredLayoutManager;
@@ -419,11 +418,6 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
                 return false;
-            }
-
-            @Override
-            public boolean onPrepareMenu(NavigationMenu navigationMenu) {
-                return true;
             }
         });
     }
