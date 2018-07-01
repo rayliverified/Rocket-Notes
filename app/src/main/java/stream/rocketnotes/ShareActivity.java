@@ -46,7 +46,7 @@ import es.dmoral.toasty.Toasty;
 import stream.rocketnotes.service.SaveImageService;
 import stream.rocketnotes.service.SaveNoteService;
 import stream.rocketnotes.ui.CustomImageView;
-import stream.rocketnotes.utils.AnalyticsUtils;
+//import stream.rocketnotes.utils.AnalyticsUtils;
 import stream.rocketnotes.utils.FileUtils;
 import stream.rocketnotes.utils.PermissionUtils;
 import stream.rocketnotes.utils.Units;
@@ -108,7 +108,7 @@ public class ShareActivity extends Activity {
         //Hides keyboard from focusing on editText when Activity starts
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        InitializeAnalytics();
+//        InitializeAnalytics();
 
         //Focus defaults to editText, set again just in case
         editText = findViewById(R.id.edit_edit);
@@ -191,10 +191,10 @@ public class ShareActivity extends Activity {
         switch (requestCode) {
             case REQUEST_STORAGE_PERMISSIONS: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    AnalyticsUtils.AnalyticEvent(mActivity, "Permission", "Granted");
+//                    AnalyticsUtils.AnalyticEvent(mActivity, "Permission", "Granted");
                     recreate();
                 } else {
-                    AnalyticsUtils.AnalyticEvent(mActivity, "Permission", "Denied");
+//                    AnalyticsUtils.AnalyticEvent(mActivity, "Permission", "Denied");
                     Toasty.error(mContext, "Permission Denied", Toast.LENGTH_SHORT, true).show();
                 }
             }
@@ -350,7 +350,7 @@ public class ShareActivity extends Activity {
                     mContext.startService(saveNote);
                     finish();
                 } else if (!TextUtils.isEmpty(editText.getText().toString().trim())) {
-                    AnalyticsUtils.AnalyticEvent(mActivity, "SaveNote", "Text");
+//                    AnalyticsUtils.AnalyticEvent(mActivity, "SaveNote", "Text");
                     Intent saveNote = new Intent(mContext, SaveNoteService.class);
                     saveNote.putExtra(Constants.BODY, editText.getText().toString().trim());
                     saveNote.setAction(Constants.NEW_NOTE);
@@ -362,7 +362,7 @@ public class ShareActivity extends Activity {
             } else if (noteType.startsWith("image/")) {
                 if (imageUri != null) {
                     Log.d("Image URI", String.valueOf(imageUri));
-                    AnalyticsUtils.AnalyticEvent(mActivity, "SaveImage", "Image");
+//                    AnalyticsUtils.AnalyticEvent(mActivity, "SaveImage", "Image");
                     String savePath = getFilesDir() + "/.Pictures";
                     Intent savePicture = new Intent(mContext, SaveImageService.class);
                     savePicture.putExtra(Constants.SOURCE_PATH, imageUri.toString());

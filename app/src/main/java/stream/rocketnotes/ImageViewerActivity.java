@@ -33,7 +33,7 @@ public class ImageViewerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this.getApplicationContext();
-        InitializeAnalytics();
+//        InitializeAnalytics();
         /**
          * IMPORTANT! Enable the configuration below, if you expect to open really large images.
          * Also you can add the {@code android:largeHeap="true"} to Manifest file to avoid an OOM error.*/

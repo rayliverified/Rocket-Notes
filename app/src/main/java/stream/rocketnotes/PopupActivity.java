@@ -25,7 +25,7 @@ import com.pyze.android.Pyze;
 import java.util.ArrayList;
 
 import stream.rocketnotes.service.SaveNoteService;
-import stream.rocketnotes.utils.AnalyticsUtils;
+//import stream.rocketnotes.utils.AnalyticsUtils;
 
 public class PopupActivity extends Activity {
 
@@ -66,7 +66,7 @@ public class PopupActivity extends Activity {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
         mContext = getApplicationContext();
-        InitializeAnalytics();
+//        InitializeAnalytics();
         noteStatus = getIntent().getAction();
 
         //Focus defaults to editText, set again just in case
@@ -86,7 +86,7 @@ public class PopupActivity extends Activity {
 //        UXCam.occludeSensitiveView(editText);
 
         if (getIntent().getAction().equals(Constants.NEW_NOTE)) {
-            AnalyticsUtils.AnalyticEvent(mActivity, "Note Type", Constants.NEW_NOTE);
+//            AnalyticsUtils.AnalyticEvent(mActivity, "Note Type", Constants.NEW_NOTE);
 
             editText.setHint(R.string.edit_hint);
             editDetails.setText("New Note • now");
@@ -185,7 +185,7 @@ public class PopupActivity extends Activity {
                 }
             });
         } else if (getIntent().getAction().equals(Constants.OPEN_NOTE)) {
-            AnalyticsUtils.AnalyticEvent(mActivity, "Note Type", Constants.OPEN_NOTE);
+//            AnalyticsUtils.AnalyticEvent(mActivity, "Note Type", Constants.OPEN_NOTE);
 
             noteID = getIntent().getIntExtra(Constants.ID, -1);
             Log.d("Received Note ID", String.valueOf(noteID));
