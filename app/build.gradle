@@ -7,8 +7,9 @@ android {
         applicationId "stream.rocketnotes"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 20
-        versionName "1.5.1"
+        versionCode 21
+        versionName "1.6.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -37,7 +38,7 @@ dependencies {
     }
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.github.searchy2:CustomPermissionsDialogue:1.9.0'
-    implementation 'com.github.searchy2:CustomAlertViewDialogue:2.4.0'
+    implementation 'com.github.searchy2:CustomAlertViewDialogue:2.4.2'
     implementation 'com.github.searchy2:AndroidCrossPromotion:1.7.0'
 
     implementation 'androidx.appcompat:appcompat:1.0.0-alpha3'
