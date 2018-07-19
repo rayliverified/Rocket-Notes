@@ -5,8 +5,8 @@
         android:enabled="true"
         android:icon="@drawable/icon_edit_shortcut"
         android:shortcutId="newnote"
-        android:shortcutShortLabel="@string/newnote_title_long"
-        android:shortcutLongLabel="@string/newnote_title_short"
+        android:shortcutShortLabel="@string/newnote_title_short"
+        android:shortcutLongLabel="@string/newnote_title_long"
         tools:targetApi="n_mr1">
         <intent
             android:action="NEW_NOTE"
@@ -17,8 +17,8 @@
         android:enabled="true"
         android:icon="@drawable/icon_camera_shortcut"
         android:shortcutId="newimage"
-        android:shortcutShortLabel="@string/newimage_title_long"
-        android:shortcutLongLabel="@string/newimage_title_short"
+        android:shortcutShortLabel="@string/newimage_title_short"
+        android:shortcutLongLabel="@string/newimage_title_long"
         tools:targetApi="n_mr1">
         <intent
             android:action="android.intent.action.VIEW"
