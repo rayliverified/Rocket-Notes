@@ -52,6 +52,8 @@ public class SettingsFragment extends PreferenceFragment {
     private PreferenceCategory mSocialGroup;
     private PreferenceCategory mAboutGroup;
 
+    private Preference itemFAQ;
+
     private SwitchPreference showQuickActions;
     private SwitchPreference enableFastScroller;
 
@@ -90,6 +92,8 @@ public class SettingsFragment extends PreferenceFragment {
         mSocialGroup = (PreferenceCategory) findPreference("header_social");
         mAboutGroup = (PreferenceCategory) findPreference("header_about");
 
+        itemFAQ = findPreference("settings_faq");
+
         showQuickActions = (SwitchPreference) findPreference("show_quickactions");
         enableFastScroller = (SwitchPreference) findPreference("enable_fastscroller");
 
@@ -104,6 +108,17 @@ public class SettingsFragment extends PreferenceFragment {
         itemTerms = findPreference("settings_terms");
         itemPrivacy = findPreference("settings_privacy");
         itemThanks = findPreference("settings_thanks");
+
+        itemFAQ.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(mContext, WebViewActivity.class);
+                intent.putExtra(Constants.TITLE, "Tutorial");
+                intent.putExtra(Constants.URL, mContext.getString(R.string.faq));
+                mContext.startActivity(intent);
+                return false;
+            }
+        });
 
         showQuickActions.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

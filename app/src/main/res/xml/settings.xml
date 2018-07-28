@@ -2,6 +2,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
                   android:key="preferenceScreen">
 
+    <Preference
+        android:key="settings_faq"
+        android:title="FAQ"/>
+
     <PreferenceCategory
         android:key="header_appearance"
         android:title="Appearance">

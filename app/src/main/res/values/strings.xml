@@ -2,6 +2,7 @@
     <string name="app_name">Rocket Notes</string>
 
     <!-- Settings Page -->
+    <string name="faq">file:///android_asset/website/faq.html</string>
     <string name="loading">Loading&#8230;</string>
     <string name="loading_backup_database">Backing up notes&#8230;</string>
     <string name="loading_restore_database">Restoring notes&#8230;</string>
