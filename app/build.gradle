@@ -41,11 +41,11 @@ dependencies {
     implementation 'com.github.searchy2:CustomAlertViewDialogue:2.4.2'
     implementation 'com.github.searchy2:AndroidCrossPromotion:1.7.0'
 
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation 'androidx.appcompat:appcompat:1.0.0-rc01'
     implementation 'androidx.multidex:multidex:2.0.0'
-    implementation 'com.google.android.material:material:1.0.0-beta01'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0-beta01'
-    implementation 'androidx.cardview:cardview:1.0.0-beta01'
+    implementation 'com.google.android.material:material:1.0.0-rc01'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0-rc01'
+    implementation 'androidx.cardview:cardview:1.0.0-rc01'
     implementation 'com.android.volley:volley:1.1.0'
 
     implementation 'com.afollestad:material-camera:0.4.5' //https://github.com/afollestad/material-camera
