@@ -33,6 +33,5 @@ public interface Constants {
     String URL = "URL";
     String TITLE = "TITLE";
     String AUTHORITY = "stream.rocketnotes.provider";
-    String FLURRY_API_KEY = "FQY6KKKN77CZYWWB9KPV";
     String UXCAM_API_KEY = "0cbfb20ca44be10";
 }

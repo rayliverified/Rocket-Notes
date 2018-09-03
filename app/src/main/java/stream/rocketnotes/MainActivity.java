@@ -23,7 +23,6 @@ import android.widget.Toast;
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
-import com.flurry.android.FlurryAgent;
 import com.google.android.material.appbar.AppBarLayout;
 import com.pyze.android.Pyze;
 import com.pyze.android.PyzeEvents;
@@ -653,30 +652,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void SessionDetails() {
-        Map<String, String> params = new HashMap<String, String>();
         HashMap<String, Object> attributes = new HashMap<>();
 
         int ids[] = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, ImageWidget.class));
         if (ids.length > 0) {
-            params.put("Image Widget", String.valueOf(true));
             attributes.put("Image Widget", String.valueOf(true));
         } else {
-            params.put("Image Widget", String.valueOf(false));
             attributes.put("Image Widget", String.valueOf(false));
         }
         ids = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, NotesWidget.class));
         if (ids.length > 0) {
-            params.put("Notes Widget", String.valueOf(true));
             attributes.put("Notes Widget", String.valueOf(true));
         } else {
-            params.put("Notes Widget", String.valueOf(false));
             attributes.put("Notes Widget", String.valueOf(false));
         }
 
-        //Flurry
-        params.put("Note Count", String.valueOf(mNoteCount));
-        params.put("Image Count", String.valueOf(mImageCount));
-        FlurryAgent.logEvent(mActivity, params);
         //Pyze
         attributes.put("Note Count", String.valueOf(mNoteCount));
         attributes.put("Image Count", String.valueOf(mImageCount));
@@ -684,11 +674,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void InitializeAnalytics() {
-        if (!FlurryAgent.isSessionActive()) {
-            new FlurryAgent.Builder()
-                    .withLogEnabled(true)
-                    .build(this, Constants.FLURRY_API_KEY);
-        }
         Pyze.initialize(getApplication());
 //        UXCam.startWithKey(Constants.UXCAM_API_KEY);
     }

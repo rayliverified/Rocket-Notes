@@ -68,7 +68,7 @@ dependencies {
     implementation 'org.zeroturnaround:zt-zip:1.13' //https://github.com/zeroturnaround/zt-zip
     implementation 'com.github.Kennyc1012:BottomSheet:2.3.4' //https://github.com/Kennyc1012/BottomSheet
     implementation 'com.zxy.android:tiny:0.1.0' //https://github.com/Sunzxyong/Tiny
-    implementation 'com.flurry.android:analytics:8.1.0'
+    implementation 'com.pyze:PyzeLibrary:4.5.0'
     //Custom filter chips from https://github.com/claudiodegio/MsvSearch
     //Image viewer from https://github.com/stfalcon-studio/FrescoImageViewer
 }

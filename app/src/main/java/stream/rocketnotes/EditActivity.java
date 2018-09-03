@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
 import com.pyze.android.Pyze;
 
 import es.dmoral.toasty.Toasty;
@@ -274,11 +273,6 @@ public class EditActivity extends AppCompatActivity {
     }
 
     public void InitializeAnalytics() {
-        if (FlurryAgent.isSessionActive() == false) {
-            new FlurryAgent.Builder()
-                    .withLogEnabled(true)
-                    .build(this, Constants.FLURRY_API_KEY);
-        }
         Pyze.initialize(getApplication());
 //        UXCam.startWithKey(Constants.UXCAM_API_KEY);
 //        UXCam.occludeSensitiveScreen(true);

@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 
 import com.afollestad.materialcamera.MaterialCamera;
-import com.flurry.android.FlurryAgent;
 import com.pyze.android.Pyze;
 
 import java.io.File;
@@ -93,11 +92,6 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     public void InitializeAnalytics() {
-        if (FlurryAgent.isSessionActive() == false) {
-            new FlurryAgent.Builder()
-                    .withLogEnabled(true)
-                    .build(this, Constants.FLURRY_API_KEY);
-        }
         Pyze.initialize(getApplication());
 //        UXCam.startWithKey(Constants.UXCAM_API_KEY);
 //        UXCam.occludeSensitiveScreen(true);

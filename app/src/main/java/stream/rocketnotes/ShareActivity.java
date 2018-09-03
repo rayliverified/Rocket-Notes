@@ -26,7 +26,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
 import com.github.ybq.android.spinkit.style.Wave;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
@@ -436,11 +435,6 @@ public class ShareActivity extends Activity {
     }
 
     public void InitializeAnalytics() {
-        if (FlurryAgent.isSessionActive() == false) {
-            new FlurryAgent.Builder()
-                    .withLogEnabled(true)
-                    .build(this, Constants.FLURRY_API_KEY);
-        }
         Pyze.initialize(getApplication());
 //        UXCam.startWithKey(Constants.UXCAM_API_KEY);
 //        UXCam.occludeSensitiveScreen(true);

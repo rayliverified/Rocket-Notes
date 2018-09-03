@@ -19,7 +19,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.flurry.android.FlurryAgent;
 import com.pyze.android.Pyze;
 
 import java.util.ArrayList;
@@ -306,11 +305,6 @@ public class PopupActivity extends Activity {
     }
 
     public void InitializeAnalytics() {
-        if (FlurryAgent.isSessionActive() == false) {
-            new FlurryAgent.Builder()
-                    .withLogEnabled(true)
-                    .build(this, Constants.FLURRY_API_KEY);
-        }
         Pyze.initialize(getApplication());
 //        UXCam.startWithKey(Constants.UXCAM_API_KEY);
     }

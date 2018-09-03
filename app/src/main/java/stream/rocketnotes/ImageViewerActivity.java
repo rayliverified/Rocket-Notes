@@ -11,7 +11,6 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
-import com.flurry.android.FlurryAgent;
 import com.pyze.android.Pyze;
 
 import org.greenrobot.eventbus.EventBus;
@@ -152,11 +151,6 @@ public class ImageViewerActivity extends AppCompatActivity {
     }
 
     public void InitializeAnalytics() {
-        if (FlurryAgent.isSessionActive() == false) {
-            new FlurryAgent.Builder()
-                    .withLogEnabled(true)
-                    .build(this, Constants.FLURRY_API_KEY);
-        }
         Pyze.initialize(getApplication());
 //        UXCam.startWithKey(Constants.UXCAM_API_KEY);
 //        UXCam.occludeSensitiveScreen(true);

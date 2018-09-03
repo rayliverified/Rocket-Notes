@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
 import com.pyze.android.Pyze;
 
 import stream.rocketnotes.utils.AnalyticsUtils;
@@ -164,11 +163,6 @@ public class WebViewActivity extends AppCompatActivity {
     }
 
     public void InitializeAnalytics() {
-        if (!FlurryAgent.isSessionActive()) {
-            new FlurryAgent.Builder()
-                    .withLogEnabled(true)
-                    .build(this, Constants.FLURRY_API_KEY);
-        }
         Pyze.initialize(getApplication());
 //        UXCam.startWithKey(Constants.UXCAM_API_KEY);
 
