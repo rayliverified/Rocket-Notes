@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "stream.rocketnotes"
         minSdkVersion 16
@@ -37,15 +36,15 @@ dependencies {
         all*.exclude group: 'com.android.support', module: 'support-v13'
     }
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.github.searchy2:CustomPermissionsDialogue:1.9.0'
-    implementation 'com.github.searchy2:CustomAlertViewDialogue:2.4.2'
-    implementation 'com.github.searchy2:AndroidCrossPromotion:1.7.0'
+    implementation 'com.github.searchy2:CustomPermissionsDialogue:2.0.0'
+    implementation 'com.github.searchy2:CustomAlertViewDialogue:2.5.0'
+    implementation 'com.github.searchy2:AndroidCrossPromotion:1.8.0'
 
-    implementation 'androidx.appcompat:appcompat:1.0.0-rc01'
+    implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation 'com.google.android.material:material:1.0.0-rc01'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0-rc01'
-    implementation 'androidx.cardview:cardview:1.0.0-rc01'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0-rc02'
+    implementation 'androidx.cardview:cardview:1.0.0-rc02'
     implementation 'com.android.volley:volley:1.1.0'
 
     implementation 'com.afollestad:material-camera:0.4.5' //https://github.com/afollestad/material-camera
@@ -70,7 +69,6 @@ dependencies {
     implementation 'com.github.Kennyc1012:BottomSheet:2.3.4' //https://github.com/Kennyc1012/BottomSheet
     implementation 'com.zxy.android:tiny:0.1.0' //https://github.com/Sunzxyong/Tiny
     implementation 'com.flurry.android:analytics:8.1.0'
-    implementation 'com.pyze:PyzeLibrary:4.1.0'
     //Custom filter chips from https://github.com/claudiodegio/MsvSearch
     //Image viewer from https://github.com/stfalcon-studio/FrescoImageViewer
 }
