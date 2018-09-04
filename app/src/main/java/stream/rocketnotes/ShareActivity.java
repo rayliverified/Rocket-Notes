@@ -91,7 +91,7 @@ public class ShareActivity extends Activity {
         lp.copyFrom(window.getAttributes()); //Inherit transparent window attributes
         lp.width = WindowManager.LayoutParams.MATCH_PARENT; //Floating window WRAPS_CONTENT by default. Force fullscreen
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.y = Units.dpToPx(mContext, 35); // top margin
+        lp.y = Units.dpToPx(35); // top margin
         lp.gravity = (Gravity.TOP);
         window.setAttributes(lp);
 

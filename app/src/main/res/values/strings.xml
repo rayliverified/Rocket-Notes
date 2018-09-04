@@ -2,6 +2,7 @@
     <string name="app_name">Rocket Notes</string>
 
     <!-- Settings Page -->
+    <string name="copyrightText">Copyright © %1$d Straight Up</string>
     <string name="loading">Loading&#8230;</string>
     <string name="loading_backup_database">Backing up notes&#8230;</string>
     <string name="loading_restore_database">Restoring notes&#8230;</string>
@@ -10,10 +11,12 @@
     <string name="settings_privacy">Privacy Policy</string>
     <string name="settings_thanks">Acknowledgements</string>
     <string name="settings_contact">Contact us</string>
-    <string name="url_tos">http://apprewards.org/rocketnotes/tos.html</string>
-    <string name="url_privacy">http://apprewards.org/rocketnotes/privacy.html</string>
-    <string name="url_thanks">http://apprewards.org/rocketnotes/thanks.html</string>
+    <string name="url_tos">https://straightup.fun/rocketnotes/tos.html</string>
+    <string name="url_privacy">https://straightup.fun/rocketnotes/privacy.html</string>
+    <string name="url_thanks">https://straightup.fun/rocketnotes/thanks.html</string>
     <string name="webview_error">Uh oh…something went wrong.</string>
+    <string name="more_apps_title">More Developer Apps</string>
+    <string name="more_apps_description">Other great Straight Up apps!</string>
 
     <string name="camera_retake">Retake</string>
     <string name="camera_save">Save</string>
@@ -32,7 +35,7 @@
     <string name="editpage_title">Edit Note</string>
     <string name="settingspage_title">Settings</string>
 
-    <string name="email_mailto">support@apprewards.org</string>
+    <string name="email_mailto">support@straightup.fun</string>
     <string name="email_subject">Rocket Notes Feedback</string>
-    <string name="email_message">Send to: support@apprewards.org\nFeedback:\n</string>
+    <string name="email_message">Send to: support@straightup.fun\nFeedback:\n</string>
 </resources>

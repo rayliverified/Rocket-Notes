@@ -47,8 +47,8 @@
 
         <Preference
             android:key="settings_moreapps"
-            android:title="More Apps"
-            android:summary="Other great apps from Stream!"/>
+            android:title="@string/more_apps_title"
+            android:summary="@string/more_apps_description"/>
 
         <Preference
             android:key="settings_contact_us"

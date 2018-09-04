@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import es.dmoral.toasty.Toasty;
@@ -274,7 +275,7 @@ public class SettingsFragment extends PreferenceFragment {
                 Intent intent = new Intent(mContext, stream.crosspromotion.AdActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(AdActivity.AD_DEVELOPER_ID, getString(R.string.developer_id));
-                intent.putExtra(AdActivity.AD_TITLE, "More Apps from Stream");
+                intent.putExtra(AdActivity.AD_TITLE, getString(R.string.more_apps_title));
                 mContext.startActivity(intent);
 
                 return true;
@@ -290,7 +291,7 @@ public class SettingsFragment extends PreferenceFragment {
                 CustomAlertDialogue.Builder alert = new CustomAlertDialogue.Builder(getActivity())
                         .setStyle(CustomAlertDialogue.Style.DIALOGUE)
                         .setTitle(mContext.getString(R.string.app_name) + " " + BuildConfig.VERSION_NAME)
-                        .setMessage("© Copyright 2018-2019 Stream Inc")
+                        .setMessage(String.format(getString(R.string.copyrightText), Calendar.getInstance().get(Calendar.YEAR)))
                         .setNegativeText("OK")
                         .setNegativeColor(R.color.positive)
                         .setNegativeTypeface(Typeface.DEFAULT_BOLD)
