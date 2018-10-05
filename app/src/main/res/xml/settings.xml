@@ -19,6 +19,13 @@
             android:summary="Enable a draggable handle to scroll through notes quickly"
             android:defaultValue="false">
         </SwitchPreference>
+
+        <SwitchPreference
+            android:key="enable_popup_fullscreen"
+            android:title="Enable fullscreen Quick Notes"
+            android:summary="Disable if Quick Notes is not appearing correctly"
+            android:defaultValue="true">
+        </SwitchPreference>
     </PreferenceCategory>
 
     <PreferenceCategory

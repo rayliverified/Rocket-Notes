@@ -3,8 +3,10 @@ package stream.rocketnotes;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -35,6 +37,7 @@ public class PopupActivity extends Activity {
     private Integer noteID;
     private boolean savedNote = false;
     private String mActivity = this.getClass().getSimpleName();
+    SharedPreferences sharedPref;
     private Context mContext;
 
     @Override
@@ -43,6 +46,8 @@ public class PopupActivity extends Activity {
 
         View view = getLayoutInflater().inflate(R.layout.activity_popup, null);
         setContentView(view);
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         //Configure floating window
         Window window = getWindow();
@@ -54,7 +59,9 @@ public class PopupActivity extends Activity {
 
         //Flag allows window to overlap status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            if (sharedPref.getBoolean("enable_popup_fullscreen", true)) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            }
         }
 
         //FLAG_NOT_TOUCH_MODAL passes through touch events to objects underneath view

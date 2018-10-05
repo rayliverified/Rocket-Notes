@@ -55,6 +55,7 @@ public class SettingsFragment extends PreferenceFragment {
 
     private SwitchPreference showQuickActions;
     private SwitchPreference enableFastScroller;
+    private SwitchPreference enablePopupFullscreen;
 
     private Preference itemLocalBackup;
     private Preference itemLocalRestore;
@@ -93,6 +94,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         showQuickActions = (SwitchPreference) findPreference("show_quickactions");
         enableFastScroller = (SwitchPreference) findPreference("enable_fastscroller");
+        enablePopupFullscreen = (SwitchPreference) findPreference("enable_popup_fullscreen");
 
         itemLocalBackup = findPreference("settings_local_backup");
         itemLocalRestore = findPreference("settings_local_restore");
