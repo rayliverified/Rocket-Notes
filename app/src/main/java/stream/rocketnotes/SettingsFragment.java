@@ -8,14 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.Preference;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
-import android.preference.SwitchPreference;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -37,13 +32,19 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
+import androidx.preference.PreferenceScreen;
+import androidx.preference.SwitchPreference;
 import es.dmoral.toasty.Toasty;
 import stream.crosspromotion.AdActivity;
 import stream.customalert.CustomAlertDialogue;
 import stream.rocketnotes.utils.AnalyticsUtils;
 import stream.rocketnotes.utils.FileUtils;
 
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragmentCompat {
 
     private ProgressDialog pDialog;
 
@@ -75,9 +76,7 @@ public class SettingsFragment extends PreferenceFragment {
     private final String mActivity = getClass().getSimpleName();
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         mContext = getActivity().getApplicationContext();
         dbHelper = new DatabaseHelper(mContext);
 
@@ -124,6 +123,7 @@ public class SettingsFragment extends PreferenceFragment {
                 return false;
             }
         });
+        enablePopupFullscreen.setVisible((Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP));
 
         //Backup
         itemLocalBackup.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

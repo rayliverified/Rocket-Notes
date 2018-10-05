@@ -58,7 +58,7 @@ public class PopupActivity extends Activity {
         getWindow().setAttributes(lp);
 
         //Flag allows window to overlap status bar
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             if (sharedPref.getBoolean("enable_popup_fullscreen", true)) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             }

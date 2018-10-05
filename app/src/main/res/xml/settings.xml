@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
                   android:key="preferenceScreen">
 
     <PreferenceCategory
@@ -10,21 +11,24 @@
             android:key="show_quickactions"
             android:title="Show quick actions"
             android:summary="Display quick actions on note cards"
-            android:defaultValue="true">
+            android:defaultValue="true"
+            app:iconSpaceReserved="false">
         </SwitchPreference>
 
         <SwitchPreference
             android:key="enable_fastscroller"
             android:title="Enable fast scroller"
             android:summary="Enable a draggable handle to scroll through notes quickly"
-            android:defaultValue="false">
+            android:defaultValue="false"
+            app:iconSpaceReserved="false">
         </SwitchPreference>
 
         <SwitchPreference
             android:key="enable_popup_fullscreen"
             android:title="Enable fullscreen Quick Notes"
             android:summary="Disable if Quick Notes is not appearing correctly"
-            android:defaultValue="true">
+            android:defaultValue="true"
+            app:iconSpaceReserved="false">
         </SwitchPreference>
     </PreferenceCategory>
 
@@ -35,17 +39,20 @@
         <Preference
             android:key="settings_local_backup"
             android:title="Backup Notes"
-            android:summary="Backup all text and image notes to selected location"/>
+            android:summary="Backup all text and image notes to selected location"
+            app:iconSpaceReserved="false"/>
 
         <Preference
             android:key="settings_local_restore"
             android:title="Restore Notes"
-            android:summary="Restore notes from backup file"/>
+            android:summary="Restore notes from backup file"
+            app:iconSpaceReserved="false"/>
 
         <Preference
             android:key="settings_cache_image"
             android:title="Refresh Image Cache"
-            android:summary="Delete and then regenerate image thumbnails"/>
+            android:summary="Delete and then regenerate image thumbnails"
+            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -55,12 +62,14 @@
         <Preference
             android:key="settings_moreapps"
             android:title="@string/more_apps_title"
-            android:summary="@string/more_apps_description"/>
+            android:summary="@string/more_apps_description"
+            app:iconSpaceReserved="false"/>
 
         <Preference
             android:key="settings_contact_us"
             android:title="Contact Us"
-            android:summary="Send us your feedback!"/>
+            android:summary="Send us your feedback!"
+            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -69,18 +78,22 @@
 
         <Preference
             android:key="settings_version"
-            android:title="Version"/>
+            android:title="Version"
+            app:iconSpaceReserved="false"/>
 
         <Preference
             android:key="settings_terms"
-            android:title="Terms of Service"/>
+            android:title="Terms of Service"
+            app:iconSpaceReserved="false"/>
 
         <Preference
             android:key="settings_privacy"
-            android:title="Privacy"/>
+            android:title="Privacy"
+            app:iconSpaceReserved="false"/>
 
         <Preference
             android:key="settings_thanks"
-            android:title="Acknowledgements"/>
+            android:title="Acknowledgements"
+            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
 </PreferenceScreen>

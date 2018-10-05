@@ -43,6 +43,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.android.volley:volley:1.1.0'
+    implementation 'androidx.preference:preference:1.0.0'
 
     implementation 'com.afollestad:material-camera:0.4.5' //https://github.com/afollestad/material-camera
     implementation 'com.facebook.fresco:fresco:1.10.0'

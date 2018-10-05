@@ -1,12 +1,13 @@
 package stream.rocketnotes;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceFragmentCompat;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -19,7 +20,7 @@ public class SettingsActivity extends AppCompatActivity {
     ImageButton mBtnToolbar;
     TextView mToolbarTitle;
 
-    PreferenceFragment fragment;
+    PreferenceFragmentCompat fragment;
 
     Context mContext;
     public final String mActivity = this.getClass().getSimpleName();
@@ -33,14 +34,14 @@ public class SettingsActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
 
-            fragment = (PreferenceFragment) getFragmentManager().getFragment(savedInstanceState, "currentFragment");
+            fragment = (PreferenceFragmentCompat) getSupportFragmentManager().getFragment(savedInstanceState, "currentFragment");
 
         } else {
 
             fragment = new SettingsFragment();
         }
 
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.settings_content, fragment).commit();
     }
 
@@ -49,7 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         super.onSaveInstanceState(outState);
 
-        getFragmentManager().putFragment(outState, "currentFragment", fragment);
+        getSupportFragmentManager().putFragment(outState, "currentFragment", fragment);
     }
 
 
