@@ -6,6 +6,6 @@ import com.google.firebase.firestore.DocumentReference;
 
 public interface FirestoreInterface {
 
-    OnSuccessListener<DocumentReference> getSuccessListener();
+    public void onSuccess();
     OnFailureListener getFailureListener();
 }

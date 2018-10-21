@@ -139,6 +139,7 @@ public class SaveNoteService extends Service {
                 if (isSuccess)
                 {
                     Log.d("Compressed Path", outfile);
+                    notesItem.setImagePreview("file://" + outfile);
                     dbHelper.UpdateImagePreview(image, "file://" + outfile);
                     UpdateImageWidget();
                     SaveNoteCloud();
@@ -155,13 +156,8 @@ public class SaveNoteService extends Service {
         Log.d(TAG, "SaveNoteCloud");
         FirestoreInterface firestoreInterface = new FirestoreInterface() {
             @Override
-            public OnSuccessListener<DocumentReference> getSuccessListener() {
-                return new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot successfully written!");
-                    }
-                };
+            public void onSuccess() {
+                Log.d(TAG, "Success!");
             }
 
             @Override
