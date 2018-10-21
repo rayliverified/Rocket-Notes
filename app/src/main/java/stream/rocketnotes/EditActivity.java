@@ -47,7 +47,7 @@ public class EditActivity extends AppCompatActivity {
         ActionBar();
         Window window = getWindow();
         mContext = getApplicationContext();
-        InitializeAnalytics();
+        AnalyticsUtils.InitializeAnalytics(getApplication());
         noteStatus = getIntent().getAction();
         Log.d("Intent Action", noteStatus);
 
@@ -270,11 +270,5 @@ public class EditActivity extends AppCompatActivity {
                 finish();
             }
         });
-    }
-
-    public void InitializeAnalytics() {
-        Pyze.initialize(getApplication());
-//        UXCam.startWithKey(Constants.UXCAM_API_KEY);
-//        UXCam.occludeSensitiveScreen(true);
     }
 }

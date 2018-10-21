@@ -72,7 +72,7 @@ public class PopupActivity extends Activity {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
         mContext = getApplicationContext();
-//        InitializeAnalytics();
+//        AnalyticsUtils.InitializeAnalytics(getApplication());
         noteStatus = getIntent().getAction();
 
         //Focus defaults to editText, set again just in case
@@ -309,10 +309,5 @@ public class PopupActivity extends Activity {
 
         // Delegate everything else to Activity.
         return super.onTouchEvent(event);
-    }
-
-    public void InitializeAnalytics() {
-        Pyze.initialize(getApplication());
-//        UXCam.startWithKey(Constants.UXCAM_API_KEY);
     }
 }

@@ -32,7 +32,7 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getApplicationContext();
-        InitializeAnalytics();
+        AnalyticsUtils.InitializeAnalytics(getApplication());
         //Camera usage requires camera and storage permission.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -89,11 +89,5 @@ public class CameraActivity extends AppCompatActivity {
             getApplicationContext().startService(saveNote);
         }
         finish();
-    }
-
-    public void InitializeAnalytics() {
-        Pyze.initialize(getApplication());
-//        UXCam.startWithKey(Constants.UXCAM_API_KEY);
-//        UXCam.occludeSensitiveScreen(true);
     }
 }

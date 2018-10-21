@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                     .build();
             alertPermissions.show();
         }
-        InitializeAnalytics();
+        AnalyticsUtils.InitializeAnalytics(getApplication());
         Pyze.showInAppNotificationUI(this, null);
         dbHelper = new DatabaseHelper(mContext);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -128,7 +128,9 @@ public class MainActivity extends AppCompatActivity {
                 EventBus.getDefault().removeStickyEvent(stickyEvent);
             }
         }
-        SessionDetails();
+        if (Constants.ANALYTICS_ENABLED) {
+            SessionDetails();
+        }
         Log.d("MainActivity", "onCreate");
     }
 
@@ -670,10 +672,5 @@ public class MainActivity extends AppCompatActivity {
         attributes.put("Note Count", String.valueOf(mNoteCount));
         attributes.put("Image Count", String.valueOf(mImageCount));
         PyzeEvents.postCustomEventWithAttributes(mActivity, attributes);
-    }
-
-    public void InitializeAnalytics() {
-        Pyze.initialize(getApplication());
-//        UXCam.startWithKey(Constants.UXCAM_API_KEY);
     }
 }

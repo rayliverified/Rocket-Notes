@@ -107,7 +107,7 @@ public class ShareActivity extends Activity {
         //Hides keyboard from focusing on editText when Activity starts
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-//        InitializeAnalytics();
+//        InitializeAnalytics(getApplication());
 
         //Focus defaults to editText, set again just in case
         editText = findViewById(R.id.edit_edit);
@@ -432,11 +432,5 @@ public class ShareActivity extends Activity {
     private void LoadNotes() {
         NoteList.addAll(dbHelper.GetTextNotes(Constants.RECENT_NOTES));
         mAdapter.notifyDataSetChanged();
-    }
-
-    public void InitializeAnalytics() {
-        Pyze.initialize(getApplication());
-//        UXCam.startWithKey(Constants.UXCAM_API_KEY);
-//        UXCam.occludeSensitiveScreen(true);
     }
 }

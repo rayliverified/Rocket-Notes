@@ -32,7 +32,7 @@ public class ImageViewerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this.getApplicationContext();
-//        InitializeAnalytics();
+//        InitializeAnalytics(getApplication());
         /**
          * IMPORTANT! Enable the configuration below, if you expect to open really large images.
          * Also you can add the {@code android:largeHeap="true"} to Manifest file to avoid an OOM error.*/
@@ -148,11 +148,5 @@ public class ImageViewerActivity extends AppCompatActivity {
         notesItems.add(note);
 
         return notesItems;
-    }
-
-    public void InitializeAnalytics() {
-        Pyze.initialize(getApplication());
-//        UXCam.startWithKey(Constants.UXCAM_API_KEY);
-//        UXCam.occludeSensitiveScreen(true);
     }
 }

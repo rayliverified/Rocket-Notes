@@ -41,8 +41,8 @@ public class WebViewActivity extends AppCompatActivity {
         Intent i = getIntent();
         sUrl = i.getStringExtra(Constants.URL);
         sTitle = i.getStringExtra(Constants.TITLE);
-        InitializeAnalytics();
-
+        AnalyticsUtils.InitializeAnalytics(getApplication());
+        AnalyticsUtils.AnalyticEvent(mActivity, "Title", sTitle);
 
         mErrorText = findViewById(R.id.webview_error_text);
         mErrorText.setOnClickListener(new View.OnClickListener() {
@@ -160,12 +160,5 @@ public class WebViewActivity extends AppCompatActivity {
         Log.d(mActivity, "Content");
         mWebView.setVisibility(View.VISIBLE);
         mErrorText.setVisibility(View.GONE);
-    }
-
-    public void InitializeAnalytics() {
-        Pyze.initialize(getApplication());
-//        UXCam.startWithKey(Constants.UXCAM_API_KEY);
-
-        AnalyticsUtils.AnalyticEvent(mActivity, "Title", sTitle);
     }
 }
