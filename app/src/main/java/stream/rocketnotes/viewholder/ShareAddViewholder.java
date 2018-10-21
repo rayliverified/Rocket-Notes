@@ -1,4 +1,4 @@
-package stream.rocketnotes;
+package stream.rocketnotes.viewholder;
 
 import android.content.Context;
 import androidx.core.content.ContextCompat;
@@ -14,6 +14,10 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
+import stream.rocketnotes.Constants;
+import stream.rocketnotes.NoteHelper;
+import stream.rocketnotes.NotesItem;
+import stream.rocketnotes.R;
 import stream.rocketnotes.interfaces.ShareAdapterInterface;
 import stream.rocketnotes.interfaces.UpdateMainEvent;
 import stream.rocketnotes.ui.BounceInterpolator;

@@ -33,7 +33,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +54,9 @@ import stream.rocketnotes.filter.FilterMaterialSearchView;
 import stream.rocketnotes.filter.model.Filter;
 import stream.rocketnotes.interfaces.UpdateMainEvent;
 import stream.rocketnotes.utils.AnalyticsUtils;
+import stream.rocketnotes.viewholder.ImageItemViewholder;
+import stream.rocketnotes.viewholder.NoteItemViewholder;
+import stream.rocketnotes.viewholder.WidgetReviewViewholder;
 
 public class MainActivity extends AppCompatActivity {
 
