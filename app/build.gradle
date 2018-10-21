@@ -1,5 +1,6 @@
+import com.google.gms.googleservices.GoogleServicesPlugin
+
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 28
@@ -46,6 +47,7 @@ dependencies {
     implementation 'com.android.volley:volley:1.1.0'
     implementation 'androidx.preference:preference:1.0.0'
     implementation 'com.google.firebase:firebase-firestore:17.1.1'
+    implementation 'com.firebaseui:firebase-ui-auth:4.2.0'
 
     implementation 'com.afollestad:material-camera:0.4.5' //https://github.com/afollestad/material-camera
     implementation 'com.facebook.fresco:fresco:1.11.0'
@@ -72,3 +74,7 @@ dependencies {
     //Custom filter chips from https://github.com/claudiodegio/MsvSearch
     //Image viewer from https://github.com/stfalcon-studio/FrescoImageViewer
 }
+
+apply plugin: 'com.google.gms.google-services'
+GoogleServicesPlugin.config.disableVersionCheck = true
+

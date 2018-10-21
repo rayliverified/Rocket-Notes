@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.appbar.AppBarLayout;
 import com.pyze.android.Pyze;
 import com.pyze.android.PyzeEvents;
@@ -32,6 +33,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -192,29 +195,6 @@ public class MainActivity extends AppCompatActivity {
                 mAdapter.getFastScroller().hideScrollbar();
             }
         }
-
-//        mRecyclerView.setY(Units.dpToPx(mContext, 56));
-//        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                switch (motionEvent.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        break;
-//                    case MotionEvent.ACTION_POINTER_DOWN:
-//                        break;
-//                    case MotionEvent.ACTION_POINTER_UP:
-//                        break;
-//                    case MotionEvent.ACTION_MOVE:
-//                        mRecyclerView.get()
-//                        break;
-//                }
-//                ret
-//                urn false;
-//            }
-//        });
-//        mRecyclerView.addOnScrollListener(new MoveViewOnScrollListener(mRecyclerView));
     }
 
     private void SetupSearchBar() {
@@ -314,10 +294,16 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (item.getItemId()) {
                     case R.id.action_camera:
-                        AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Camera");
+                        // Choose authentication providers
+                        List<AuthUI.IdpConfig> providers = Collections.singletonList(new AuthUI.IdpConfig.EmailBuilder().build());
+                        startActivityForResult(AuthUI.getInstance()
+                                .createSignInIntentBuilder()
+                                .setAvailableProviders(providers)
+                                .build(), 1);
+//                        AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Camera");
                         Intent intent = new Intent(mContext, CameraActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        mContext.startActivity(intent);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        mContext.startActivity(intent);
                         break;
                     case R.id.filter_image:
                         AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Filter Image");
