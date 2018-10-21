@@ -21,7 +21,7 @@ import stream.rocketnotes.ImageWidget;
 import stream.rocketnotes.NotesItem;
 import stream.rocketnotes.NotesWidget;
 import stream.rocketnotes.R;
-import stream.rocketnotes.UpdateMainEvent;
+import stream.rocketnotes.interfaces.UpdateMainEvent;
 
 public class DeleteNoteService extends Service {
     private final String TAG = "SaveNoteService";

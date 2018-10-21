@@ -14,6 +14,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
+import stream.rocketnotes.interfaces.ShareAdapterInterface;
+import stream.rocketnotes.interfaces.UpdateMainEvent;
 import stream.rocketnotes.ui.BounceInterpolator;
 
 public class ShareAddViewholder extends RecyclerView.ViewHolder {

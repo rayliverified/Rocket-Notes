@@ -50,6 +50,7 @@ import stream.custompermissionsdialogue.PermissionsDialogue;
 import stream.custompermissionsdialogue.utils.PermissionUtils;
 import stream.rocketnotes.filter.FilterMaterialSearchView;
 import stream.rocketnotes.filter.model.Filter;
+import stream.rocketnotes.interfaces.UpdateMainEvent;
 import stream.rocketnotes.utils.AnalyticsUtils;
 
 public class MainActivity extends AppCompatActivity {

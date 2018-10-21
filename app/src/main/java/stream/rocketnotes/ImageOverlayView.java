@@ -22,6 +22,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.File;
 
 import es.dmoral.toasty.Toasty;
+import stream.rocketnotes.interfaces.UpdateMainEvent;
 import stream.rocketnotes.service.DeleteNoteService;
 import stream.rocketnotes.service.SaveFileService;
 

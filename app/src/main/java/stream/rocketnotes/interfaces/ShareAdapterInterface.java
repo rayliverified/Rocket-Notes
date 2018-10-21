@@ -1,4 +1,4 @@
-package stream.rocketnotes;
+package stream.rocketnotes.interfaces;
 
 public interface ShareAdapterInterface {
     void ShareNote(Integer position);

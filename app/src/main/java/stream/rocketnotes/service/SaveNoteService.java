@@ -14,7 +14,6 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.zxy.tiny.Tiny;
 import com.zxy.tiny.callback.FileCallback;
 
@@ -22,8 +21,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -34,12 +31,14 @@ import stream.rocketnotes.ImageWidget;
 import stream.rocketnotes.NotesItem;
 import stream.rocketnotes.NotesWidget;
 import stream.rocketnotes.R;
-import stream.rocketnotes.UpdateMainEvent;
+import stream.rocketnotes.interfaces.FirestoreInterface;
+import stream.rocketnotes.interfaces.UpdateMainEvent;
+import stream.rocketnotes.repository.FirestoreRepository;
 import stream.rocketnotes.utils.FileUtils;
 
 public class SaveNoteService extends Service {
 
-    private final String TAG = "SaveNoteService";
+    private final String TAG = this.getClass().getSimpleName();
 
     private NotesItem notesItem = new NotesItem();
     private Integer noteID;
@@ -51,6 +50,7 @@ public class SaveNoteService extends Service {
     private Context mContext = this;
     private DatabaseHelper dbHelper;
     private Calendar calendar;
+    private FirestoreRepository firestoreRepository;
 
     //TODO Logic to handle onStartCommand being called multiple times does not exist.
     @Override
@@ -58,6 +58,7 @@ public class SaveNoteService extends Service {
 
         dbHelper = new DatabaseHelper(mContext);
         calendar = Calendar.getInstance();
+        firestoreRepository = new FirestoreRepository(mContext);
         Log.d(TAG, String.valueOf(notesItem));
 
         getData(intent);
@@ -145,27 +146,28 @@ public class SaveNoteService extends Service {
 
     private void SaveNoteCloud() {
         Log.d(TAG, "SaveNoteCloud");
-        Map<String, Object> note = new HashMap<>();
-        note.put(DatabaseHelper.KEY_ID, notesItem.getNotesID());
-        note.put(DatabaseHelper.KEY_DATE, notesItem.getNotesDate());
-        note.put(DatabaseHelper.KEY_NOTE, notesItem.getNotesNote());
-        note.put(DatabaseHelper.KEY_IMAGE, notesItem.getNotesImage());
-        note.put(DatabaseHelper.KEY_IMAGEPREVIEW, notesItem.getNotesImagePreview());
-
-        FirebaseFirestore firestoreDatabase = FirebaseFirestore.getInstance();
-        firestoreDatabase.collection("notes").add(note)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        FirestoreInterface firestoreInterface = new FirestoreInterface() {
+            @Override
+            public OnSuccessListener<DocumentReference> getSuccessListener() {
+                return new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "DocumentSnapshot successfully written!");
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
+                };
+            }
+
+            @Override
+            public OnFailureListener getFailureListener() {
+                return new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "Error writing document", e);
                     }
-                });
+                };
+            }
+        };
+        firestoreRepository.AddNote(notesItem, firestoreInterface);
     }
 
     private void NotificationSender(NotesItem note) {

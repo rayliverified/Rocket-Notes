@@ -42,6 +42,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import es.dmoral.toasty.Toasty;
+import stream.rocketnotes.interfaces.UpdateMainEvent;
 import stream.rocketnotes.service.SaveImageService;
 import stream.rocketnotes.service.SaveNoteService;
 import stream.rocketnotes.ui.CustomImageView;

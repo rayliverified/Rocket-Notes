@@ -20,6 +20,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 
 import frescoimageviewer.ImageViewer;
+import stream.rocketnotes.interfaces.UpdateMainEvent;
 
 public class ImageViewerActivity extends AppCompatActivity {
 

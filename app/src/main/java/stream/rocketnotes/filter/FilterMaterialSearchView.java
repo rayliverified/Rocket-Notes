@@ -18,7 +18,7 @@ import java.util.List;
 
 import stream.rocketnotes.Constants;
 import stream.rocketnotes.R;
-import stream.rocketnotes.UpdateMainEvent;
+import stream.rocketnotes.interfaces.UpdateMainEvent;
 import stream.rocketnotes.filter.model.Filter;
 
 public class FilterMaterialSearchView extends FrameLayout implements RecyclerItemClickListener.OnItemClickListener {

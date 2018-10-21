@@ -1,4 +1,6 @@
-package stream.rocketnotes;
+package stream.rocketnotes.interfaces;
+
+import stream.rocketnotes.NotesItem;
 
 public class UpdateMainEvent {
 

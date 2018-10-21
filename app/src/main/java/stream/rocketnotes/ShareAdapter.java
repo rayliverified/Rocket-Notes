@@ -2,6 +2,8 @@ package stream.rocketnotes;
 
 import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;
+import stream.rocketnotes.interfaces.ShareAdapterInterface;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
