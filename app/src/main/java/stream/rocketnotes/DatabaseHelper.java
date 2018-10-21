@@ -26,12 +26,12 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     private static final int DBVersion = 2;
     private static final String DBName = "NotesDB";
 
-    private static final String TABLE_NOTES = "notes";
-    private static final String KEY_ID = "_id";
-    private static final String KEY_NOTE = "note";
-    private static final String KEY_DATE = "date";
-    private static final String KEY_IMAGE = "image";
-    private static final String KEY_IMAGEPREVIEW = "imagepreview";
+    public static final String TABLE_NOTES = "notes";
+    public static final String KEY_ID = "_id";
+    public static final String KEY_DATE = "date";
+    public static final String KEY_NOTE = "note";
+    public static final String KEY_IMAGE = "image";
+    public static final String KEY_IMAGEPREVIEW = "imagepreview";
 
     private static final String DATABASE_V2 = "ALTER TABLE " + TABLE_NOTES + " ADD COLUMN imagepreview TEXT";
 
@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //Table Query.
-        String notesTable = "CREATE TABLE IF NOT EXISTS notes (_id INTEGER PRIMARY KEY AUTOINCREMENT, note TEXT, date INTEGER, image TEXT, imagepreview TEXT);";
+        String notesTable = "CREATE TABLE IF NOT EXISTS notes (_id INTEGER PRIMARY KEY AUTOINCREMENT, date INTEGER, note TEXT, image TEXT, imagepreview TEXT);";
         //Execute Query
         db.execSQL(notesTable);
         Log.d("SQLite", "Tables created");

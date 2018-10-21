@@ -11,6 +11,10 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.zxy.tiny.Tiny;
 import com.zxy.tiny.callback.FileCallback;
 
@@ -18,7 +22,10 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import es.dmoral.toasty.Toasty;
 import stream.rocketnotes.Constants;
@@ -34,6 +41,7 @@ public class SaveNoteService extends Service {
 
     private final String TAG = "SaveNoteService";
 
+    private NotesItem notesItem = new NotesItem();
     private Integer noteID;
     private String body;
     private String image;
@@ -50,6 +58,7 @@ public class SaveNoteService extends Service {
 
         dbHelper = new DatabaseHelper(mContext);
         calendar = Calendar.getInstance();
+        Log.d(TAG, String.valueOf(notesItem));
 
         getData(intent);
 
@@ -75,14 +84,14 @@ public class SaveNoteService extends Service {
                 Log.d("SaveNoteService", Constants.UPDATE_NOTE);
 
                 if (noteID != 0) {
-                    NotesItem note = new NotesItem();
-                    note.setNotesID(noteID);
-                    note.setNotesDate(getCurrentTime());
-                    note.setNotesNote(body);
+                    notesItem.setNotesID(noteID);
+                    notesItem.setNotesDate(getCurrentTime());
+                    notesItem.setNotesNote(body);
 
-                    dbHelper.UpdateNote(note);
-                    UpdateSender(note);
+                    dbHelper.UpdateNote(notesItem);
+                    UpdateSender(notesItem);
                     UpdateNoteWidget();
+                    SaveNoteCloud();
                 }
             }
         }
@@ -92,8 +101,8 @@ public class SaveNoteService extends Service {
     }
 
     private void SaveNote() {
-        NotesItem savedNote = dbHelper.AddNewNote(body, getCurrentTime(), image, null);
-        NotificationSender(savedNote);
+        notesItem = dbHelper.AddNewNote(body, getCurrentTime(), image, null);
+        NotificationSender(notesItem);
         switch (type) {
             case Constants.TEXT: {
                 UpdateNoteWidget();
@@ -102,6 +111,7 @@ public class SaveNoteService extends Service {
                 UpdateImageWidget();
             }
         }
+        SaveNoteCloud();
     }
 
     private void SaveImageThumbnail(Uri imageUri) {
@@ -131,6 +141,31 @@ public class SaveNoteService extends Service {
                 }
             }
         });
+    }
+
+    private void SaveNoteCloud() {
+        Log.d(TAG, "SaveNoteCloud");
+        Map<String, Object> note = new HashMap<>();
+        note.put(DatabaseHelper.KEY_ID, notesItem.getNotesID());
+        note.put(DatabaseHelper.KEY_DATE, notesItem.getNotesDate());
+        note.put(DatabaseHelper.KEY_NOTE, notesItem.getNotesNote());
+        note.put(DatabaseHelper.KEY_IMAGE, notesItem.getNotesImage());
+        note.put(DatabaseHelper.KEY_IMAGEPREVIEW, notesItem.getNotesImagePreview());
+
+        FirebaseFirestore firestoreDatabase = FirebaseFirestore.getInstance();
+        firestoreDatabase.collection("notes").add(note)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
     }
 
     private void NotificationSender(NotesItem note) {
