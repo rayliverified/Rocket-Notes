@@ -57,13 +57,13 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             bmOptions.inSampleSize = 8;
             bmOptions.inPurgeable = false;
             String imageURI;
-            if (mNotesItems.get(position).getNotesImagePreview() != null)
+            if (mNotesItems.get(position).getImagePreview() != null)
             {
-                imageURI = mNotesItems.get(position).getNotesImagePreview();
+                imageURI = mNotesItems.get(position).getImagePreview();
             }
             else
             {
-                imageURI = mNotesItems.get(position).getNotesImage();
+                imageURI = mNotesItems.get(position).getImage();
             }
             Log.d("ImagePath", imageURI);
             File imageFile = null;
@@ -92,7 +92,7 @@ class ImageRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         Bundle extras = new Bundle();
         Intent fillInIntent = new Intent();
         if (position < mNotesItems.size()) {
-            extras.putInt(Constants.ID, mNotesItems.get(position).getNotesID());
+            extras.putInt(Constants.ID, mNotesItems.get(position).getID());
             extras.putInt(Constants.IMAGE, position);
             fillInIntent.putExtras(extras);
         }

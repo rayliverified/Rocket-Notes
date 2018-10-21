@@ -11,7 +11,6 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
-import com.pyze.android.Pyze;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -71,8 +70,8 @@ public class ImageViewerActivity extends AppCompatActivity {
         overlayView = new ImageOverlayView(this);
         ArrayList<String> imageItems = new ArrayList<String>();
         for (NotesItem note : mNotesItem) {
-            imageItems.add(note.getNotesImage());
-            Log.d("Image URI", note.getNotesImage());
+            imageItems.add(note.getImage());
+            Log.d("Image URI", note.getImage());
         }
         new ImageViewer.Builder(this, imageItems)
                 .setStartPosition(startPosition)
@@ -89,9 +88,9 @@ public class ImageViewerActivity extends AppCompatActivity {
         return new ImageViewer.OnImageChangeListener() {
             @Override
             public void onImageChange(int position) {
-                String url = mNotesItem.get(position).getNotesImage();
+                String url = mNotesItem.get(position).getImage();
                 overlayView.setImageUri(url);
-                overlayView.setNoteID(mNotesItem.get(position).getNotesID());
+                overlayView.setNoteID(mNotesItem.get(position).getID());
 //                overlayView.setDescription(descriptions[position]);
             }
         };

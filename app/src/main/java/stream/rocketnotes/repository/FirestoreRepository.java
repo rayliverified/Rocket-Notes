@@ -23,11 +23,11 @@ public class FirestoreRepository {
 
     public void AddNote(NotesItem notesItem, FirestoreInterface firestoreInterface) {
         Map<String, Object> item = new HashMap<>();
-        item.put(DatabaseHelper.KEY_ID, notesItem.getNotesID());
-        item.put(DatabaseHelper.KEY_DATE, notesItem.getNotesDate());
-        item.put(DatabaseHelper.KEY_NOTE, notesItem.getNotesNote());
-        item.put(DatabaseHelper.KEY_IMAGE, notesItem.getNotesImage());
-        item.put(DatabaseHelper.KEY_IMAGEPREVIEW, notesItem.getNotesImagePreview());
+        item.put(DatabaseHelper.KEY_ID, notesItem.getID());
+        item.put(DatabaseHelper.KEY_DATE, notesItem.getDate());
+        item.put(DatabaseHelper.KEY_NOTE, notesItem.getNote());
+        item.put(DatabaseHelper.KEY_IMAGE, notesItem.getImage());
+        item.put(DatabaseHelper.KEY_IMAGEPREVIEW, notesItem.getImagePreview());
 
         firestoreDB.collection(DatabaseHelper.TABLE_NOTES).add(item)
                 .addOnSuccessListener(firestoreInterface.getSuccessListener())

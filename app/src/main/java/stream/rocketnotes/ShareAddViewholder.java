@@ -45,8 +45,8 @@ public class ShareAddViewholder extends RecyclerView.ViewHolder {
         this.note = note;
 
         sharedNote = note.getShared();
-        noteTextRaw = note.getNotesNote();
-        final ArrayList<String> noteText = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(note.getNotesNote()));
+        noteTextRaw = note.getNote();
+        final ArrayList<String> noteText = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(note.getNote()));
         mTitle.setText(stream.rocketnotes.utils.TextUtils.fromHtml(noteText.get(0)));
         if (!TextUtils.isEmpty(noteText.get(1))) {
             mBody.setText(stream.rocketnotes.utils.TextUtils.fromHtml(noteText.get(1).replaceAll("<b>", " ")));
@@ -63,7 +63,7 @@ public class ShareAddViewholder extends RecyclerView.ViewHolder {
                 mBtnSend.startAnimation(AnimateButton());
                 SetButtonShared();
                 if (!sharedNote) {
-                    EventBus.getDefault().post(new UpdateMainEvent(Constants.ADDTO_NOTE, note.getNotesID(), noteTextRaw));
+                    EventBus.getDefault().post(new UpdateMainEvent(Constants.ADDTO_NOTE, note.getID(), noteTextRaw));
                     sharedNote = true;
                     SetSharedNote(sharedNote);
                 }

@@ -431,13 +431,13 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<NotesItem> notesItems = dbHelper.GetImageNotes();
         Log.d("NotesItem Size", String.valueOf(notesItems.size()));
         for (NotesItem note : notesItems) {
-            if (note.getNotesImagePreview() != null)
+            if (note.getImagePreview() != null)
             {
-                list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImagePreview()));
+                list.add(new ImageItemViewholder(Integer.toString(note.getID()), note.getImagePreview()));
             }
             else
             {
-                list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
+                list.add(new ImageItemViewholder(Integer.toString(note.getID()), note.getImage()));
             }
         }
         mAdapter.updateDataSet(list);
@@ -453,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<NotesItem> notesItems = dbHelper.GetTextNotes();
         Log.d("NotesItem Size", String.valueOf(notesItems.size()));
         for (NotesItem note : notesItems) {
-            list.add(new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote()));
+            list.add(new NoteItemViewholder(Integer.toString(note.getID()), note.getNote()));
         }
         mAdapter.updateDataSet(list);
         Log.d("Filter", "Text");
@@ -472,12 +472,12 @@ public class MainActivity extends AppCompatActivity {
         Integer noteID = event.getID();
         NotesItem note = dbHelper.GetNote(noteID);
         AbstractFlexibleItem item = null;
-        if (note.getNotesImage() != null) {
-            Log.d("Image View Holder", note.getNotesImage());
-            item = new ImageItemViewholder(Integer.toString(noteID), note.getNotesImage());
-        } else if (note.getNotesNote() != null) {
+        if (note.getImage() != null) {
+            Log.d("Image View Holder", note.getImage());
+            item = new ImageItemViewholder(Integer.toString(noteID), note.getImage());
+        } else if (note.getNote() != null) {
             Log.d("Note", "Note Item");
-            item = new NoteItemViewholder(Integer.toString(noteID), note.getNotesNote());
+            item = new NoteItemViewholder(Integer.toString(noteID), note.getNote());
         }
         mAdapter.addItem(0, item);
         mStaggeredLayoutManager.scrollToPosition(0);
@@ -489,12 +489,12 @@ public class MainActivity extends AppCompatActivity {
         Integer noteID = event.getID();
         NotesItem note = dbHelper.GetNote(noteID);
         AbstractFlexibleItem item = null;
-        if (note.getNotesImage() != null) {
-            Log.d("Image View Holder", note.getNotesImage());
-            item = new ImageItemViewholder(Integer.toString(noteID), note.getNotesImage());
-        } else if (note.getNotesNote() != null) {
+        if (note.getImage() != null) {
+            Log.d("Image View Holder", note.getImage());
+            item = new ImageItemViewholder(Integer.toString(noteID), note.getImage());
+        } else if (note.getNote() != null) {
             Log.d("Note", "Note Item");
-            item = new NoteItemViewholder(Integer.toString(noteID), note.getNotesNote());
+            item = new NoteItemViewholder(Integer.toString(noteID), note.getNote());
         }
         Integer currentPosition = mAdapter.getGlobalPositionOf(item);
         mAdapter.updateItem(item, null);
@@ -507,12 +507,12 @@ public class MainActivity extends AppCompatActivity {
     public void UpdateOnDelete(UpdateMainEvent event) {
         NotesItem note = event.getNotesItem();
         AbstractFlexibleItem item = null;
-        if (note.getNotesImage() != null) {
-            Log.d("Image View Holder", note.getNotesImage());
-            item = new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage());
-        } else if (note.getNotesNote() != null) {
+        if (note.getImage() != null) {
+            Log.d("Image View Holder", note.getImage());
+            item = new ImageItemViewholder(Integer.toString(note.getID()), note.getImage());
+        } else if (note.getNote() != null) {
             Log.d("Note", "Note Item");
-            item = new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote());
+            item = new NoteItemViewholder(Integer.toString(note.getID()), note.getNote());
         }
         Integer position = mAdapter.getGlobalPositionOf(item);
         Log.d("Item Position", String.valueOf(position));
@@ -629,18 +629,18 @@ public class MainActivity extends AppCompatActivity {
         mImageCount = 0;
         Log.d("NotesItem Size", String.valueOf(notesItems.size()));
         for (NotesItem note : notesItems) {
-            if (note.getNotesNote() != null) {
+            if (note.getNote() != null) {
                 mNoteCount += 1;
-                list.add(new NoteItemViewholder(Integer.toString(note.getNotesID()), note.getNotesNote()));
-            } else if (note.getNotesImage() != null) {
+                list.add(new NoteItemViewholder(Integer.toString(note.getID()), note.getNote()));
+            } else if (note.getImage() != null) {
                 mImageCount += 1;
-                if (note.getNotesImagePreview() != null)
+                if (note.getImagePreview() != null)
                 {
-                    list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImagePreview()));
+                    list.add(new ImageItemViewholder(Integer.toString(note.getID()), note.getImagePreview()));
                 }
                 else
                 {
-                    list.add(new ImageItemViewholder(Integer.toString(note.getNotesID()), note.getNotesImage()));
+                    list.add(new ImageItemViewholder(Integer.toString(note.getID()), note.getImage()));
                 }
             }
         }

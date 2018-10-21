@@ -4,7 +4,6 @@ import android.content.Context;
 
 public class NotesItem {
 
-
     Context mContext;
 
     Integer _id = null;
@@ -16,29 +15,26 @@ public class NotesItem {
     String cloudId = null;
     boolean shared = false;
 
-    public NotesItem() {
-
-    }
-
+    public NotesItem() { }
     public NotesItem(Context mContext) {
         this.mContext = mContext;
     }
     public NotesItem getNotes() {
         return this;
     }
-    public void setNotesID(Integer _id) {
+    public void setID(Integer _id) {
         this._id = _id;
     }
-    public void setNotesNote(String note) {
+    public void setNote(String note) {
         this.note = note;
     }
-    public void setNotesDate(Long date) {
+    public void setDate(Long date) {
         this.date = date;
     }
-    public void setNotesImage(String image) {
+    public void setImage(String image) {
         this.image = image;
     }
-    public void setNotesImagePreview(String imagePreview) { this.imagePreview = imagePreview; }
+    public void setImagePreview(String imagePreview) { this.imagePreview = imagePreview; }
     public void setCloudId(String cloudId) { this.cloudId = cloudId; }
     public void setShared(boolean shared) {
         this.shared = shared;
@@ -47,19 +43,19 @@ public class NotesItem {
     public boolean getShared() {
         return shared;
     }
-    public Integer getNotesID() {
+    public Integer getID() {
         return this._id;
     }
-    public String getNotesNote() {
+    public String getNote() {
         return this.note;
     }
-    public Long getNotesDate() {
+    public Long getDate() {
         return this.date;
     }
-    public String getNotesImage() {
+    public String getImage() {
         return this.image;
     }
-    public String getNotesImagePreview() { return imagePreview; }
+    public String getImagePreview() { return imagePreview; }
     public String getCloudId() { return cloudId; }
 }
 

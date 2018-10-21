@@ -92,9 +92,9 @@ public class SaveNoteService extends Service {
                 Log.d("SaveNoteService", Constants.UPDATE_NOTE);
 
                 if (noteID != 0) {
-                    notesItem.setNotesID(noteID);
-                    notesItem.setNotesDate(getCurrentTime());
-                    notesItem.setNotesNote(body);
+                    notesItem.setID(noteID);
+                    notesItem.setDate(getCurrentTime());
+                    notesItem.setNote(body);
 
                     dbHelper.UpdateNote(notesItem);
                     UpdateSender(notesItem);
@@ -179,14 +179,14 @@ public class SaveNoteService extends Service {
 
     private void NotificationSender(NotesItem note) {
         Toasty.custom(mContext, "Saved", null, ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, false).show();
-        EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.RECEIVED, note.getNotesID()));
-        Log.d("SaveNoteService", String.valueOf(note.getNotesID()));
+        EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.RECEIVED, note.getID()));
+        Log.d("SaveNoteService", String.valueOf(note.getID()));
     }
 
     private void UpdateSender(NotesItem note) {
         Toasty.custom(mContext, "Saved", null, ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, false).show();
-        EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.UPDATE_NOTE, note.getNotesID()));
-        Log.d("SaveNoteService", String.valueOf(note.getNotesID()));
+        EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.UPDATE_NOTE, note.getID()));
+        Log.d("SaveNoteService", String.valueOf(note.getID()));
     }
 
     private void UpdateNoteWidget()

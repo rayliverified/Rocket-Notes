@@ -21,8 +21,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.pyze.android.Pyze;
-
 import java.util.ArrayList;
 
 import stream.rocketnotes.service.SaveNoteService;
@@ -198,11 +196,11 @@ public class PopupActivity extends Activity {
 
             DatabaseHelper dbHelper = new DatabaseHelper(this);
             NotesItem note = dbHelper.GetNote(noteID);
-            String noteTime = stream.rocketnotes.utils.TextUtils.getTimeStamp(note.getNotesDate());
+            String noteTime = stream.rocketnotes.utils.TextUtils.getTimeStamp(note.getDate());
 
             editText.setHint("Add to note...");
             editDetails.setText("Update Note • " + noteTime);
-            noteTextRaw = note.getNotesNote();
+            noteTextRaw = note.getNote();
             ArrayList<String> noteText = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(noteTextRaw));
             editTitle.setText(stream.rocketnotes.utils.TextUtils.fromHtml(noteText.get(0)));
             editNote.setOnClickListener(new View.OnClickListener() {

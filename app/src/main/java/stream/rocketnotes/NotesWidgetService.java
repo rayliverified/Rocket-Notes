@@ -48,9 +48,9 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_notes_widget);
         if (position < mNotesItems.size()) {
             NotesItem note = mNotesItems.get(position);
-            ArrayList<String> noteText = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(note.getNotesNote()));
+            ArrayList<String> noteText = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(note.getNote()));
             rv.setTextViewText(R.id.item_note_title, stream.rocketnotes.utils.TextUtils.fromHtml(noteText.get(0)));
-            rv.setTextViewText(R.id.item_note_date, stream.rocketnotes.utils.TextUtils.getTimeStampShort(note.getNotesDate()));
+            rv.setTextViewText(R.id.item_note_date, stream.rocketnotes.utils.TextUtils.getTimeStampShort(note.getDate()));
             if (!TextUtils.isEmpty(noteText.get(1))) {
                 rv.setTextViewText(R.id.item_note_note, stream.rocketnotes.utils.TextUtils.fromHtml(noteText.get(1).replaceAll("<b>", " ")));
                 rv.setViewVisibility(R.id.item_note_note, View.VISIBLE);
@@ -61,7 +61,7 @@ class NotesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         Bundle extras = new Bundle();
         Intent fillInIntent = new Intent();
         if (position < mNotesItems.size()) {
-            extras.putInt(Constants.ID, mNotesItems.get(position).getNotesID());
+            extras.putInt(Constants.ID, mNotesItems.get(position).getID());
             fillInIntent.putExtras(extras);
         }
         rv.setOnClickFillInIntent(R.id.item_note, fillInIntent);

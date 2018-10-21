@@ -143,7 +143,7 @@ public class ImageOverlayView extends RelativeLayout {
                     DatabaseHelper dbHelper = new DatabaseHelper(mContext);
                     NotesItem note = dbHelper.GetNote(noteID);
                     Intent savePicture = new Intent(mContext, SaveFileService.class);
-                    savePicture.putExtra(Constants.SOURCE_PATH, note.getNotesImage());
+                    savePicture.putExtra(Constants.SOURCE_PATH, note.getImage());
                     savePicture.putExtra(Constants.SAVE_PATH, files[0]);
                     mContext.startService(savePicture);
                 } else {

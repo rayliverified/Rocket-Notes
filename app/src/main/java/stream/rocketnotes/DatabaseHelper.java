@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.zxy.tiny.Tiny;
 import com.zxy.tiny.callback.FileCallback;
@@ -16,9 +15,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
-import es.dmoral.toasty.Toasty;
 import stream.rocketnotes.utils.FileUtils;
 
 public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
@@ -74,8 +71,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         //Generate sample notes data.
         for (int i = 0; i < 20; i++) {
             NotesItem note = new NotesItem();
-            note.setNotesNote("Note content: " + i);
-            note.setNotesDate(1487520000000L + i);
+            note.setNote("Note content: " + i);
+            note.setDate(1487520000000L + i);
             AddNote(note);
         }
     }
@@ -85,11 +82,11 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(KEY_ID, note.getNotesID());
-        values.put(KEY_NOTE, note.getNotesNote());
-        values.put(KEY_DATE, note.getNotesDate());
-        values.put(KEY_IMAGE, note.getNotesImage());
-        values.put(KEY_IMAGEPREVIEW, note.getNotesImagePreview());
+        values.put(KEY_ID, note.getID());
+        values.put(KEY_NOTE, note.getNote());
+        values.put(KEY_DATE, note.getDate());
+        values.put(KEY_IMAGE, note.getImage());
+        values.put(KEY_IMAGEPREVIEW, note.getImagePreview());
         values.put(KEY_CLOUDID, note.getCloudId());
 
         long id = db.insert(TABLE_NOTES, null, values);
@@ -101,11 +98,11 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     //Add a note to database and return the added note object.
     public NotesItem AddNewNote(String note, Long date, String image, String imagePreview) {
         NotesItem notesItem = new NotesItem();
-        notesItem.setNotesNote(note);
-        notesItem.setNotesDate(date);
-        notesItem.setNotesImage(image);
-        notesItem.setNotesImagePreview(imagePreview);
-        notesItem.setNotesID((int) AddNote(notesItem));
+        notesItem.setNote(note);
+        notesItem.setDate(date);
+        notesItem.setImage(image);
+        notesItem.setImagePreview(imagePreview);
+        notesItem.setID((int) AddNote(notesItem));
 
         return notesItem;
     }
@@ -114,14 +111,14 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     public long UpdateNote(NotesItem note) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        String selection = Integer.toString(note.getNotesID());
+        String selection = Integer.toString(note.getID());
         selection = "_id=" + selection;
 
-        if (note.getNotesDate() != null) {
-            values.put(KEY_DATE, note.getNotesDate());
+        if (note.getDate() != null) {
+            values.put(KEY_DATE, note.getDate());
         }
-        if (note.getNotesNote() != null) {
-            values.put(KEY_NOTE, note.getNotesNote());
+        if (note.getNote() != null) {
+            values.put(KEY_NOTE, note.getNote());
         }
 
         return db.update(TABLE_NOTES, values, selection, null);
@@ -263,11 +260,11 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     }
 
     public NotesItem GetNoteItem(NotesItem item, Cursor c) {
-        item.setNotesID(c.getInt(c.getColumnIndexOrThrow(KEY_ID)));
-        item.setNotesNote(c.getString(c.getColumnIndexOrThrow(KEY_NOTE)));
-        item.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow(KEY_DATE))));
-        item.setNotesImage(c.getString(c.getColumnIndexOrThrow(KEY_IMAGE)));
-        item.setNotesImagePreview(c.getString(c.getColumnIndexOrThrow(KEY_IMAGEPREVIEW)));
+        item.setID(c.getInt(c.getColumnIndexOrThrow(KEY_ID)));
+        item.setNote(c.getString(c.getColumnIndexOrThrow(KEY_NOTE)));
+        item.setDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow(KEY_DATE))));
+        item.setImage(c.getString(c.getColumnIndexOrThrow(KEY_IMAGE)));
+        item.setImagePreview(c.getString(c.getColumnIndexOrThrow(KEY_IMAGEPREVIEW)));
         item.setCloudId(c.getString(c.getColumnIndexOrThrow(KEY_CLOUDID)));
 
         return item;

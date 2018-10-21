@@ -36,17 +36,17 @@ public class DeleteNoteService extends Service {
             Integer noteID = extras.getInt(Constants.ID);
             DatabaseHelper dbHelper = new DatabaseHelper(mContext);
             NotesItem note = dbHelper.GetNote(noteID);
-            if (note.getNotesImage() != null) {
+            if (note.getImage() != null) {
                 try {
-                    File imageFile = new File(new URI(note.getNotesImage()));
+                    File imageFile = new File(new URI(note.getImage()));
                     imageFile.delete();
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
                 }
             }
-            if (note.getNotesImagePreview() != null) {
+            if (note.getImagePreview() != null) {
                 try {
-                    File imageFile = new File(new URI(note.getNotesImagePreview()));
+                    File imageFile = new File(new URI(note.getImagePreview()));
                     imageFile.delete();
                 } catch (URISyntaxException e) {
                     e.printStackTrace();

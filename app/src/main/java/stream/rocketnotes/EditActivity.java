@@ -17,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pyze.android.Pyze;
-
 import es.dmoral.toasty.Toasty;
 import jp.wasabeef.richeditor.RichEditor;
 import stream.rocketnotes.service.DeleteNoteService;
@@ -66,7 +64,7 @@ public class EditActivity extends AppCompatActivity {
             Log.d("Received Note ID", String.valueOf(noteID));
             DatabaseHelper dbHelper = new DatabaseHelper(this);
             NotesItem note = dbHelper.GetNote(noteID);
-            noteTextRaw = stream.rocketnotes.utils.TextUtils.Compatibility(note.getNotesNote());
+            noteTextRaw = stream.rocketnotes.utils.TextUtils.Compatibility(note.getNote());
 
             //Intent contains extra string if note opened from PopupActivity and user has typed text.
             if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.BODY))) {
