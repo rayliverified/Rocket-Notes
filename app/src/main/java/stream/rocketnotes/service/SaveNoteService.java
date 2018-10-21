@@ -78,7 +78,14 @@ public class SaveNoteService extends Service {
                         {
                             SaveImageThumbnail(imageUri);
                         }
+                        else
+                        {
+                            SaveNoteCloud();
+                        }
                     }
+                }
+                else {
+                    SaveNoteCloud();
                 }
             }
             case Constants.UPDATE_NOTE: {
@@ -112,7 +119,6 @@ public class SaveNoteService extends Service {
                 UpdateImageWidget();
             }
         }
-        SaveNoteCloud();
     }
 
     private void SaveImageThumbnail(Uri imageUri) {
@@ -135,6 +141,7 @@ public class SaveNoteService extends Service {
                     Log.d("Compressed Path", outfile);
                     dbHelper.UpdateImagePreview(image, "file://" + outfile);
                     UpdateImageWidget();
+                    SaveNoteCloud();
                 }
                 else
                 {
