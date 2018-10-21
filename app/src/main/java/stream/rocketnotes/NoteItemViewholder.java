@@ -45,8 +45,6 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
         this.noteText = noteText;
     }
 
-
-
     /**
      * When an item is equals to another?
      * Write your own concept of equals, mandatory to implement.
