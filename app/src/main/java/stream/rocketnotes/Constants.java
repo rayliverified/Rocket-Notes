@@ -20,6 +20,7 @@ public interface Constants {
     String HIDE_REVIEW = "HIDE_REVIEW";
     String REFRESH = "REFRESH";
     String BODY = "BODY";
+    String TEXT = "TEXT";
     String IMAGE = "IMAGE";
     String ID = "ID";
     String RECEIVED = "RECEIVED";

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,6 +19,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.File;
 import java.util.Calendar;
 
+import androidx.core.content.ContextCompat;
 import es.dmoral.toasty.Toasty;
 import stream.rocketnotes.Constants;
 import stream.rocketnotes.DatabaseHelper;
@@ -29,115 +29,123 @@ import stream.rocketnotes.NotesWidget;
 import stream.rocketnotes.R;
 import stream.rocketnotes.UpdateMainEvent;
 import stream.rocketnotes.utils.FileUtils;
-import stream.rocketnotes.utils.TextUtils;
 
 public class SaveNoteService extends Service {
+
     private final String TAG = "SaveNoteService";
 
+    private Integer noteID;
     private String body;
     private String image;
+    private String action;
+    private String type;
 
     private Context mContext = this;
+    private DatabaseHelper dbHelper;
+    private Calendar calendar;
 
+    //TODO Logic to handle onStartCommand being called multiple times does not exist.
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (intent.getAction().equals(Constants.NEW_NOTE)) {
-            Log.d("SaveNoteService", Constants.NEW_NOTE);
-            Bundle extras = intent.getExtras();
-            body = extras.getString(Constants.BODY);
-            image = extras.getString(Constants.IMAGE);
-            if (image != null)
-            {
-                Uri imageUri = Uri.parse(image);
-                String imageName = FileUtils.GetFileName(image);
-                imageName = FileUtils.GetFileNameNoExtension(imageName) + "_Compressed.jpg";
-                Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
-                options.size = 200000;
-                options.isKeepSampling = false;
-                options.overrideSource = false;
-                options.outfile = getFilesDir() + "/.Pictures/" + imageName;
-                Log.d("Outfile", getFilesDir() + "/.Pictures/" + imageName);
-                File file = new File(imageUri.getPath());
-                Log.d("File Size", String.valueOf(file.length()));
-                if (file.length() > 400000)
-                {
-                    Tiny.getInstance().source(imageUri.getPath()).asFile().withOptions(options).compress(new FileCallback() {
-                        @Override
-                        public void callback(boolean isSuccess, String outfile, Throwable t) {
-                            //Return the compressed file path
-                            if (isSuccess)
-                            {
-                                Log.d("Compressed Path", outfile);
-                                Calendar calendar = Calendar.getInstance();
-                                Long currentTime = calendar.getTimeInMillis();
-                                DatabaseHelper dbHelper = new DatabaseHelper(mContext);
-                                NotesItem savedNote = dbHelper.AddNewNote(body, currentTime, image, "file://" + outfile);
-                                NotificationSender(savedNote);
-                                UpdateImageWidget();
-                            }
-                            else
-                            {
-                                Toasty.error(mContext, "Error", Toast.LENGTH_SHORT, false).show();
-                            }
+        dbHelper = new DatabaseHelper(mContext);
+        calendar = Calendar.getInstance();
+
+        getData(intent);
+
+        switch (action) {
+            case Constants.NEW_NOTE: {
+                Log.d("SaveNoteService", Constants.NEW_NOTE);
+                SaveNote();
+
+                if (type.equals(Constants.IMAGE)) {
+                    //If image size is greater than 400Kb, generate image thumbnail for faster loading.
+                    Uri imageUri = Uri.parse(image);
+                    if (imageUri.getPath() != null) {
+                        File file = new File(imageUri.getPath());
+                        Log.d("File Size", String.valueOf(file.length()));
+                        if (file.length() > 400000)
+                        {
+                            SaveImageThumbnail(imageUri);
                         }
-                    });
-                }
-                else
-                {
-                    Calendar calendar = Calendar.getInstance();
-                    Long currentTime = calendar.getTimeInMillis();
-                    DatabaseHelper dbHelper = new DatabaseHelper(mContext);
-                    NotesItem savedNote = dbHelper.AddNewNote(body, currentTime, image, null);
-                    NotificationSender(savedNote);
-                    UpdateImageWidget();
+                    }
                 }
             }
-            else
-            {
-                Calendar calendar = Calendar.getInstance();
-                Long currentTime = calendar.getTimeInMillis();
-                DatabaseHelper dbHelper = new DatabaseHelper(mContext);
-                NotesItem savedNote = dbHelper.AddNewNote(body, currentTime, null, null);
-                NotificationSender(savedNote);
-                UpdateNoteWidget();
+            case Constants.UPDATE_NOTE: {
+                Log.d("SaveNoteService", Constants.UPDATE_NOTE);
+
+                if (noteID != 0) {
+                    NotesItem note = new NotesItem();
+                    note.setNotesID(noteID);
+                    note.setNotesDate(getCurrentTime());
+                    note.setNotesNote(body);
+
+                    dbHelper.UpdateNote(note);
+                    UpdateSender(note);
+                    UpdateNoteWidget();
+                }
             }
-        } else if (intent.getAction().equals(Constants.UPDATE_NOTE)) {
-            Log.d("SaveNoteService", Constants.UPDATE_NOTE);
-            Bundle extras = intent.getExtras();
-            Integer noteID = extras.getInt(Constants.ID);
-            String body = extras.getString(Constants.BODY);
-            Calendar calendar = Calendar.getInstance();
-            Long currentTime = calendar.getTimeInMillis();
-
-            NotesItem note = new NotesItem();
-            note.setNotesID(noteID);
-            note.setNotesDate(currentTime);
-            note.setNotesNote(body);
-
-            DatabaseHelper dbHelper = new DatabaseHelper(mContext);
-            dbHelper.UpdateNote(note);
-            UpdateSender(note);
-
-            UpdateNoteWidget();
         }
+
         stopSelf();
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public void NotificationSender(NotesItem note) {
+    private void SaveNote() {
+        NotesItem savedNote = dbHelper.AddNewNote(body, getCurrentTime(), image, null);
+        NotificationSender(savedNote);
+        switch (type) {
+            case Constants.TEXT: {
+                UpdateNoteWidget();
+            }
+            case Constants.IMAGE: {
+                UpdateImageWidget();
+            }
+        }
+    }
+
+    private void SaveImageThumbnail(Uri imageUri) {
+        //Generate thumbnail name.
+        String imageName = FileUtils.GetFileName(image);
+        imageName = FileUtils.GetFileNameNoExtension(imageName) + "_Compressed.jpg";
+        Log.d("Outfile", getFilesDir() + "/.Pictures/" + imageName);
+        //Set thumbnail compression options.
+        Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
+        options.size = 200000;
+        options.isKeepSampling = false;
+        options.overrideSource = false;
+        options.outfile = getFilesDir() + "/.Pictures/" + imageName;
+        Tiny.getInstance().source(imageUri.getPath()).asFile().withOptions(options).compress(new FileCallback() {
+            @Override
+            public void callback(boolean isSuccess, String outfile, Throwable t) {
+                //Return the compressed file path.
+                if (isSuccess)
+                {
+                    Log.d("Compressed Path", outfile);
+                    dbHelper.UpdateImagePreview(image, "file://" + outfile);
+                    UpdateImageWidget();
+                }
+                else
+                {
+                    Toasty.error(mContext, "Error, please refresh image cache", Toast.LENGTH_SHORT, false).show();
+                }
+            }
+        });
+    }
+
+    private void NotificationSender(NotesItem note) {
         Toasty.custom(mContext, "Saved", null, ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, false).show();
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.RECEIVED, note.getNotesID()));
         Log.d("SaveNoteService", String.valueOf(note.getNotesID()));
     }
 
-    public void UpdateSender(NotesItem note) {
+    private void UpdateSender(NotesItem note) {
         Toasty.custom(mContext, "Saved", null, ContextCompat.getColor(mContext, R.color.blackTranslucent), Toast.LENGTH_SHORT, false, false).show();
         EventBus.getDefault().postSticky(new UpdateMainEvent(Constants.UPDATE_NOTE, note.getNotesID()));
         Log.d("SaveNoteService", String.valueOf(note.getNotesID()));
     }
 
-    public void UpdateNoteWidget()
+    private void UpdateNoteWidget()
     {
         int widgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), NotesWidget.class));
         for (int id : widgetIDs) {
@@ -145,12 +153,38 @@ public class SaveNoteService extends Service {
         }
     }
 
-    public void UpdateImageWidget()
+    private void UpdateImageWidget()
     {
         int imageWidgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), ImageWidget.class));
         for (int id : imageWidgetIDs) {
             AppWidgetManager.getInstance(getApplication()).notifyAppWidgetViewDataChanged(id, R.id.image_gridview);
         }
+    }
+
+    private void getData(Intent intent) {
+        if (intent.getAction() != null) {
+            action = intent.getAction();
+            if (intent.getExtras() != null) {
+                Bundle extras = intent.getExtras();
+                noteID = extras.getInt(Constants.ID);
+                body = extras.getString(Constants.BODY);
+                image = extras.getString(Constants.IMAGE);
+                if (image != null) {
+                    type = Constants.IMAGE;
+                }
+                else
+                {
+                    type = Constants.TEXT;
+                }
+            }
+            if (action.equals(Constants.UPDATE_NOTE)) {
+                type = Constants.TEXT; //Currently, only text notes can be updated.
+            }
+        }
+    }
+
+    private Long getCurrentTime() {
+        return calendar.getTimeInMillis();
     }
 
     @Override
