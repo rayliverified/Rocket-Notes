@@ -23,7 +23,7 @@ import stream.rocketnotes.utils.FileUtils;
 
 public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
-    private static final int DBVersion = 2;
+    private static final int DBVersion = 3;
     private static final String DBName = "NotesDB";
 
     public static final String TABLE_NOTES = "notes";
@@ -32,8 +32,10 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     public static final String KEY_NOTE = "note";
     public static final String KEY_IMAGE = "image";
     public static final String KEY_IMAGEPREVIEW = "imagepreview";
+    public static final String KEY_CLOUDID = "cloudid";
 
     private static final String DATABASE_V2 = "ALTER TABLE " + TABLE_NOTES + " ADD COLUMN imagepreview TEXT";
+    private static final String DATABASE_V3 = "ALTER TABLE " + TABLE_NOTES + " ADD COLUMN cloudid TEXT";
 
     public DatabaseHelper(Context context) {
         super(context, DBName, null, DBVersion);
@@ -53,6 +55,9 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
         if (oldVersion < 2) {
             db.execSQL(DATABASE_V2);
+        }
+        if (oldVersion < 3) {
+            db.execSQL(DATABASE_V3);
         }
     }
 
@@ -85,6 +90,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         values.put(KEY_DATE, note.getNotesDate());
         values.put(KEY_IMAGE, note.getNotesImage());
         values.put(KEY_IMAGEPREVIEW, note.getNotesImagePreview());
+        values.put(KEY_CLOUDID, note.getCloudId());
 
         long id = db.insert(TABLE_NOTES, null, values);
         Log.d("Database Saved ID", String.valueOf(id));
@@ -262,6 +268,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         item.setNotesDate(Long.valueOf(c.getString(c.getColumnIndexOrThrow(KEY_DATE))));
         item.setNotesImage(c.getString(c.getColumnIndexOrThrow(KEY_IMAGE)));
         item.setNotesImagePreview(c.getString(c.getColumnIndexOrThrow(KEY_IMAGEPREVIEW)));
+        item.setCloudId(c.getString(c.getColumnIndexOrThrow(KEY_CLOUDID)));
 
         return item;
     }

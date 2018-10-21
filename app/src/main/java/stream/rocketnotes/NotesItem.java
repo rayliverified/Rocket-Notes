@@ -11,8 +11,9 @@ public class NotesItem {
     String note = null;
     Long date = null;
     String image = null;
-
     String imagePreview = null;
+
+    String cloudId = null;
     boolean shared = false;
 
     public NotesItem() {
@@ -22,53 +23,43 @@ public class NotesItem {
     public NotesItem(Context mContext) {
         this.mContext = mContext;
     }
-
     public NotesItem getNotes() {
         return this;
     }
-
     public void setNotesID(Integer _id) {
         this._id = _id;
     }
-
     public void setNotesNote(String note) {
         this.note = note;
     }
-
     public void setNotesDate(Long date) {
         this.date = date;
     }
-
     public void setNotesImage(String image) {
         this.image = image;
     }
-
     public void setNotesImagePreview(String imagePreview) { this.imagePreview = imagePreview; }
+    public void setCloudId(String cloudId) { this.cloudId = cloudId; }
+    public void setShared(boolean shared) {
+        this.shared = shared;
+    }
 
     public boolean getShared() {
         return shared;
     }
-
     public Integer getNotesID() {
         return this._id;
     }
-
     public String getNotesNote() {
         return this.note;
     }
-
     public Long getNotesDate() {
         return this.date;
     }
-
     public String getNotesImage() {
         return this.image;
     }
-
     public String getNotesImagePreview() { return imagePreview; }
-
-    public void setShared(boolean shared) {
-        this.shared = shared;
-    }
+    public String getCloudId() { return cloudId; }
 }
 
