@@ -1,6 +1,7 @@
 package stream.rocketnotes;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -159,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 .setAnimationInterpolator(new DecelerateInterpolator())
                 .setAnimationDuration(300L);
         mStaggeredLayoutManager = createNewStaggeredGridLayoutManager();
+        mAdapter.addScrollableHeader(new SyncHeaderViewholder("Sync", MainActivity.this));
 
         // Prepare the RecyclerView and attach the Adapter to it
         mRecyclerView = findViewById(R.id.recycler_view);
@@ -297,16 +299,10 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (item.getItemId()) {
                     case R.id.action_camera:
-                        // Choose authentication providers
-                        List<AuthUI.IdpConfig> providers = Collections.singletonList(new AuthUI.IdpConfig.EmailBuilder().build());
-                        startActivityForResult(AuthUI.getInstance()
-                                .createSignInIntentBuilder()
-                                .setAvailableProviders(providers)
-                                .build(), 1);
-//                        AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Camera");
+                        AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Camera");
                         Intent intent = new Intent(mContext, CameraActivity.class);
-//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        mContext.startActivity(intent);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
                         break;
                     case R.id.filter_image:
                         AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Filter Image");
@@ -598,6 +594,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(mActivity, String.format("RequestCode: %1$d, ResultCode: %2$d", requestCode, resultCode));
         if (requestCode == 0 && resultCode == RESULT_OK) {
             ArrayList<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
@@ -617,7 +614,6 @@ public class MainActivity extends AppCompatActivity {
         mNoteCount = 0;
         mImageCount = 0;
         Log.d("NotesItem Size", String.valueOf(notesItems.size()));
-        list.add(new SyncHeaderViewholder("Sync"));
         for (NotesItem note : notesItems) {
             if (note.getNote() != null) {
                 mNoteCount += 1;

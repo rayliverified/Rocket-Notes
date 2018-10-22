@@ -45,8 +45,9 @@ public class WidgetReviewViewholder extends AbstractFlexibleItem<WidgetReviewVie
 
     private String id;
     private boolean widgetReview;
-    private String mActivity = this.getClass().getSimpleName();
     private Activity activity;
+
+    private final String mActivity = this.getClass().getSimpleName();
 
     public WidgetReviewViewholder(String id, Activity activity) {
         this.id = id;

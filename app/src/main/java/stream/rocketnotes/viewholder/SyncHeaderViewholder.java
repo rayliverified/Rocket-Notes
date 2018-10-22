@@ -1,11 +1,16 @@
 package stream.rocketnotes.viewholder;
 
 import android.animation.Animator;
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
+
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -18,9 +23,13 @@ import stream.rocketnotes.R;
 public class SyncHeaderViewholder extends AbstractFlexibleItem<SyncHeaderViewholder.MyViewHolder> {
 
     private String id;
+    private Activity activity;
 
-    public SyncHeaderViewholder(String id) {
+    private final String mActivity = this.getClass().getSimpleName();
+
+    public SyncHeaderViewholder(String id, Activity activity) {
         this.id = id;
+        this.activity = activity;
     }
 
     @Override
@@ -45,20 +54,33 @@ public class SyncHeaderViewholder extends AbstractFlexibleItem<SyncHeaderViewhol
 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, MyViewHolder holder, int position, List payloads) {
-        Context context = holder.itemView.getContext();
+        final Context context = holder.itemView.getContext();
+        holder.mLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Choose authentication providers
+                List<AuthUI.IdpConfig> providers = Collections.singletonList(new AuthUI.IdpConfig.EmailBuilder().build());
+                activity.startActivityForResult(AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        .build(), 1);
+            }
+        });
         holder.setFullSpan(true);
     }
 
     public static class MyViewHolder extends FlexibleViewHolder {
 
-        public TextView mTitle;
+        public LinearLayout mLayout;
         public TextView mSubtitle;
         ImageView mDismissIcon;
 
         public MyViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
 
-            // Support for StaggeredGridLayoutManager
+            mLayout = view.findViewById(R.id.item_sync);
+
+            //Set fullwidth.
             setFullSpan(true);
         }
 

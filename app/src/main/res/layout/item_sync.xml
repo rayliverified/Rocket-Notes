@@ -4,14 +4,14 @@
                 android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/item_note_card"
+        android:id="@+id/item_sync_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardUseCompatPadding="true"
         app:cardElevation="2dp">
 
         <LinearLayout
-            android:id="@+id/item_note"
+            android:id="@+id/item_sync"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
