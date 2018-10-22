@@ -21,7 +21,7 @@ import stream.rocketnotes.ImageTransformer;
 import stream.rocketnotes.ImageViewerActivity;
 import stream.rocketnotes.R;
 
-public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholder.ImageViewHolder> {
+public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholder.MyViewHolder> {
 
     private String id;
     private String image;
@@ -67,15 +67,15 @@ public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholde
     }
 
     @Override
-    public ImageViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
-        return new ImageViewHolder(view, adapter);
+    public MyViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new MyViewHolder(view, adapter);
     }
 
     /**
      * The Adapter and the Payload are provided to get more specific information from it.
      */
     @Override
-    public void bindViewHolder(FlexibleAdapter adapter, ImageViewHolder holder, final int position,
+    public void bindViewHolder(FlexibleAdapter adapter, MyViewHolder holder, final int position,
                                List payloads) {
         final Context context = holder.itemView.getContext();
 //        UXCam.occludeSensitiveView(holder.noteImage);
@@ -99,11 +99,11 @@ public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholde
      * Extending from FlexibleViewHolder is recommended especially when you will use
      * more advanced features.
      */
-    public class ImageViewHolder extends FlexibleViewHolder {
+    public class MyViewHolder extends FlexibleViewHolder {
 
         public ImageView noteImage;
 
-        public ImageViewHolder(View view, FlexibleAdapter adapter) {
+        public MyViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
             noteImage = view.findViewById(R.id.item_image);
         }

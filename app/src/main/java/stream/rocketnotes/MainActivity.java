@@ -56,6 +56,7 @@ import stream.rocketnotes.interfaces.UpdateMainEvent;
 import stream.rocketnotes.utils.AnalyticsUtils;
 import stream.rocketnotes.viewholder.ImageItemViewholder;
 import stream.rocketnotes.viewholder.NoteItemViewholder;
+import stream.rocketnotes.viewholder.SyncHeaderViewholder;
 import stream.rocketnotes.viewholder.WidgetReviewViewholder;
 
 public class MainActivity extends AppCompatActivity {
@@ -616,6 +617,7 @@ public class MainActivity extends AppCompatActivity {
         mNoteCount = 0;
         mImageCount = 0;
         Log.d("NotesItem Size", String.valueOf(notesItems.size()));
+        list.add(new SyncHeaderViewholder("Sync"));
         for (NotesItem note : notesItems) {
             if (note.getNote() != null) {
                 mNoteCount += 1;

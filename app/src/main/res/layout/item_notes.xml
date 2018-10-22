@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -8,15 +8,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardUseCompatPadding="true"
-        app:cardElevation="2dp"
-        android:foreground="?attr/selectableItemBackground">
+        app:cardElevation="2dp">
 
         <LinearLayout
             android:id="@+id/item_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
+            android:foreground="?attr/selectableItemBackground"
             android:clickable="true"
+            android:focusable="true"
             android:orientation="vertical">
 
             <TextView
@@ -44,7 +45,6 @@
                 android:ellipsize="end"
                 android:singleLine="false"/>
 
-
             <View
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
@@ -58,7 +58,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:layout_marginRight="6dp"
-                android:clickable="true"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -68,7 +67,8 @@
                     android:padding="5dp"
                     android:layout_alignParentLeft="true"
                     android:src="@drawable/icon_plus_selector"
-                    android:clickable="true"/>
+                    android:clickable="true"
+                    android:focusable="true"/>
 
                 <ImageView
                     android:id="@+id/btn_more"
@@ -77,8 +77,9 @@
                     android:padding="5dp"
                     android:layout_alignParentRight="true"
                     android:src="@drawable/icon_more_horizontal_selector"
-                    android:clickable="true"/>
+                    android:clickable="true"
+                    android:focusable="true"/>
             </RelativeLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-</RelativeLayout>
+</FrameLayout>

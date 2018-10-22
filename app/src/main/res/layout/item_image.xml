@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -8,13 +8,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardUseCompatPadding="true"
-        app:cardElevation="2dp"
-        android:foreground="?attr/selectableItemBackground">
+        app:cardElevation="2dp">
 
         <stream.rocketnotes.ui.ProportionalImageView
             android:id="@+id/item_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
             android:src="@drawable/image_picture_placeholder"/>
     </androidx.cardview.widget.CardView>
-</RelativeLayout>
+</FrameLayout>
