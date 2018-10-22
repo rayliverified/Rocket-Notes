@@ -21,6 +21,7 @@
 
     <color name="textPrimary">#2D2D2D</color>
     <color name="textSecondary">#8C8C8C</color>
+    <color name="textSecondaryDark">#808080</color>
 
     <color name="divider_menu">#E5E5E5</color>
 

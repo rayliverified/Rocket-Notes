@@ -37,7 +37,7 @@
                 android:layout_marginLeft="8dp"
                 android:text="Tap to backup notes"
                 android:textSize="16sp"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/textSecondaryDark"
                 android:layout_weight="1"/>
 
             <ImageButton
