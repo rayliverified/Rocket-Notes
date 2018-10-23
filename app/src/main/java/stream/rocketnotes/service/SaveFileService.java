@@ -27,6 +27,8 @@ import stream.rocketnotes.R;
 
 public class SaveFileService extends Service {
 
+    private final String TAG = this.getClass().getSimpleName();
+
     private Context context = this;
 
     @Override

@@ -1,7 +1,6 @@
 package stream.rocketnotes;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -11,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.util.Log;
@@ -24,8 +24,9 @@ import android.widget.Toast;
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.pyze.android.Pyze;
 import com.pyze.android.PyzeEvents;
 
@@ -34,7 +35,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,6 +42,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import es.dmoral.toasty.Toasty;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollStaggeredLayoutManager;
@@ -54,6 +55,7 @@ import stream.custompermissionsdialogue.utils.PermissionUtils;
 import stream.rocketnotes.filter.FilterMaterialSearchView;
 import stream.rocketnotes.filter.model.Filter;
 import stream.rocketnotes.interfaces.UpdateMainEvent;
+import stream.rocketnotes.service.SyncService;
 import stream.rocketnotes.utils.AnalyticsUtils;
 import stream.rocketnotes.viewholder.ImageItemViewholder;
 import stream.rocketnotes.viewholder.NoteItemViewholder;
@@ -136,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 EventBus.getDefault().removeStickyEvent(stickyEvent);
             }
         }
+        InitializeSyncService();
         if (Constants.ANALYTICS_ENABLED) {
             SessionDetails();
         }
@@ -160,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
                 .setAnimationInterpolator(new DecelerateInterpolator())
                 .setAnimationDuration(300L);
         mStaggeredLayoutManager = createNewStaggeredGridLayoutManager();
-        mAdapter.addScrollableHeader(new SyncHeaderViewholder("Sync", MainActivity.this));
 
         // Prepare the RecyclerView and attach the Adapter to it
         mRecyclerView = findViewById(R.id.recycler_view);
@@ -516,6 +518,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Broadcast Receiver", Constants.HIDE_REVIEW);
     }
 
+    public void AddSyncLoggedOutHeader() {
+        mAdapter.addScrollableHeader(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_LOGGEDOUT, MainActivity.this));
+        mRecyclerView.smoothScrollToPosition(0);
+    }
+
     public void RemoveSticky() {
         UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
         if (stickyEvent != null) {
@@ -560,6 +567,9 @@ public class MainActivity extends AppCompatActivity {
             case Constants.FILTER_IMAGES:
                 FilterImages();
                 break;
+            case SyncHeaderViewholder.SYNC_STATE_LOGGEDOUT:
+                AddSyncLoggedOutHeader();
+                break;
             default:
                 break;
         }
@@ -595,11 +605,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(mActivity, String.format("RequestCode: %1$d, ResultCode: %2$d", requestCode, resultCode));
-        if (requestCode == 0 && resultCode == RESULT_OK) {
-            ArrayList<String> results = data.getStringArrayListExtra(
-                    RecognizerIntent.EXTRA_RESULTS);
-            mSearchView.setSearchFocused(true);
-            mSearchView.setSearchText(results.get(0));
+        //Voice recognition - get returned text.
+//        if (requestCode == 0 && resultCode == RESULT_OK) {
+//            ArrayList<String> results = data.getStringArrayListExtra(
+//                    RecognizerIntent.EXTRA_RESULTS);
+//            mSearchView.setSearchFocused(true);
+//            mSearchView.setSearchText(results.get(0));
+//        }
+        //FirebaseUI Auth Signin - save signed in user.
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                //Save Firebase User to SharedPrefs.
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(Constants.FIREBASE_USER_ID, user.getUid());
+                editor.apply();
+                //Start SyncService again to begin notes syncronization.
+                InitializeSyncService();
+            } else {
+                Toasty.error(mContext, "Signin Failed - Unknown Error", Toast.LENGTH_SHORT).show();
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -637,6 +662,17 @@ public class MainActivity extends AppCompatActivity {
             list.add(new WidgetReviewViewholder("Review", MainActivity.this));
         }
         return list;
+    }
+
+    public void InitializeSyncService() {
+        Handler handler = new Handler();
+        Runnable r1 = new Runnable() {
+            public void run() {
+                Intent intent = new Intent(mContext, SyncService.class);
+                mContext.startService(intent);
+            }
+        };
+        handler.postDelayed(r1, 250);
     }
 
     public void SessionDetails() {

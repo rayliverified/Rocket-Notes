@@ -24,7 +24,7 @@ import stream.rocketnotes.R;
 import stream.rocketnotes.interfaces.UpdateMainEvent;
 
 public class DeleteNoteService extends Service {
-    private final String TAG = "SaveNoteService";
+    private final String TAG = this.getClass().getSimpleName();
 
     private Context mContext = this;
 

@@ -34,6 +34,7 @@ public interface Constants {
     String URL = "URL";
     String TITLE = "TITLE";
     String AUTHORITY = "stream.rocketnotes.provider";
+    String FIREBASE_USER_ID = "FIREBASE_USER_ID";
     String UXCAM_API_KEY = "0cbfb20ca44be10";
     Boolean ANALYTICS_ENABLED = false;
 }

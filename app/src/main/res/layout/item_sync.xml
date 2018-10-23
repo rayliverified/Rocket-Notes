@@ -24,13 +24,14 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/image_sync"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/icon_cloud_off"/>
 
             <TextView
-                android:id="@+id/item_note_title"
+                android:id="@+id/text_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -41,6 +42,7 @@
                 android:layout_weight="1"/>
 
             <ImageButton
+                android:id="@+id/btn_action"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:padding="5dp"

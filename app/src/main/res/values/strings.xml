@@ -25,6 +25,9 @@
     <string name="edit_helper_default">(press Enter on keyboard to save Note Title)</string>
     <string name="edit_helper_save">(press Enter again to save Note)</string>
 
+    <string name="sync_loggedout_text">Tap to backup notes</string>
+    <string name="sync_loggedin_text">Welcome back %1$s</string>
+
     <!--Shortcut Titles-->
     <string name="newnote_title_short">New Note</string>
     <string name="newnote_title_long">Create a New Note</string>

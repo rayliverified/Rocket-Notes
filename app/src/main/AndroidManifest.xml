@@ -154,6 +154,7 @@
         <service android:name=".service.DeleteNoteService"/>
         <service android:name=".service.SaveFileService"/>
         <service android:name=".service.SaveImageService"/>
+        <service android:name=".service.SyncService"/>
         <!-- Providers -->
         <provider
             android:name="com.commonsware.cwac.provider.StreamProvider"

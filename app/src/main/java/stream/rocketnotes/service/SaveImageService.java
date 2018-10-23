@@ -30,6 +30,8 @@ import stream.rocketnotes.utils.FileUtils;
 
 public class SaveImageService extends Service {
 
+    private final String TAG = this.getClass().getSimpleName();
+
     private Context context = this;
 
     @Override
