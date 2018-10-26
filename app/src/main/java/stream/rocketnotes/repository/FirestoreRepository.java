@@ -17,10 +17,13 @@ public class FirestoreRepository {
 
     private final String TAG = this.getClass().getSimpleName();
 
+    public String userID;
+
     public FirebaseFirestore firestoreDB;
     public DatabaseHelper dbHelper;
 
-    public FirestoreRepository(Context context) {
+    public FirestoreRepository(Context context, String userID) {
+        this.userID = userID;
         firestoreDB = FirebaseFirestore.getInstance();
         dbHelper = new DatabaseHelper(context);
     }
@@ -39,7 +42,7 @@ public class FirestoreRepository {
                     public void onSuccess(final DocumentReference documentReference) {
                         Map<String, Object> item = new HashMap<>();
                         item.put(DatabaseHelper.KEY_CLOUDID, documentReference.getId());
-                        firestoreDB.collection("users").document("ray").collection("noteindex").document(notesItem.getID().toString()).set(item)
+                        firestoreDB.collection("users").document(userID).collection("notesindex").document(notesItem.getID().toString()).set(item)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {

@@ -41,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //Table Query.
-        String notesTable = "CREATE TABLE IF NOT EXISTS notes (_id INTEGER PRIMARY KEY AUTOINCREMENT, date INTEGER, note TEXT, image TEXT, imagepreview TEXT);";
+        String notesTable = "CREATE TABLE IF NOT EXISTS notes (_id INTEGER PRIMARY KEY AUTOINCREMENT, date INTEGER, note TEXT, image TEXT, imagepreview TEXT, cloudid TEXT);";
         //Execute Query
         db.execSQL(notesTable);
         Log.d("SQLite", "Tables created");
@@ -119,6 +119,9 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         }
         if (note.getNote() != null) {
             values.put(KEY_NOTE, note.getNote());
+        }
+        if (note.getCloudId() != null) {
+            values.put(KEY_CLOUDID, note.getCloudId());
         }
 
         return db.update(TABLE_NOTES, values, selection, null);
@@ -339,5 +342,24 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
         values.put(KEY_IMAGEPREVIEW, imagepreview);
         db.update(TABLE_NOTES, values, KEY_IMAGE + "=?", new String[]{image});
+    }
+
+    //Get notes that have not been backed up.
+    public ArrayList<NotesItem> GetUnsyncedNotes() {
+        ArrayList<NotesItem> notes = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_CLOUDID + " IS NULL ORDER BY " + KEY_DATE + " DESC";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c.moveToFirst()) {
+            do {
+                NotesItem item = new NotesItem();
+                item = GetNoteItem(item, c);
+                notes.add(item);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return notes;
     }
 }

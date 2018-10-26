@@ -34,7 +34,7 @@ repositories {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation 'com.github.searchy2:CustomPermissionsDialogue:2.0.1'
     implementation 'com.github.searchy2:CustomAlertViewDialogue:2.5.1'
     implementation 'com.github.searchy2:AndroidCrossPromotion:1.8.1'
@@ -46,8 +46,8 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.android.volley:volley:1.1.0'
     implementation 'androidx.preference:preference:1.0.0'
-    implementation 'com.google.firebase:firebase-firestore:17.1.1'
-    implementation 'com.firebaseui:firebase-ui-auth:4.2.0'
+    implementation 'com.google.firebase:firebase-firestore:17.1.2'
+    implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
 
     implementation 'com.afollestad:material-camera:0.4.5' //https://github.com/afollestad/material-camera
     implementation 'com.facebook.fresco:fresco:1.11.0'
@@ -70,11 +70,9 @@ dependencies {
     implementation 'org.zeroturnaround:zt-zip:1.13' //https://github.com/zeroturnaround/zt-zip
     implementation 'com.github.Kennyc1012:BottomSheet:2.3.4' //https://github.com/Kennyc1012/BottomSheet
     implementation 'com.zxy.android:tiny:0.1.0' //https://github.com/Sunzxyong/Tiny
-    implementation 'com.pyze:PyzeLibrary:4.6.1'
+//    implementation 'com.pyze:PyzeLibrary:4.6.1'
     //Custom filter chips from https://github.com/claudiodegio/MsvSearch
     //Image viewer from https://github.com/stfalcon-studio/FrescoImageViewer
 }
 
 apply plugin: 'com.google.gms.google-services'
-GoogleServicesPlugin.config.disableVersionCheck = true
-

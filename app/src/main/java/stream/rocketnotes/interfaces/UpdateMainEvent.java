@@ -13,6 +13,11 @@ public class UpdateMainEvent {
         this.action = action;
     }
 
+    public UpdateMainEvent(String action, String noteText) {
+        this.action = action;
+        this.noteText = noteText;
+    }
+
     public UpdateMainEvent(String action, Integer id) {
         this.action = action;
         this.id = id;

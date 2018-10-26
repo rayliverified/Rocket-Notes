@@ -6,6 +6,7 @@
     <color name="colorAccent">#FF7058</color>
     <color name="colorAccentSecondary">#607D8B</color>
     <color name="windowBackgroundColor">#FFF2F2F2</color>
+    <color name="light">#FFDAD4</color>
 
     <!--<color name="colorPrimary">#54C0EB</color>-->
     <!--<color name="colorPrimaryDark">#0288D1</color>-->

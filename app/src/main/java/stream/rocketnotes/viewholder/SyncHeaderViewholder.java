@@ -3,9 +3,15 @@ package stream.rocketnotes.viewholder;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.os.Build;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -29,7 +35,7 @@ public class SyncHeaderViewholder extends AbstractFlexibleItem<SyncHeaderViewhol
 
     private String id;
     private String state;
-    private String text = "";
+    private String text = "Syncing";
     private Activity activity;
 
     private final String mActivity = this.getClass().getSimpleName();
@@ -68,38 +74,93 @@ public class SyncHeaderViewholder extends AbstractFlexibleItem<SyncHeaderViewhol
     }
 
     @Override
-    public void bindViewHolder(FlexibleAdapter adapter, MyViewHolder holder, int position, List payloads) {
-        final Context context = holder.itemView.getContext();
-        holder.setFullSpan(true);
-
-        switch (state) {
-            case SYNC_STATE_LOGGEDOUT:
-                holder.mLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        // Choose authentication providers
-                        List<AuthUI.IdpConfig> providers = Collections.singletonList(new AuthUI.IdpConfig.EmailBuilder().build());
-                        activity.startActivityForResult(AuthUI.getInstance()
-                                .createSignInIntentBuilder()
-                                .setAvailableProviders(providers)
-                                .build(), 1);
+    public void bindViewHolder(final FlexibleAdapter adapter, MyViewHolder holder, int position, List payloads) {
+        if(!payloads.isEmpty()) {
+            if (payloads.get(0) instanceof String) {
+                if (text.contains("/") && text.length() >= 3) {
+                    int progress = Integer.valueOf(text.substring(0, text.indexOf("/")));
+                    int total = Integer.valueOf(text.substring(text.lastIndexOf("/") + 1));
+                    holder.mProgressBar.setIndeterminate(false);
+                    holder.mProgressBar.setMax(total);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        holder.mProgressBar.setProgress(progress, true);
+                    } else {
+                        holder.mProgressBar.setProgress(progress);
                     }
-                });
-                holder.mTitle.setText(context.getString(R.string.sync_loggedout_text));
-                holder.mImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.icon_cloud_off));
-                break;
-            case SYNC_STATE_BACKINGUP:
-                break;
-            case SYNC_STATE_BACKEDUP:
-                break;
+                    holder.mProgressText.setText(text);
+                }
+            }
+        }else {
+            final Context context = holder.itemView.getContext();
+            holder.setFullSpan(true);
+
+            switch (state) {
+                case SYNC_STATE_LOGGEDOUT:
+                    holder.mLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Choose authentication providers
+                            List<AuthUI.IdpConfig> providers = Collections.singletonList(new AuthUI.IdpConfig.EmailBuilder().build());
+                            activity.startActivityForResult(AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setAvailableProviders(providers)
+                                    .build(), 1);
+                        }
+                    });
+                    holder.mTitle.setVisibility(View.VISIBLE);
+                    holder.mProgressBar.setVisibility(View.GONE);
+                    holder.mButton.setVisibility(View.VISIBLE);
+                    holder.mProgressText.setVisibility(View.GONE);
+                    holder.mTitle.setText(context.getString(R.string.sync_loggedout_text));
+                    holder.mImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.icon_cloud_off));
+                    break;
+                case SYNC_STATE_BACKINGUP:
+                    holder.mLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+                    holder.mTitle.setVisibility(View.GONE);
+                    holder.mProgressBar.setVisibility(View.VISIBLE);
+                    holder.mButton.setVisibility(View.GONE);
+                    holder.mProgressText.setVisibility(View.VISIBLE);
+                    holder.mImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.icon_cloud_upload));
+                    holder.mProgressText.setText(text);
+                    holder.mProgressBar.setIndeterminate(true);
+                    break;
+                case SYNC_STATE_BACKEDUP:
+                    holder.mLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            adapter.removeScrollableHeader(SyncHeaderViewholder.this);
+                        }
+                    });
+                    holder.mTitle.setVisibility(View.VISIBLE);
+                    holder.mProgressBar.setVisibility(View.GONE);
+                    holder.mButton.setVisibility(View.VISIBLE);
+                    holder.mProgressText.setVisibility(View.GONE);
+                    holder.mTitle.setText(context.getString(R.string.sync_backedup_text));
+                    holder.mImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.icon_cloud_done));
+                    holder.mButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            adapter.removeScrollableHeader(SyncHeaderViewholder.this);
+                        }
+                    });
+                    break;
+            }
         }
     }
 
     public static class MyViewHolder extends FlexibleViewHolder {
 
-        public LinearLayout mLayout;
-        public TextView mTitle;
+        LinearLayout mLayout;
+        TextView mTitle;
         ImageView mImage;
+        ProgressBar mProgressBar;
+        ImageButton mButton;
+        TextView mProgressText;
 
         public MyViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
@@ -107,6 +168,9 @@ public class SyncHeaderViewholder extends AbstractFlexibleItem<SyncHeaderViewhol
             mLayout = view.findViewById(R.id.item_sync);
             mTitle = view.findViewById(R.id.text_title);
             mImage = view.findViewById(R.id.image_sync);
+            mProgressBar = view.findViewById(R.id.progress_horizontal);
+            mButton = view.findViewById(R.id.btn_action);
+            mProgressText = view.findViewById(R.id.text_progress);
 
             //Set fullwidth.
             setFullSpan(true);

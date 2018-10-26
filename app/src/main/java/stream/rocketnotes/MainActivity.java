@@ -303,8 +303,9 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.action_camera:
                         AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Camera");
                         Intent intent = new Intent(mContext, CameraActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        mContext.startActivity(intent);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        mContext.startActivity(intent);
+                        AddSyncBackedUpHeader();
                         break;
                     case R.id.filter_image:
                         AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Filter Image");
@@ -523,6 +524,35 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.smoothScrollToPosition(0);
     }
 
+    public void AddSyncBackingUpHeader(String text) {
+        if (mAdapter.isScrollableHeaderOrFooter(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKINGUP, MainActivity.this))) {
+            Log.d("Header", "Existing");
+            mAdapter.updateItem(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKINGUP, MainActivity.this, text), text);
+        } else {
+            Log.d("Header", "New");
+            mAdapter.setAnimationOnForwardScrolling(false).setAnimationOnReverseScrolling(false);
+            mAdapter.addScrollableHeader(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKINGUP, MainActivity.this));
+            mAppBar.setExpanded(true);
+            mRecyclerView.smoothScrollToPosition(0);
+        }
+    }
+
+    public void AddSyncBackedUpHeader() {
+        if (mAdapter.isScrollableHeaderOrFooter(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKEDUP, MainActivity.this))) {
+            mAdapter.updateItem(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKEDUP, MainActivity.this));
+        } else {
+            mAdapter.addScrollableHeader(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKEDUP, MainActivity.this));
+        }
+        int[] viewsIds = mStaggeredLayoutManager.findFirstCompletelyVisibleItemPositions(null);
+        if (viewsIds.length > 0) {
+            //User is at top of page. Scroll and show backup complete message.
+            if (viewsIds[0] <= 6) {
+                mAppBar.setExpanded(true);
+                mAdapter.smoothScrollToPosition(0);
+            }
+        }
+    }
+
     public void RemoveSticky() {
         UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
         if (stickyEvent != null) {
@@ -569,6 +599,12 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case SyncHeaderViewholder.SYNC_STATE_LOGGEDOUT:
                 AddSyncLoggedOutHeader();
+                break;
+            case SyncHeaderViewholder.SYNC_STATE_BACKINGUP:
+                AddSyncBackingUpHeader(event.getNoteText());
+                break;
+            case SyncHeaderViewholder.SYNC_STATE_BACKEDUP:
+                AddSyncBackedUpHeader();
                 break;
             default:
                 break;

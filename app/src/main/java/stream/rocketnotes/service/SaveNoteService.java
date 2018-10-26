@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -24,6 +25,7 @@ import java.util.Calendar;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 import es.dmoral.toasty.Toasty;
 import stream.rocketnotes.Constants;
 import stream.rocketnotes.DatabaseHelper;
@@ -58,7 +60,6 @@ public class SaveNoteService extends Service {
 
         dbHelper = new DatabaseHelper(mContext);
         calendar = Calendar.getInstance();
-        firestoreRepository = new FirestoreRepository(mContext);
         Log.d(TAG, String.valueOf(notesItem));
 
         getData(intent);
@@ -154,23 +155,28 @@ public class SaveNoteService extends Service {
 
     private void SaveNoteCloud() {
         Log.d(TAG, "SaveNoteCloud");
-        FirestoreInterface firestoreInterface = new FirestoreInterface() {
-            @Override
-            public void onSuccess() {
-                Log.d(TAG, "Success!");
-            }
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String userID = sharedPref.getString(Constants.FIREBASE_USER_ID, "");
+        if (!userID.equals("")) {
+            firestoreRepository = new FirestoreRepository(mContext, userID);
+            FirestoreInterface firestoreInterface = new FirestoreInterface() {
+                @Override
+                public void onSuccess() {
+                    Log.d(TAG, "Success!");
+                }
 
-            @Override
-            public OnFailureListener getFailureListener() {
-                return new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error writing document", e);
-                    }
-                };
-            }
-        };
-        firestoreRepository.AddNote(notesItem, firestoreInterface);
+                @Override
+                public OnFailureListener getFailureListener() {
+                    return new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error writing document", e);
+                        }
+                    };
+                }
+            };
+            firestoreRepository.AddNote(notesItem, firestoreInterface);
+        }
     }
 
     private void NotificationSender(NotesItem note) {
