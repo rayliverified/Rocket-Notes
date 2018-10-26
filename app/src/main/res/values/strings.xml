@@ -28,6 +28,7 @@
     <string name="sync_loggedout_text">Tap to backup notes</string>
     <string name="sync_loggedin_text">Welcome back %1$s</string>
     <string name="sync_backedup_text">Backup complete!</string>
+    <string name="sync_starting">Syncing...</string>
 
     <!--Shortcut Titles-->
     <string name="newnote_title_short">New Note</string>

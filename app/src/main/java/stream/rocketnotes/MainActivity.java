@@ -45,6 +45,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import es.dmoral.toasty.Toasty;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.Payload;
 import eu.davidea.flexibleadapter.common.SmoothScrollStaggeredLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
@@ -303,9 +304,8 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.action_camera:
                         AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Camera");
                         Intent intent = new Intent(mContext, CameraActivity.class);
-//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        mContext.startActivity(intent);
-                        AddSyncBackedUpHeader();
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
                         break;
                     case R.id.filter_image:
                         AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Filter Image");
@@ -527,10 +527,10 @@ public class MainActivity extends AppCompatActivity {
     public void AddSyncBackingUpHeader(String text) {
         if (mAdapter.isScrollableHeaderOrFooter(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKINGUP, MainActivity.this))) {
             Log.d("Header", "Existing");
+            mAdapter.setAnimationOnForwardScrolling(false).setAnimationOnReverseScrolling(false);
             mAdapter.updateItem(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKINGUP, MainActivity.this, text), text);
         } else {
             Log.d("Header", "New");
-            mAdapter.setAnimationOnForwardScrolling(false).setAnimationOnReverseScrolling(false);
             mAdapter.addScrollableHeader(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKINGUP, MainActivity.this));
             mAppBar.setExpanded(true);
             mRecyclerView.smoothScrollToPosition(0);
@@ -539,7 +539,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void AddSyncBackedUpHeader() {
         if (mAdapter.isScrollableHeaderOrFooter(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKEDUP, MainActivity.this))) {
-            mAdapter.updateItem(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKEDUP, MainActivity.this));
+            mAdapter.setAnimationOnForwardScrolling(false).setAnimationOnReverseScrolling(false);
+            mAdapter.updateItem(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKEDUP, MainActivity.this), Payload.CHANGE);
         } else {
             mAdapter.addScrollableHeader(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKEDUP, MainActivity.this));
         }

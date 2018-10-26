@@ -35,7 +35,7 @@ public class SyncHeaderViewholder extends AbstractFlexibleItem<SyncHeaderViewhol
 
     private String id;
     private String state;
-    private String text = "Syncing";
+    private String text = "";
     private Activity activity;
 
     private final String mActivity = this.getClass().getSimpleName();
@@ -126,13 +126,14 @@ public class SyncHeaderViewholder extends AbstractFlexibleItem<SyncHeaderViewhol
                     holder.mButton.setVisibility(View.GONE);
                     holder.mProgressText.setVisibility(View.VISIBLE);
                     holder.mImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.icon_cloud_upload));
-                    holder.mProgressText.setText(text);
                     holder.mProgressBar.setIndeterminate(true);
+                    holder.mProgressText.setText(context.getString(R.string.sync_starting));
                     break;
                 case SYNC_STATE_BACKEDUP:
                     holder.mLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            adapter.setAnimationOnForwardScrolling(true).setAnimationOnReverseScrolling(true);
                             adapter.removeScrollableHeader(SyncHeaderViewholder.this);
                         }
                     });
@@ -145,6 +146,7 @@ public class SyncHeaderViewholder extends AbstractFlexibleItem<SyncHeaderViewhol
                     holder.mButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            adapter.setAnimationOnForwardScrolling(true).setAnimationOnReverseScrolling(true);
                             adapter.removeScrollableHeader(SyncHeaderViewholder.this);
                         }
                     });
