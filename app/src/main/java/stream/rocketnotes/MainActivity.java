@@ -540,7 +540,7 @@ public class MainActivity extends AppCompatActivity {
     public void AddSyncBackedUpHeader() {
         if (mAdapter.isScrollableHeaderOrFooter(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKEDUP, MainActivity.this))) {
             mAdapter.setAnimationOnForwardScrolling(false).setAnimationOnReverseScrolling(false);
-            mAdapter.updateItem(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKEDUP, MainActivity.this), Payload.CHANGE);
+            mAdapter.updateItem(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKEDUP, MainActivity.this));
         } else {
             mAdapter.addScrollableHeader(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKEDUP, MainActivity.this));
         }
