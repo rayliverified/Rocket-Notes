@@ -35,7 +35,7 @@ public class SyncService extends Service {
     public static final String SYNC_STATE_COMPLETED = "SYNC_STATE_COMPLETED";
     public static final String SYNC_STATE_ERROR = "SYNC_STATE_ERROR";
     public static final String SYNC_STATE_ERROR_CONNECTION = "SYNC_STATE_ERROR_CONNECTION";
-    private static final int SYNC_LIMIT = 10;
+    private static final int SYNC_LIMIT = 100;
 
     private String state;
     private ArrayList<NotesItem> mNotes;
@@ -81,15 +81,13 @@ public class SyncService extends Service {
         else {
             //Sync notes!
             state = SYNC_STATE_SYNCING;
-            firestoreRepository = new FirestoreRepository(mContext, userID);
+            EventBus.getDefault().post(new UpdateMainEvent(SyncHeaderViewholder.SYNC_STATE_BACKINGUP));
+            firestoreRepository = new FirestoreRepository(mContext, userID, dbHelper);
             //Check if notes need to be syncronized.
             mNotes = dbHelper.GetUnsyncedNotes(SYNC_LIMIT);
-            Log.d("Unsynced Notes", String.valueOf(mNotes.size()));
             if (mNotes.size() > 0) {
-                EventBus.getDefault().post(new UpdateMainEvent(SyncHeaderViewholder.SYNC_STATE_BACKINGUP));
                 for (int i = 0; i < mNotes.size(); i++) {
                     SaveNoteCloud(mNotes.get(i));
-                    Log.d("Save Note Time", String.valueOf(System.currentTimeMillis()));
                 }
             }
             else {
@@ -109,17 +107,18 @@ public class SyncService extends Service {
             public void onSuccess() {
                 mNotes.remove(notesItem);
                 totalSynced += 1;
-                Log.d("Save Cloud Time", String.valueOf(System.currentTimeMillis()));
-                if (totalSynced.equals(totalSize)) {
-                    state = SYNC_STATE_COMPLETED;
-                    EventBus.getDefault().post(new UpdateMainEvent(SyncHeaderViewholder.SYNC_STATE_BACKEDUP));
-                    stopSelf();
-                } else {
-                    if (mNotes.size() == 0) {
-                        Intent intent = new Intent(mContext, SyncService.class);
-                        startService(intent);
+                if (state.equals(SYNC_STATE_SYNCING)) {
+                    if (totalSynced >= totalSize) {
+                        state = SYNC_STATE_COMPLETED;
+                        EventBus.getDefault().post(new UpdateMainEvent(SyncHeaderViewholder.SYNC_STATE_BACKEDUP));
+                        stopSelf();
+                    } else {
+                        if (mNotes.size() == 0) {
+                            Intent intent = new Intent(mContext, SyncService.class);
+                            startService(intent);
+                        }
+                        EventBus.getDefault().post(new UpdateMainEvent(SyncHeaderViewholder.SYNC_STATE_BACKINGUP, totalSynced + "/" + totalSize));
                     }
-                    EventBus.getDefault().post(new UpdateMainEvent(SyncHeaderViewholder.SYNC_STATE_BACKINGUP, totalSynced + "/" + totalSize));
                 }
             }
 

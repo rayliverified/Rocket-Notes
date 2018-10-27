@@ -526,11 +526,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void AddSyncBackingUpHeader(String text) {
         if (mAdapter.isScrollableHeaderOrFooter(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKINGUP, MainActivity.this))) {
-            Log.d("Header", "Existing");
             mAdapter.setAnimationOnForwardScrolling(false).setAnimationOnReverseScrolling(false);
             mAdapter.updateItem(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKINGUP, MainActivity.this, text), text);
         } else {
-            Log.d("Header", "New");
             mAdapter.addScrollableHeader(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_BACKINGUP, MainActivity.this));
             mAppBar.setExpanded(true);
             mRecyclerView.smoothScrollToPosition(0);

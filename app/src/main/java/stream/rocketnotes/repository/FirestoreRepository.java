@@ -1,10 +1,12 @@
 package stream.rocketnotes.repository;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,10 +24,13 @@ public class FirestoreRepository {
     public FirebaseFirestore firestoreDB;
     public DatabaseHelper dbHelper;
 
-    public FirestoreRepository(Context context, String userID) {
+    public FirestoreRepository(Context context, String userID, DatabaseHelper dbHelper) {
         this.userID = userID;
         firestoreDB = FirebaseFirestore.getInstance();
-        dbHelper = new DatabaseHelper(context);
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build();
+        firestoreDB.setFirestoreSettings(settings);
+
+        this.dbHelper = dbHelper;
     }
 
     public void AddNote(final NotesItem notesItem, final FirestoreInterface firestoreInterface) {

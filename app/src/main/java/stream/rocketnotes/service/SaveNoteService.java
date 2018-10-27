@@ -158,7 +158,7 @@ public class SaveNoteService extends Service {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         String userID = sharedPref.getString(Constants.FIREBASE_USER_ID, "");
         if (!userID.equals("")) {
-            firestoreRepository = new FirestoreRepository(mContext, userID);
+            firestoreRepository = new FirestoreRepository(mContext, userID, dbHelper);
             FirestoreInterface firestoreInterface = new FirestoreInterface() {
                 @Override
                 public void onSuccess() {
