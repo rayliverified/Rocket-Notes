@@ -4,6 +4,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -24,9 +26,22 @@ import stream.rocketnotes.repository.FirestoreRepository;
 import stream.rocketnotes.viewholder.SyncHeaderViewholder;
 
 public class SyncService extends Service {
+
     private final String TAG = this.getClass().getSimpleName();
+
+    public static final String SYNC_STATE_LOGGED_OUT = "SYNC_STATE_LOGGED_OUT";
+    public static final String SYNC_STATE_STARTING = "SYNC_STATE_STARTING";
+    public static final String SYNC_STATE_SYNCING = "SYNC_STATE_SYNCING";
+    public static final String SYNC_STATE_COMPLETED = "SYNC_STATE_COMPLETED";
+    public static final String SYNC_STATE_ERROR = "SYNC_STATE_ERROR";
+    public static final String SYNC_STATE_ERROR_CONNECTION = "SYNC_STATE_ERROR_CONNECTION";
+    private static final int SYNC_LIMIT = 10;
+
+    private String state;
     private ArrayList<NotesItem> mNotes;
+    private String userID = "";
     private Integer totalSize = 0;
+    private Integer totalSynced = 0;
 
     DatabaseHelper dbHelper;
     private FirestoreRepository firestoreRepository;
@@ -39,29 +54,52 @@ public class SyncService extends Service {
         super.onCreate();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         dbHelper = new DatabaseHelper(mContext);
+        userID = sharedPref.getString(Constants.FIREBASE_USER_ID, "");
+        state = SYNC_STATE_STARTING;
+        totalSize = dbHelper.GetUnsyncedNotesCount();
+        totalSynced = 0;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        String userID = sharedPref.getString(Constants.FIREBASE_USER_ID, "");
-        if (!userID.equals("")) {
+        if (!isConnected()) {
+            state = SYNC_STATE_ERROR_CONNECTION;
+            stopSelf();
+        }
+        else if (userID.equals("")) {
+            state = SYNC_STATE_LOGGED_OUT;
+            EventBus.getDefault().post(new UpdateMainEvent(SyncHeaderViewholder.SYNC_STATE_LOGGEDOUT));
+            stopSelf();
+        }
+        else if (totalSize == 0) {
+            state = SYNC_STATE_COMPLETED;
+            stopSelf();
+        }
+        else if (state == SYNC_STATE_SYNCING && mNotes.size() > 0) {
+            //Do nothing because notes are being synced already.
+        }
+        else {
+            //Sync notes!
+            state = SYNC_STATE_SYNCING;
             firestoreRepository = new FirestoreRepository(mContext, userID);
             //Check if notes need to be syncronized.
-            mNotes = dbHelper.GetUnsyncedNotes();
-            totalSize = mNotes.size();
+            mNotes = dbHelper.GetUnsyncedNotes(SYNC_LIMIT);
             Log.d("Unsynced Notes", String.valueOf(mNotes.size()));
             if (mNotes.size() > 0) {
                 EventBus.getDefault().post(new UpdateMainEvent(SyncHeaderViewholder.SYNC_STATE_BACKINGUP));
                 for (int i = 0; i < mNotes.size(); i++) {
                     SaveNoteCloud(mNotes.get(i));
+                    Log.d("Save Note Time", String.valueOf(System.currentTimeMillis()));
                 }
             }
-        } else {
-            EventBus.getDefault().post(new UpdateMainEvent(SyncHeaderViewholder.SYNC_STATE_LOGGEDOUT));
+            else {
+                totalSize = 0;
+                state = SYNC_STATE_COMPLETED;
+                EventBus.getDefault().post(new UpdateMainEvent(SyncHeaderViewholder.SYNC_STATE_BACKEDUP));
+                stopSelf();
+            }
         }
 
-        stopSelf();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -70,11 +108,18 @@ public class SyncService extends Service {
             @Override
             public void onSuccess() {
                 mNotes.remove(notesItem);
-                Log.d("Notes Left to Sync", String.valueOf(mNotes.size()));
-                if (mNotes.size() == 0) {
+                totalSynced += 1;
+                Log.d("Save Cloud Time", String.valueOf(System.currentTimeMillis()));
+                if (totalSynced.equals(totalSize)) {
+                    state = SYNC_STATE_COMPLETED;
                     EventBus.getDefault().post(new UpdateMainEvent(SyncHeaderViewholder.SYNC_STATE_BACKEDUP));
+                    stopSelf();
                 } else {
-                    EventBus.getDefault().post(new UpdateMainEvent(SyncHeaderViewholder.SYNC_STATE_BACKINGUP, totalSize - mNotes.size() + "/" + totalSize));
+                    if (mNotes.size() == 0) {
+                        Intent intent = new Intent(mContext, SyncService.class);
+                        startService(intent);
+                    }
+                    EventBus.getDefault().post(new UpdateMainEvent(SyncHeaderViewholder.SYNC_STATE_BACKINGUP, totalSynced + "/" + totalSize));
                 }
             }
 
@@ -83,12 +128,23 @@ public class SyncService extends Service {
                 return new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        state = SYNC_STATE_ERROR;
+                        stopSelf();
                     }
                 };
             }
         };
         firestoreRepository.AddNote(notesItem, firestoreInterface);
+    }
+
+    public boolean isConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = null;
+        if (cm != null) {
+            netInfo = cm.getActiveNetworkInfo();
+        }
+
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     @Override

@@ -344,13 +344,21 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         db.update(TABLE_NOTES, values, KEY_IMAGE + "=?", new String[]{image});
     }
 
-    //Get notes that have not been backed up.
-    public ArrayList<NotesItem> GetUnsyncedNotes() {
-        ArrayList<NotesItem> notes = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_CLOUDID + " IS NULL ORDER BY " + KEY_DATE + " DESC";
+    public int GetUnsyncedNotesCount() {
+        int count;
         SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.query(TABLE_NOTES, new String[]{KEY_CLOUDID}, KEY_CLOUDID + " IS NULL", null, null, null, null);
+        count = c.getCount();
+        c.close();
+        return count;
+    }
 
-        Cursor c = db.rawQuery(selectQuery, null);
+    //Get notes that have not been backed up.
+    public ArrayList<NotesItem> GetUnsyncedNotes(Integer limit) {
+        ArrayList<NotesItem> notes = new ArrayList<>();
+//        String selectQuery = "SELECT * FROM " + TABLE_NOTES + " WHERE " + KEY_CLOUDID + " IS NULL ORDER BY " + KEY_DATE + " DESC LIMIT " + limit;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.query(TABLE_NOTES, null, KEY_CLOUDID + " IS NULL", null, null, null, KEY_DATE + " DESC", Integer.toString(limit));
 
         if (c.moveToFirst()) {
             do {
