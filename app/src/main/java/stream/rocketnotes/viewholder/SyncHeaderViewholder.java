@@ -113,6 +113,13 @@ public class SyncHeaderViewholder extends AbstractFlexibleItem<SyncHeaderViewhol
                     holder.mProgressText.setVisibility(View.GONE);
                     holder.mTitle.setText(context.getString(R.string.sync_loggedout_text));
                     holder.mImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.icon_cloud_off));
+                    holder.mButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            adapter.setAnimationOnForwardScrolling(true).setAnimationOnReverseScrolling(true);
+                            adapter.removeScrollableHeader(SyncHeaderViewholder.this);
+                        }
+                    });
                     break;
                 case SYNC_STATE_BACKINGUP:
                     holder.mLayout.setOnClickListener(new View.OnClickListener() {

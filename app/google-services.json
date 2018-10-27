@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "306521813371-22earcgm8vc0c5f3u6ta1gh9sgmu2sc7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "stream.rocketnotes",
+            "certificate_hash": "a56c8e8d8d2652e17df2f05a52c8ef22ce25ccda"
+          }
+        },
+        {
           "client_id": "306521813371-n9dtvtajkbo9p562ruhncdea6gad9q9b.apps.googleusercontent.com",
           "client_type": 3
         }
