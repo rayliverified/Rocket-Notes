@@ -1,5 +1,3 @@
-import com.google.gms.googleservices.GoogleServicesPlugin
-
 apply plugin: 'com.android.application'
 
 android {
@@ -39,7 +37,7 @@ dependencies {
     implementation 'com.github.searchy2:CustomAlertViewDialogue:2.5.1'
     implementation 'com.github.searchy2:AndroidCrossPromotion:1.8.1'
 
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
@@ -58,7 +56,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'org.greenrobot:eventbus:3.1.1' //https://github.com/greenrobot/EventBus
     implementation 'de.hdodenhof:circleimageview:2.2.0' //https://github.com/hdodenhof/CircleImageView
-    implementation 'me.xdrop:fuzzywuzzy:1.1.10' //https://github.com/xdrop/fuzzywuzzy
+    implementation 'me.xdrop:fuzzywuzzy:1.2.0' //https://github.com/xdrop/fuzzywuzzy
     implementation 'io.github.yavski:fab-speed-dial:1.0.6' //https://github.com/yavski/fab-speed-dial
     implementation 'com.github.angads25:filepicker:1.1.1' //https://github.com/Angads25/android-filepicker
     implementation 'com.github.GrenderG:Toasty:1.3.0' //https://github.com/GrenderG/Toasty
