@@ -5,7 +5,8 @@
 
     <PreferenceCategory
         android:key="header_appearance"
-        android:title="Appearance">
+        android:title="Appearance"
+        android:iconSpaceReserved="false">
 
         <SwitchPreference
             android:key="show_quickactions"
@@ -33,8 +34,33 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="header_cloud"
+        android:title="Cloud"
+        android:iconSpaceReserved="false">
+
+        <Preference
+            android:key="settings_cloud_backup"
+            android:title="Cloud Sync"
+            android:summary="Sync notes to the cloud"
+            app:iconSpaceReserved="false"/>
+
+        <Preference
+            android:key="settings_cloud_restore"
+            android:title="Cloud Restore"
+            android:summary="Restore notes from the cloud"
+            app:iconSpaceReserved="false"/>
+
+        <Preference
+            android:key="settings_cloud_delete"
+            android:title="Delete Cloud Backup"
+            android:summary="Remove all notes stored in the cloud. Notes stored on this device are untouched."
+            app:iconSpaceReserved="false"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="header_backup"
-        android:title="Backup">
+        android:title="Backup"
+        android:iconSpaceReserved="false">
 
         <Preference
             android:key="settings_local_backup"
@@ -57,7 +83,8 @@
 
     <PreferenceCategory
         android:key="header_social"
-        android:title="Social">
+        android:title="Social"
+        android:iconSpaceReserved="false">
 
         <Preference
             android:key="settings_moreapps"
@@ -74,7 +101,8 @@
 
     <PreferenceCategory
         android:key="header_about"
-        android:title="About">
+        android:title="About"
+        android:iconSpaceReserved="false">
 
         <Preference
             android:key="settings_version"

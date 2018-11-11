@@ -370,4 +370,15 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         c.close();
         return notes;
     }
+
+    /*
+     * Update cloudID column to null values.
+     */
+    public void DeleteCloudBackup() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.putNull(KEY_CLOUDID);
+        db.update(TABLE_NOTES, values, null, null);
+    }
 }

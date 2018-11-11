@@ -11,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import java.util.HashMap;
 import java.util.Map;
 
+import stream.rocketnotes.Constants;
 import stream.rocketnotes.DatabaseHelper;
 import stream.rocketnotes.NotesItem;
 import stream.rocketnotes.interfaces.FirestoreInterface;
@@ -19,7 +20,7 @@ public class FirestoreRepository {
 
     private final String TAG = this.getClass().getSimpleName();
 
-    public String userID;
+    public String userID = "";
 
     public FirebaseFirestore firestoreDB;
     public DatabaseHelper dbHelper;
@@ -40,6 +41,7 @@ public class FirestoreRepository {
         item.put(DatabaseHelper.KEY_NOTE, notesItem.getNote());
         item.put(DatabaseHelper.KEY_IMAGE, notesItem.getImage());
         item.put(DatabaseHelper.KEY_IMAGEPREVIEW, notesItem.getImagePreview());
+        item.put(Constants.FIREBASE_USER_ID, userID);
 
         firestoreDB.collection(DatabaseHelper.TABLE_NOTES).add(item)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

@@ -19,6 +19,14 @@ import com.github.angads25.filepicker.controller.DialogSelectionListener;
 import com.github.angads25.filepicker.model.DialogConfigs;
 import com.github.angads25.filepicker.model.DialogProperties;
 import com.github.angads25.filepicker.view.FilePickerDialog;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import org.zeroturnaround.zip.ZipUtil;
 
@@ -32,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import androidx.annotation.NonNull;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
@@ -50,6 +59,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private PreferenceScreen mPreferenceScreen;
     private PreferenceCategory mAppearanceGroup;
+    private PreferenceCategory mCloudGroup;
     private PreferenceCategory mBackupGroup;
     private PreferenceCategory mSocialGroup;
     private PreferenceCategory mAboutGroup;
@@ -57,6 +67,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private SwitchPreference showQuickActions;
     private SwitchPreference enableFastScroller;
     private SwitchPreference enablePopupFullscreen;
+
+    private Preference itemCloudBackup;
+    private Preference itemCloudRestore;
+    private Preference itemCloudDelete;
 
     private Preference itemLocalBackup;
     private Preference itemLocalRestore;
@@ -70,7 +84,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private Preference itemPrivacy;
     private Preference itemThanks;
 
+    String userID = "";
+
     DatabaseHelper dbHelper;
+    SharedPreferences sharedPref;
 
     Context mContext;
     private final String mActivity = getClass().getSimpleName();
@@ -79,6 +96,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         mContext = getActivity().getApplicationContext();
         dbHelper = new DatabaseHelper(mContext);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        userID = sharedPref.getString(Constants.FIREBASE_USER_ID, "");
 
         setRetainInstance(true);
 
@@ -94,6 +113,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         showQuickActions = (SwitchPreference) findPreference("show_quickactions");
         enableFastScroller = (SwitchPreference) findPreference("enable_fastscroller");
         enablePopupFullscreen = (SwitchPreference) findPreference("enable_popup_fullscreen");
+
+        itemCloudBackup = findPreference("settings_cloud_backup");
+        itemCloudRestore = findPreference("settings_cloud_restore");
+        itemCloudDelete = findPreference("settings_cloud_delete");
 
         itemLocalBackup = findPreference("settings_local_backup");
         itemLocalRestore = findPreference("settings_local_restore");
@@ -125,12 +148,49 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
         enablePopupFullscreen.setVisible((Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP));
 
-        //Backup
+        //Cloud Backup
+        itemCloudBackup.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                return false;
+            }
+        });
+        itemCloudRestore.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                return false;
+            }
+        });
+        itemCloudDelete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Cloud Delete");
+                showpDialog("");
+                dbHelper.DeleteCloudBackup();
+                final FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
+                DeleteNotes(firestoreDB);
+                DeleteNotesIndex(firestoreDB);
+
+                Handler handler = new Handler();
+                Runnable r1 = new Runnable() {
+                    public void run() {
+                        hidepDialog();
+                        Toasty.success(mContext, "Cloud Backup Deleted", Toast.LENGTH_SHORT).show();
+                    }
+                };
+                handler.postDelayed(r1, 1000);
+
+                return false;
+            }
+        });
+        if (userID.equals("")) {
+            mCloudGroup.setEnabled(false);
+        }
+
+        //Local Backup
         itemLocalBackup.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference arg0) {
-
-//                showpDialog();
 
                 AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Backup Database");
                 DialogProperties properties = new DialogProperties();
@@ -358,7 +418,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     protected void showpDialog(String message) {
 
-        pDialog.setMessage(message);
+        if (!message.equals("")) {
+            pDialog.setMessage(message);
+        }
         if (!pDialog.isShowing()) pDialog.show();
     }
 
@@ -445,5 +507,63 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(Constants.REFRESH, true);
         editor.apply();
+    }
+
+    public void DeleteNotes(final FirebaseFirestore firestoreDB) {
+        try {
+            firestoreDB.collection(DatabaseHelper.TABLE_NOTES).whereEqualTo(Constants.FIREBASE_USER_ID, userID).limit(500).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                int deleted = 0;
+                                WriteBatch batch = firestoreDB.batch();
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    batch.delete(document.getReference());
+                                    deleted++;
+                                }
+                                batch.commit();
+                                if (deleted >= 500) {
+                                    // retrieve and delete another batch
+                                    DeleteNotes(firestoreDB);
+                                }
+                            } else {
+
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            Log.e("Error deleting: ", e.getMessage());
+        }
+    }
+
+    public void DeleteNotesIndex(final FirebaseFirestore firestoreDB) {
+        try {
+            firestoreDB.collection("users").document(userID).collection("notesindex")
+                    .limit(500)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                int deleted = 0;
+                                WriteBatch batch = firestoreDB.batch();
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    batch.delete(document.getReference());
+                                    deleted++;
+                                }
+                                batch.commit();
+                                if (deleted >= 500) {
+                                    // retrieve and delete another batch
+                                    DeleteNotesIndex(firestoreDB);
+                                }
+                            } else {
+
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            Log.e("Error deleting: ", e.getMessage());
+        }
     }
 }
