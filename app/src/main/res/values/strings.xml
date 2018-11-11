@@ -25,7 +25,7 @@
     <string name="edit_helper_default">(press Enter on keyboard to save Note Title)</string>
     <string name="edit_helper_save">(press Enter again to save Note)</string>
 
-    <string name="sync_loggedout_text">Tap to backup notes</string>
+    <string name="sync_loggedout_text">Backup notes to Cloud</string>
     <string name="sync_loggedin_text">Welcome back %1$s</string>
     <string name="sync_backedup_text">Backup complete!</string>
     <string name="sync_starting">Syncing...</string>

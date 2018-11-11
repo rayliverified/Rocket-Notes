@@ -658,7 +658,7 @@ public class MainActivity extends AppCompatActivity {
                 //Start SyncService again to begin notes syncronization.
                 InitializeSyncService();
             } else {
-                Toasty.error(mContext, "Signin Failed - Unknown Error", Toast.LENGTH_SHORT).show();
+                Toasty.error(mContext, "Signin Failed", Toast.LENGTH_SHORT).show();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

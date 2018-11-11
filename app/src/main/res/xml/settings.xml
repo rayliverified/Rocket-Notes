@@ -38,11 +38,11 @@
         android:title="Cloud"
         android:iconSpaceReserved="false">
 
-        <Preference
-            android:key="settings_cloud_backup"
-            android:title="Cloud Sync"
-            android:summary="Sync notes to the cloud"
-            app:iconSpaceReserved="false"/>
+        <!--<Preference-->
+            <!--android:key="settings_cloud_backup"-->
+            <!--android:title="Cloud Sync"-->
+            <!--android:summary="Sync notes to the cloud"-->
+            <!--app:iconSpaceReserved="false"/>-->
 
         <Preference
             android:key="settings_cloud_restore"
@@ -53,7 +53,13 @@
         <Preference
             android:key="settings_cloud_delete"
             android:title="Delete Cloud Backup"
-            android:summary="Remove all notes stored in the cloud. Notes stored on this device are untouched."
+            android:summary="Remove all notes stored in the cloud. Notes stored on this device are untouched"
+            app:iconSpaceReserved="false"/>
+
+        <Preference
+            android:key="settings_cloud_account"
+            android:title="Enable Cloud Backup"
+            android:summary="Backup your notes to the cloud. Never lose notes again!"
             app:iconSpaceReserved="false"/>
     </PreferenceCategory>
 

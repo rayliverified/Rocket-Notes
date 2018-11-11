@@ -3,6 +3,7 @@ package stream.rocketnotes;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
@@ -380,5 +381,12 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
 
         values.putNull(KEY_CLOUDID);
         db.update(TABLE_NOTES, values, null, null);
+    }
+
+    public long GetNotesCount() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        long count = DatabaseUtils.queryNumEntries(db, TABLE_NOTES);
+        db.close();
+        return count;
     }
 }

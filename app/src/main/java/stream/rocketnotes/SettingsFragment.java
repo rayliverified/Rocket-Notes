@@ -15,14 +15,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.github.angads25.filepicker.controller.DialogSelectionListener;
 import com.github.angads25.filepicker.model.DialogConfigs;
 import com.github.angads25.filepicker.model.DialogProperties;
 import com.github.angads25.filepicker.view.FilePickerDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -38,7 +39,9 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.preference.Preference;
@@ -52,6 +55,8 @@ import stream.crosspromotion.AdActivity;
 import stream.customalert.CustomAlertDialogue;
 import stream.rocketnotes.utils.AnalyticsUtils;
 import stream.rocketnotes.utils.FileUtils;
+
+import static android.app.Activity.RESULT_OK;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
@@ -68,9 +73,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private SwitchPreference enableFastScroller;
     private SwitchPreference enablePopupFullscreen;
 
-    private Preference itemCloudBackup;
     private Preference itemCloudRestore;
     private Preference itemCloudDelete;
+    private Preference itemCloudAccount;
 
     private Preference itemLocalBackup;
     private Preference itemLocalRestore;
@@ -106,6 +111,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         mPreferenceScreen = (PreferenceScreen) findPreference("preferenceScreen");
         mAppearanceGroup = (PreferenceCategory) findPreference("header_appearance");
+        mCloudGroup = (PreferenceCategory) findPreference("header_cloud");
         mBackupGroup = (PreferenceCategory) findPreference("header_backup");
         mSocialGroup = (PreferenceCategory) findPreference("header_social");
         mAboutGroup = (PreferenceCategory) findPreference("header_about");
@@ -114,9 +120,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         enableFastScroller = (SwitchPreference) findPreference("enable_fastscroller");
         enablePopupFullscreen = (SwitchPreference) findPreference("enable_popup_fullscreen");
 
-        itemCloudBackup = findPreference("settings_cloud_backup");
         itemCloudRestore = findPreference("settings_cloud_restore");
         itemCloudDelete = findPreference("settings_cloud_delete");
+        itemCloudAccount = findPreference("settings_cloud_account");
 
         itemLocalBackup = findPreference("settings_local_backup");
         itemLocalRestore = findPreference("settings_local_restore");
@@ -149,12 +155,56 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         enablePopupFullscreen.setVisible((Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP));
 
         //Cloud Backup
-        itemCloudBackup.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                return false;
-            }
-        });
+        //Handle account login state.
+        if (!userID.equals("")) {
+            ToggleCloudPreferencesVisibility(true);
+
+            itemCloudAccount.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Account Logout");
+                    showpDialog("Logging Out");
+                    dbHelper.DeleteCloudBackup();
+                    final FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
+                    DeleteNotes(firestoreDB);
+                    DeleteNotesIndex(firestoreDB);
+
+                    int count = (int) dbHelper.GetNotesCount();
+
+                    Handler handler = new Handler();
+                    Runnable r1 = new Runnable() {
+                        public void run() {
+                            FirebaseAuth.getInstance().signOut();
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putString(Constants.FIREBASE_USER_ID, "");
+                            editor.apply();
+                            hidepDialog();
+                            ToggleCloudPreferencesVisibility(false);
+                            Toasty.success(mContext, "Logout Complete", Toast.LENGTH_SHORT).show();
+                        }
+                    };
+                    handler.postDelayed(r1, count / 2 + 1000);
+                    return false;
+                }
+            });
+        } else {
+            ToggleCloudPreferencesVisibility(false);
+
+            itemCloudAccount.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Account Login");
+                    // Choose authentication providers
+                    List<AuthUI.IdpConfig> providers = Collections.singletonList(new AuthUI.IdpConfig.EmailBuilder().build());
+                    startActivityForResult(AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(providers)
+                            .build(), 1);
+                    return false;
+                }
+            });
+        }
+
         itemCloudRestore.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -171,6 +221,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 DeleteNotes(firestoreDB);
                 DeleteNotesIndex(firestoreDB);
 
+                int count = (int) dbHelper.GetNotesCount();
                 Handler handler = new Handler();
                 Runnable r1 = new Runnable() {
                     public void run() {
@@ -178,14 +229,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         Toasty.success(mContext, "Cloud Backup Deleted", Toast.LENGTH_SHORT).show();
                     }
                 };
-                handler.postDelayed(r1, 1000);
+                handler.postDelayed(r1, count / 2 + 1000);
 
                 return false;
             }
         });
-        if (userID.equals("")) {
-            mCloudGroup.setEnabled(false);
-        }
 
         //Local Backup
         itemLocalBackup.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -429,6 +477,24 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         if (pDialog.isShowing()) pDialog.dismiss();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //FirebaseUI Auth Signin - save signed in user.
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                //Save Firebase User to SharedPrefs.
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(Constants.FIREBASE_USER_ID, user.getUid());
+                editor.apply();
+                ToggleCloudPreferencesVisibility(true);
+            } else {
+                Toasty.error(mContext, "Signin Failed", Toast.LENGTH_SHORT).show();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     public void BackupDatabase(final String savePath) {
 
         showpDialog(getString(R.string.loading_backup_database));
@@ -565,5 +631,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         } catch (Exception e) {
             Log.e("Error deleting: ", e.getMessage());
         }
+    }
+
+    private void ToggleCloudPreferencesVisibility(Boolean visibility) {
+        if (visibility) {
+            itemCloudAccount.setTitle("Disable Cloud Backup");
+            itemCloudAccount.setSummary("Log out of Cloud Sync. This deletes all notes stored in the cloud");
+        } else {
+            itemCloudAccount.setTitle("Enable Cloud Backup");
+            itemCloudAccount.setSummary("Backup your notes to the cloud. Never lose notes again!");
+        }
+        itemCloudRestore.setVisible(visibility);
+        itemCloudDelete.setVisible(visibility);
     }
 }
