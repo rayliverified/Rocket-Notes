@@ -73,6 +73,7 @@ public class SyncService extends Service {
         }
         else if (totalSize == 0) {
             state = SYNC_STATE_COMPLETED;
+            EventBus.getDefault().post(new UpdateMainEvent(SYNC_STATE_COMPLETED));
             stopSelf();
         }
         else if (state == SYNC_STATE_SYNCING && mNotes.size() > 0) {

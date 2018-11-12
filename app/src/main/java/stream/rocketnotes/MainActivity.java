@@ -552,6 +552,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void RemoveSyncHeader() {
+        mAdapter.removeAllScrollableHeaders();
+    }
+
     public void RemoveSticky() {
         UpdateMainEvent stickyEvent = EventBus.getDefault().getStickyEvent(UpdateMainEvent.class);
         if (stickyEvent != null) {
@@ -604,6 +608,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case SyncHeaderViewholder.SYNC_STATE_BACKEDUP:
                 AddSyncBackedUpHeader();
+                break;
+            case SyncService.SYNC_STATE_COMPLETED:
+                RemoveSyncHeader();
                 break;
             default:
                 break;

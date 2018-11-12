@@ -7,17 +7,24 @@ public class NotesItem {
     Context mContext;
 
     Integer _id = null;
-    String note = null;
     Long date = null;
+    String note = null;
     String image = null;
     String imagePreview = null;
-
     String cloudId = null;
     boolean shared = false;
 
     public NotesItem() { }
     public NotesItem(Context mContext) {
         this.mContext = mContext;
+    }
+    public NotesItem(Integer id, Long date, String note, String image, String imagePreview, String cloudId) {
+        this._id = id;
+        this.date = date;
+        this.note = note;
+        this.image = image;
+        this.imagePreview = imagePreview;
+        this.cloudId = cloudId;
     }
     public NotesItem getNotes() {
         return this;

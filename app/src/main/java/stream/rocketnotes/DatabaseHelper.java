@@ -389,4 +389,34 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Constants {
         db.close();
         return count;
     }
+
+    public void UpdateOrInsertNote(NotesItem note) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        String selection = Integer.toString(note.getID());
+        selection = "_id=" + selection;
+
+        if (note.getDate() != null) {
+            values.put(KEY_DATE, note.getDate());
+        }
+        if (note.getNote() != null) {
+            values.put(KEY_NOTE, note.getNote());
+        }
+        if (note.getImage() != null) {
+            values.put(KEY_IMAGE, note.getImage());
+        }
+        if (note.getImagePreview() != null) {
+            values.put(KEY_IMAGEPREVIEW, note.getImagePreview());
+        }
+        if (note.getCloudId() != null) {
+            values.put(KEY_CLOUDID, note.getCloudId());
+        }
+
+        long count = db.update(TABLE_NOTES, values, selection, null);
+        if (count == 0) {
+            values.put(KEY_ID, note.getID());
+            db.insert(TABLE_NOTES, null, values);
+        }
+        db.close();
+    }
 }

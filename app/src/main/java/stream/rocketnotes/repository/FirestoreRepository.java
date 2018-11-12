@@ -27,9 +27,11 @@ public class FirestoreRepository {
 
     public FirestoreRepository(Context context, String userID, DatabaseHelper dbHelper) {
         this.userID = userID;
-        firestoreDB = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build();
-        firestoreDB.setFirestoreSettings(settings);
+        if (firestoreDB == null) {
+            firestoreDB = FirebaseFirestore.getInstance();
+            FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build();
+            firestoreDB.setFirestoreSettings(settings);
+        }
 
         this.dbHelper = dbHelper;
     }
@@ -48,6 +50,7 @@ public class FirestoreRepository {
                     @Override
                     public void onSuccess(final DocumentReference documentReference) {
                         Map<String, Object> item = new HashMap<>();
+                        item.put(DatabaseHelper.KEY_ID, notesItem.getID());
                         item.put(DatabaseHelper.KEY_CLOUDID, documentReference.getId());
                         firestoreDB.collection("users").document(userID).collection("notesindex").document(notesItem.getID().toString()).set(item)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -24,7 +24,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
@@ -208,6 +210,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         itemCloudRestore.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
+                final FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
+                RestoreNotes(firestoreDB);
                 return false;
             }
         });
@@ -573,6 +577,125 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(Constants.REFRESH, true);
         editor.apply();
+    }
+
+
+    public void RestoreNotes(final FirebaseFirestore firestoreDB) {
+        try {
+            firestoreDB.collection("users").document(userID).collection("notesindex").orderBy(DatabaseHelper.KEY_ID, Query.Direction.ASCENDING)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            Integer notesCount = task.getResult().size();
+                            if (task.isSuccessful() && notesCount > 0) {
+                                showpDialog("Restoring notes...");
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String cloudID = (String) document.get(DatabaseHelper.KEY_CLOUDID);
+                                    Log.d("Cloud ID", cloudID);
+                                    if (cloudID != null) {
+                                        firestoreDB.collection(DatabaseHelper.TABLE_NOTES).document(cloudID).get()
+                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                        if (task.getResult() != null) {
+                                                            DocumentSnapshot documentSnapshot = task.getResult();
+                                                            Integer id = documentSnapshot.get(DatabaseHelper.KEY_ID) != null ? ((Long) documentSnapshot.get(DatabaseHelper.KEY_ID)).intValue() : null;
+                                                            Long date = (Long) documentSnapshot.get(DatabaseHelper.KEY_DATE);
+                                                            if (id != null && date != null) {
+                                                                NotesItem note = dbHelper.GetNote(id);
+                                                                if (note.date != null) {
+                                                                    if (note.date < date) {
+                                                                        NotesItem noteItem = new NotesItem(id,
+                                                                                date,
+                                                                                (String) documentSnapshot.get(DatabaseHelper.KEY_NOTE),
+                                                                                (String) documentSnapshot.get(DatabaseHelper.KEY_IMAGE),
+                                                                                (String) documentSnapshot.get(DatabaseHelper.KEY_IMAGEPREVIEW),
+                                                                                documentSnapshot.getReference().getId());
+                                                                        dbHelper.UpdateOrInsertNote(noteItem);
+                                                                    }
+                                                                } else {
+                                                                    NotesItem noteItem = new NotesItem(id,
+                                                                            date,
+                                                                            (String) documentSnapshot.get(DatabaseHelper.KEY_NOTE),
+                                                                            (String) documentSnapshot.get(DatabaseHelper.KEY_IMAGE),
+                                                                            (String) documentSnapshot.get(DatabaseHelper.KEY_IMAGEPREVIEW),
+                                                                            documentSnapshot.getReference().getId());
+                                                                    dbHelper.UpdateOrInsertNote(noteItem);
+                                                                }
+                                                            }
+                                                            Log.d("Restored: ", String.valueOf(id));
+                                                        }
+                                                    }
+                                                });
+                                    }
+                                }
+                                Handler handler = new Handler();
+                                Runnable r1 = new Runnable() {
+                                    public void run() {
+                                        hidepDialog();
+                                        Toasty.success(mContext, "Notes Restored", Toast.LENGTH_SHORT).show();
+                                    }
+                                };
+                                handler.postDelayed(r1, notesCount * 15);
+                            } else {
+
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            Log.e("Error deleting: ", e.getMessage());
+        }
+    }
+
+    public void RestoreNotesBatch(final FirebaseFirestore firestoreDB, Integer index) {
+        try {
+            firestoreDB.collection("users").document(userID).collection("notesindex").orderBy(DatabaseHelper.KEY_ID)
+                    .startAfter(index)
+                    .limit(1)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful() && task.getResult().size() > 0) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Integer id = (Integer) document.get(DatabaseHelper.KEY_ID);
+                                    Long date = (Long) document.get(DatabaseHelper.KEY_DATE);
+                                    if (id != null && date != null) {
+                                        NotesItem note = dbHelper.GetNote(id);
+                                        if (note.date != null) {
+                                            if (note.date < date) {
+                                                NotesItem noteItem = new NotesItem(id,
+                                                        date,
+                                                        (String) document.get(DatabaseHelper.KEY_NOTE),
+                                                        (String) document.get(DatabaseHelper.KEY_IMAGE),
+                                                        (String) document.get(DatabaseHelper.KEY_IMAGEPREVIEW),
+                                                        (String) document.get(DatabaseHelper.KEY_CLOUDID));
+                                                dbHelper.UpdateOrInsertNote(noteItem);
+                                            }
+                                        } else {
+                                            NotesItem noteItem = new NotesItem(id,
+                                                    date,
+                                                    (String) document.get(DatabaseHelper.KEY_NOTE),
+                                                    (String) document.get(DatabaseHelper.KEY_IMAGE),
+                                                    (String) document.get(DatabaseHelper.KEY_IMAGEPREVIEW),
+                                                    (String) document.get(DatabaseHelper.KEY_CLOUDID));
+                                            dbHelper.UpdateOrInsertNote(noteItem);
+                                        }
+                                    }
+                                }
+                                Integer lastIndex = (Integer) task.getResult().getDocuments().get(task.getResult().size() - 1).get(DatabaseHelper.KEY_ID);
+                                if (lastIndex != null) {
+                                    RestoreNotesBatch(firestoreDB, lastIndex);
+                                }
+                            } else {
+
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            Log.e("Error deleting: ", e.getMessage());
+        }
     }
 
     public void DeleteNotes(final FirebaseFirestore firestoreDB) {
