@@ -23,6 +23,7 @@ import stream.rocketnotes.NotesItem;
 import stream.rocketnotes.interfaces.FirestoreInterface;
 import stream.rocketnotes.interfaces.UpdateMainEvent;
 import stream.rocketnotes.repository.FirestoreRepository;
+import stream.rocketnotes.utils.CloudUtils;
 import stream.rocketnotes.viewholder.SyncHeaderViewholder;
 
 public class SyncService extends Service {
@@ -62,7 +63,7 @@ public class SyncService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (!isConnected()) {
+        if (!CloudUtils.isConnected(mContext)) {
             state = SYNC_STATE_ERROR_CONNECTION;
             stopSelf();
         }
@@ -135,16 +136,6 @@ public class SyncService extends Service {
             }
         };
         firestoreRepository.AddNote(notesItem, firestoreInterface);
-    }
-
-    public boolean isConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = null;
-        if (cm != null) {
-            netInfo = cm.getActiveNetworkInfo();
-        }
-
-        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     @Override

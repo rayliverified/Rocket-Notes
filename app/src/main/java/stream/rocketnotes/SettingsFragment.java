@@ -56,6 +56,7 @@ import es.dmoral.toasty.Toasty;
 import stream.crosspromotion.AdActivity;
 import stream.customalert.CustomAlertDialogue;
 import stream.rocketnotes.utils.AnalyticsUtils;
+import stream.rocketnotes.utils.CloudUtils;
 import stream.rocketnotes.utils.FileUtils;
 
 import static android.app.Activity.RESULT_OK;
@@ -164,28 +165,50 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             itemCloudAccount.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Account Logout");
-                    showpDialog("Logging Out");
-                    dbHelper.DeleteCloudBackup();
-                    final FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
-                    DeleteNotes(firestoreDB);
-                    DeleteNotesIndex(firestoreDB);
+                    CustomAlertDialogue.Builder alert = new CustomAlertDialogue.Builder(getActivity())
+                            .setStyle(CustomAlertDialogue.Style.DIALOGUE)
+                            .setTitle("Account Logout")
+                            .setMessage("Are you sure you want to logout of Cloud Sync? This deletes all notes stored in the cloud.")
+                            .setNegativeText("Cancel")
+                            .setOnNegativeClicked(new CustomAlertDialogue.OnNegativeClicked() {
+                                @Override
+                                public void OnClick(View view, Dialog dialog) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setPositiveText("Confirm")
+                            .setPositiveTypeface(Typeface.DEFAULT_BOLD)
+                            .setOnPositiveClicked(new CustomAlertDialogue.OnPositiveClicked() {
+                                @Override
+                                public void OnClick(View view, Dialog dialog) {
+                                    AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Account Logout");
+                                    showpDialog("Logging Out");
+                                    dbHelper.DeleteCloudBackup();
+                                    final FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
+                                    DeleteNotes(firestoreDB);
+                                    DeleteNotesIndex(firestoreDB);
 
-                    int count = (int) dbHelper.GetNotesCount();
+                                    int count = (int) dbHelper.GetNotesCount();
 
-                    Handler handler = new Handler();
-                    Runnable r1 = new Runnable() {
-                        public void run() {
-                            FirebaseAuth.getInstance().signOut();
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putString(Constants.FIREBASE_USER_ID, "");
-                            editor.apply();
-                            hidepDialog();
-                            ToggleCloudPreferencesVisibility(false);
-                            Toasty.success(mContext, "Logout Complete", Toast.LENGTH_SHORT).show();
-                        }
-                    };
-                    handler.postDelayed(r1, count / 2 + 1000);
+                                    Handler handler = new Handler();
+                                    Runnable r1 = new Runnable() {
+                                        public void run() {
+                                            FirebaseAuth.getInstance().signOut();
+                                            SharedPreferences.Editor editor = sharedPref.edit();
+                                            editor.putString(Constants.FIREBASE_USER_ID, "");
+                                            editor.apply();
+                                            hidepDialog();
+                                            ToggleCloudPreferencesVisibility(false);
+                                            Toasty.success(mContext, "Logout Complete", Toast.LENGTH_SHORT).show();
+                                        }
+                                    };
+                                    handler.postDelayed(r1, count / 2 + 1000);
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setDecorView(getActivity().getWindow().getDecorView())
+                            .build();
+                    alert.show();
                     return false;
                 }
             });
@@ -195,13 +218,20 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             itemCloudAccount.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Account Login");
-                    // Choose authentication providers
-                    List<AuthUI.IdpConfig> providers = Collections.singletonList(new AuthUI.IdpConfig.EmailBuilder().build());
-                    startActivityForResult(AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setAvailableProviders(providers)
-                            .build(), 1);
+                    if (CloudUtils.isConnected(mContext)) {
+                        AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Account Login");
+                        // Choose authentication providers
+                        List<AuthUI.IdpConfig> providers = Collections.singletonList(new AuthUI.IdpConfig.EmailBuilder().build());
+                        startActivityForResult(AuthUI.getInstance()
+                                .createSignInIntentBuilder()
+                                .setAvailableProviders(providers)
+                                .build(), 1);
+                    }
+                    else
+                    {
+                        Toasty.error(mContext, "No connection", Toast.LENGTH_SHORT).show();
+                    }
+
                     return false;
                 }
             });
@@ -210,30 +240,67 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         itemCloudRestore.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                final FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
-                RestoreNotes(firestoreDB);
+                if (CloudUtils.isConnected(mContext)) {
+                    AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Cloud Restore");
+                    RefreshMainActivity();
+                    final FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
+                    RestoreNotes(firestoreDB);
+                }
+                else
+                {
+                    Toasty.error(mContext, "No connection", Toast.LENGTH_SHORT).show();
+                }
+
                 return false;
             }
         });
         itemCloudDelete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Cloud Delete");
-                showpDialog("");
-                dbHelper.DeleteCloudBackup();
-                final FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
-                DeleteNotes(firestoreDB);
-                DeleteNotesIndex(firestoreDB);
+                if (CloudUtils.isConnected(mContext)) {
+                    CustomAlertDialogue.Builder alert = new CustomAlertDialogue.Builder(getActivity())
+                            .setStyle(CustomAlertDialogue.Style.DIALOGUE)
+                            .setTitle("Delete Cloud Backup")
+                            .setMessage("Are you sure you want to remove all notes stored in the cloud?")
+                            .setNegativeText("Cancel")
+                            .setOnNegativeClicked(new CustomAlertDialogue.OnNegativeClicked() {
+                                @Override
+                                public void OnClick(View view, Dialog dialog) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setPositiveText("Confirm")
+                            .setPositiveTypeface(Typeface.DEFAULT_BOLD)
+                            .setOnPositiveClicked(new CustomAlertDialogue.OnPositiveClicked() {
+                                @Override
+                                public void OnClick(View view, Dialog dialog) {
+                                    AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Cloud Delete");
+                                    showpDialog("");
+                                    dbHelper.DeleteCloudBackup();
+                                    final FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
+                                    DeleteNotes(firestoreDB);
+                                    DeleteNotesIndex(firestoreDB);
 
-                int count = (int) dbHelper.GetNotesCount();
-                Handler handler = new Handler();
-                Runnable r1 = new Runnable() {
-                    public void run() {
-                        hidepDialog();
-                        Toasty.success(mContext, "Cloud Backup Deleted", Toast.LENGTH_SHORT).show();
-                    }
-                };
-                handler.postDelayed(r1, count / 2 + 1000);
+                                    int count = (int) dbHelper.GetNotesCount();
+                                    Handler handler = new Handler();
+                                    Runnable r1 = new Runnable() {
+                                        public void run() {
+                                            hidepDialog();
+                                            Toasty.success(mContext, "Cloud Backup Deleted", Toast.LENGTH_SHORT).show();
+                                        }
+                                    };
+                                    handler.postDelayed(r1, count / 2 + 1000);
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setDecorView(getActivity().getWindow().getDecorView())
+                            .build();
+                    alert.show();
+                }
+                else
+                {
+                    Toasty.error(mContext, "No connection", Toast.LENGTH_SHORT).show();
+                }
 
                 return false;
             }

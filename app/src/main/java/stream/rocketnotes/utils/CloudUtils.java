@@ -1,5 +1,8 @@
 package stream.rocketnotes.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -28,5 +31,15 @@ public class CloudUtils {
             }
         };
         firestoreRepository.AddNote(notesItem, firestoreInterface);
+    }
+
+    public static boolean isConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = null;
+        if (cm != null) {
+            netInfo = cm.getActiveNetworkInfo();
+        }
+
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
