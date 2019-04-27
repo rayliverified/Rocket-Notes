@@ -9,10 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,12 +22,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.github.ybq.android.spinkit.style.Wave;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.ProgressCallback;
-import com.pyze.android.Pyze;
 import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
@@ -46,10 +46,11 @@ import stream.rocketnotes.interfaces.UpdateMainEvent;
 import stream.rocketnotes.service.SaveImageService;
 import stream.rocketnotes.service.SaveNoteService;
 import stream.rocketnotes.ui.CustomImageView;
-//import stream.rocketnotes.utils.AnalyticsUtils;
 import stream.rocketnotes.utils.FileUtils;
 import stream.rocketnotes.utils.PermissionUtils;
 import stream.rocketnotes.utils.Units;
+
+//import stream.rocketnotes.utils.AnalyticsUtils;
 
 public class ShareActivity extends Activity {
 

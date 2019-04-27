@@ -22,10 +22,6 @@
         android:fullBackupContent="@xml/backup_descriptor">
 
         <meta-data
-            android:name="PyzeAppKey"
-            android:value="ERdy22a6SxORk6ndRxsEUA"/>
-
-        <meta-data
             android:name="CustomAds"
             android:value="https://straightup.fun/crosspromotion/"/>
 

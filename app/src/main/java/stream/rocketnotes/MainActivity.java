@@ -21,14 +21,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.pyze.android.Pyze;
-import com.pyze.android.PyzeEvents;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -38,14 +41,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import es.dmoral.toasty.Toasty;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.Payload;
 import eu.davidea.flexibleadapter.common.SmoothScrollStaggeredLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
@@ -109,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
             alertPermissions.show();
         }
         AnalyticsUtils.InitializeAnalytics(getApplication());
-        Pyze.showInAppNotificationUI(this, null);
         dbHelper = new DatabaseHelper(mContext);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         //Checks for first launch
@@ -720,7 +717,7 @@ public class MainActivity extends AppCompatActivity {
     public void SessionDetails() {
         HashMap<String, Object> attributes = new HashMap<>();
 
-        int ids[] = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, ImageWidget.class));
+        int[] ids = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, ImageWidget.class));
         if (ids.length > 0) {
             attributes.put("Image Widget", String.valueOf(true));
         } else {
@@ -732,10 +729,5 @@ public class MainActivity extends AppCompatActivity {
         } else {
             attributes.put("Notes Widget", String.valueOf(false));
         }
-
-        //Pyze
-        attributes.put("Note Count", String.valueOf(mNoteCount));
-        attributes.put("Image Count", String.valueOf(mImageCount));
-        PyzeEvents.postCustomEventWithAttributes(mActivity, attributes);
     }
 }

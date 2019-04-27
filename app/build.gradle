@@ -25,8 +25,6 @@ repositories {
     jcenter()
     maven { url "https://dl.bintray.com/drummer-aidan/maven" }
     maven { url 'https://jitpack.io' }
-    maven { url 'http://sdk.uxcam.com/android/' }
-    maven { url "http://pyze.bintray.com/pyze-android" }
     maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
     maven { url "https://maven.google.com" }
 }
@@ -68,7 +66,6 @@ dependencies {
     implementation 'org.zeroturnaround:zt-zip:1.13' //https://github.com/zeroturnaround/zt-zip
     implementation 'com.github.Kennyc1012:BottomSheet:2.3.4' //https://github.com/Kennyc1012/BottomSheet
     implementation 'com.zxy.android:tiny:1.0.0' //https://github.com/Sunzxyong/Tiny
-//    implementation 'com.pyze:PyzeLibrary:4.6.1'
     //Custom filter chips from https://github.com/claudiodegio/MsvSearch
     //Image viewer from https://github.com/stfalcon-studio/FrescoImageViewer
 }

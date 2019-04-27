@@ -86,9 +86,6 @@ public class PopupActivity extends Activity {
         ImageButton editSubmit = findViewById(R.id.edit_submit);
         final TextView editHelper = findViewById(R.id.edit_helper);
 
-//        UXCam.occludeSensitiveView(editNote);
-//        UXCam.occludeSensitiveView(editText);
-
         if (getIntent().getAction().equals(Constants.NEW_NOTE)) {
 //            AnalyticsUtils.AnalyticEvent(mActivity, "Note Type", Constants.NEW_NOTE);
 
@@ -114,7 +111,7 @@ public class PopupActivity extends Activity {
                     String[] noteText = s.toString().split("\n", 2);
                     Log.d("Note Length", String.valueOf(noteText.length));
                     if (s.length() > 20 && s.length() < Constants.TITLE_LENGTH && noteText.length == 1) {
-                        String helperText = "(" + String.valueOf(Constants.TITLE_LENGTH - s.length()) + " characters remaining)";
+                        String helperText = "(" + (Constants.TITLE_LENGTH - s.length()) + " characters remaining)";
                         editHelper.setText(helperText);
                     } else {
                         editHelper.setText(R.string.edit_helper_default);

@@ -6,12 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.afollestad.materialcamera.MaterialCamera;
-import com.pyze.android.Pyze;
 
 import java.io.File;
 

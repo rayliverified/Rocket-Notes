@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -16,6 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.kennyc.bottomsheet.BottomSheet;
 import com.kennyc.bottomsheet.BottomSheetListener;
@@ -97,7 +98,6 @@ public class NoteItemViewholder extends AbstractFlexibleItem<NoteItemViewholder.
     public void bindViewHolder(FlexibleAdapter adapter, MyViewHolder holder, int position,
                                List payloads) {
         final Context context = holder.itemView.getContext();
-//        UXCam.occludeSensitiveView(holder.noteLayout);
 
         ArrayList<String> note = NoteHelper.getNote(stream.rocketnotes.utils.TextUtils.Compatibility(noteText));
         holder.noteTitle.setText(stream.rocketnotes.utils.TextUtils.fromHtml(note.get(0)));

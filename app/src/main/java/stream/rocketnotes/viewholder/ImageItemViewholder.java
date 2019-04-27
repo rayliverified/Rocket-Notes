@@ -3,10 +3,11 @@ package stream.rocketnotes.viewholder;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.squareup.picasso.Picasso;
 
@@ -78,7 +79,6 @@ public class ImageItemViewholder extends AbstractFlexibleItem<ImageItemViewholde
     public void bindViewHolder(FlexibleAdapter adapter, MyViewHolder holder, final int position,
                                List payloads) {
         final Context context = holder.itemView.getContext();
-//        UXCam.occludeSensitiveView(holder.noteImage);
 
         Picasso.get().load(image).transform(ImageTransformer.getSquare(holder.noteImage)).placeholder(R.drawable.image_picture_full).into(holder.noteImage);
 
