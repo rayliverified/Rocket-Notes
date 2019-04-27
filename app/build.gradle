@@ -33,8 +33,8 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
-    implementation 'com.github.searchy2:CustomPermissionsDialogue:2.0.1'
-    implementation 'com.github.searchy2:CustomAlertViewDialogue:2.5.1'
+    implementation 'com.github.searchy2:CustomPermissionsDialogue:2.1.0'
+    implementation 'com.github.searchy2:CustomAlertViewDialogue:2.6.0'
     implementation 'com.github.searchy2:AndroidCrossPromotion:1.8.1'
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
@@ -42,9 +42,9 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.android.volley:volley:1.1.0'
+    implementation 'com.android.volley:volley:1.1.1'
     implementation 'androidx.preference:preference:1.0.0'
-    implementation 'com.google.firebase:firebase-firestore:17.1.5'
+    implementation 'com.google.firebase:firebase-firestore:18.2.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
 
     implementation 'com.afollestad:material-camera:0.4.5' //https://github.com/afollestad/material-camera
