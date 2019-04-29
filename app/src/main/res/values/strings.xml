@@ -28,7 +28,8 @@
     <string name="sync_loggedout_text">Backup notes to Cloud</string>
     <string name="sync_loggedin_text">Welcome back %1$s</string>
     <string name="sync_backedup_text">Backup complete!</string>
-    <string name="sync_starting">Syncing...</string>
+    <string name="sync_starting_text">Syncing...</string>
+    <string name="sync_error_text">Error: %1$s</string>
 
     <!--Shortcut Titles-->
     <string name="newnote_title_short">New Note</string>

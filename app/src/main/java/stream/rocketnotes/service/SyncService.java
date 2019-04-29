@@ -4,10 +4,11 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.tasks.OnFailureListener;
 
@@ -15,8 +16,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
-import androidx.annotation.NonNull;
-import androidx.preference.PreferenceManager;
 import stream.rocketnotes.Constants;
 import stream.rocketnotes.DatabaseHelper;
 import stream.rocketnotes.NotesItem;
@@ -55,7 +54,7 @@ public class SyncService extends Service {
         super.onCreate();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         dbHelper = new DatabaseHelper(mContext);
-        userID = sharedPref.getString(Constants.FIREBASE_USER_ID, "");
+        userID = sharedPref.getString(Constants.FIRESTORE_USER_ID, "");
         state = SYNC_STATE_STARTING;
         totalSize = dbHelper.GetUnsyncedNotesCount();
         totalSynced = 0;
@@ -76,8 +75,7 @@ public class SyncService extends Service {
             state = SYNC_STATE_COMPLETED;
             EventBus.getDefault().post(new UpdateMainEvent(SYNC_STATE_COMPLETED));
             stopSelf();
-        }
-        else if (state == SYNC_STATE_SYNCING && mNotes.size() > 0) {
+        } else if (state.equals(SYNC_STATE_SYNCING) && mNotes.size() > 0) {
             //Do nothing because notes are being synced already.
         }
         else {
@@ -129,13 +127,15 @@ public class SyncService extends Service {
                 return new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Failure: " + e);
                         state = SYNC_STATE_ERROR;
+                        EventBus.getDefault().post(new UpdateMainEvent(SyncHeaderViewholder.SYNC_STATE_ERROR));
                         stopSelf();
                     }
                 };
             }
         };
-        firestoreRepository.AddNote(notesItem, firestoreInterface);
+        firestoreRepository.SaveNoteCloud(notesItem, firestoreInterface);
     }
 
     @Override

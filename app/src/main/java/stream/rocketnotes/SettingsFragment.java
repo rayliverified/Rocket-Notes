@@ -15,12 +15,21 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
+import androidx.preference.PreferenceScreen;
+import androidx.preference.SwitchPreference;
+
 import com.firebase.ui.auth.AuthUI;
 import com.github.angads25.filepicker.controller.DialogSelectionListener;
 import com.github.angads25.filepicker.model.DialogConfigs;
 import com.github.angads25.filepicker.model.DialogProperties;
 import com.github.angads25.filepicker.view.FilePickerDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -45,16 +54,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.preference.Preference;
-import androidx.preference.PreferenceCategory;
-import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
-import androidx.preference.PreferenceScreen;
-import androidx.preference.SwitchPreference;
 import es.dmoral.toasty.Toasty;
 import stream.crosspromotion.AdActivity;
 import stream.customalert.CustomAlertDialogue;
+import stream.rocketnotes.interfaces.FirestoreInterface;
+import stream.rocketnotes.repository.FirestoreRepository;
 import stream.rocketnotes.utils.AnalyticsUtils;
 import stream.rocketnotes.utils.CloudUtils;
 import stream.rocketnotes.utils.FileUtils;
@@ -79,6 +83,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private Preference itemCloudRestore;
     private Preference itemCloudDelete;
     private Preference itemCloudAccount;
+    private Preference itemCloudImage;
 
     private Preference itemLocalBackup;
     private Preference itemLocalRestore;
@@ -105,7 +110,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         mContext = getActivity().getApplicationContext();
         dbHelper = new DatabaseHelper(mContext);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        userID = sharedPref.getString(Constants.FIREBASE_USER_ID, "");
+        userID = sharedPref.getString(Constants.FIRESTORE_USER_ID, "");
 
         setRetainInstance(true);
 
@@ -126,6 +131,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         itemCloudRestore = findPreference("settings_cloud_restore");
         itemCloudDelete = findPreference("settings_cloud_delete");
         itemCloudAccount = findPreference("settings_cloud_account");
+        itemCloudImage = findPreference("settings_cloud_image");
 
         itemLocalBackup = findPreference("settings_local_backup");
         itemLocalRestore = findPreference("settings_local_restore");
@@ -195,7 +201,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                         public void run() {
                                             FirebaseAuth.getInstance().signOut();
                                             SharedPreferences.Editor editor = sharedPref.edit();
-                                            editor.putString(Constants.FIREBASE_USER_ID, "");
+                                            editor.putString(Constants.FIRESTORE_USER_ID, "");
                                             editor.apply();
                                             hidepDialog();
                                             ToggleCloudPreferencesVisibility(false);
@@ -296,12 +302,22 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             .setDecorView(getActivity().getWindow().getDecorView())
                             .build();
                     alert.show();
-                }
-                else
-                {
+                } else {
                     Toasty.error(mContext, "No connection", Toast.LENGTH_SHORT).show();
                 }
 
+                return false;
+            }
+        });
+        itemCloudImage.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                if (CloudUtils.isConnected(mContext)) {
+                    ArrayList<NotesItem> notesItems = dbHelper.GetImageNotes();
+                    for (NotesItem notesItem : notesItems.subList(0, notesItems.size() - 2)) {
+                        SaveImageCloud(mContext, notesItem);
+                    }
+                }
                 return false;
             }
         });
@@ -356,12 +372,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         if (files.length >= 1) {
                             RestoreDatabase(files[0]);
                             RefreshMainActivity();
-                            int widgetIDs[] = AppWidgetManager.getInstance(getActivity().getApplication()).getAppWidgetIds(new ComponentName(mContext, NotesWidget.class));
+                            int[] widgetIDs = AppWidgetManager.getInstance(getActivity().getApplication()).getAppWidgetIds(new ComponentName(mContext, NotesWidget.class));
                             for (int id : widgetIDs) {
                                 AppWidgetManager.getInstance(getActivity().getApplication()).notifyAppWidgetViewDataChanged(id, R.id.notes_listview);
                             }
 
-                            int imageWidgetIDs[] = AppWidgetManager.getInstance(getActivity().getApplication()).getAppWidgetIds(new ComponentName(mContext, ImageWidget.class));
+                            int[] imageWidgetIDs = AppWidgetManager.getInstance(getActivity().getApplication()).getAppWidgetIds(new ComponentName(mContext, ImageWidget.class));
                             for (int id : imageWidgetIDs) {
                                 AppWidgetManager.getInstance(getActivity().getApplication()).notifyAppWidgetViewDataChanged(id, R.id.image_gridview);
                             }
@@ -556,7 +572,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             if (user != null) {
                 //Save Firebase User to SharedPrefs.
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString(Constants.FIREBASE_USER_ID, user.getUid());
+                editor.putString(Constants.FIRESTORE_USER_ID, user.getUid());
                 editor.apply();
                 ToggleCloudPreferencesVisibility(true);
             } else {
@@ -649,7 +665,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     public void RestoreNotes(final FirebaseFirestore firestoreDB) {
         try {
-            firestoreDB.collection("users").document(userID).collection("notesindex").orderBy(DatabaseHelper.KEY_ID, Query.Direction.ASCENDING)
+            firestoreDB.collection(Constants.FIRESTORE_COLLECTION_USERS).document(userID).collection("notesindex").orderBy(DatabaseHelper.KEY_ID, Query.Direction.ASCENDING)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -661,7 +677,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                     String cloudID = (String) document.get(DatabaseHelper.KEY_CLOUDID);
                                     Log.d("Cloud ID", cloudID);
                                     if (cloudID != null) {
-                                        firestoreDB.collection(DatabaseHelper.TABLE_NOTES).document(cloudID).get()
+                                        firestoreDB.collection("users").document(userID).collection(DatabaseHelper.TABLE_NOTES).document(cloudID).get()
                                                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -717,7 +733,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     public void RestoreNotesBatch(final FirebaseFirestore firestoreDB, Integer index) {
         try {
-            firestoreDB.collection("users").document(userID).collection("notesindex").orderBy(DatabaseHelper.KEY_ID)
+            firestoreDB.collection(Constants.FIRESTORE_COLLECTION_USERS).document(userID).collection("notesindex").orderBy(DatabaseHelper.KEY_ID)
                     .startAfter(index)
                     .limit(1)
                     .get()
@@ -767,7 +783,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     public void DeleteNotes(final FirebaseFirestore firestoreDB) {
         try {
-            firestoreDB.collection(DatabaseHelper.TABLE_NOTES).whereEqualTo(Constants.FIREBASE_USER_ID, userID).limit(500).get()
+            firestoreDB.collection(DatabaseHelper.TABLE_NOTES).whereEqualTo(Constants.FIRESTORE_USER_ID, userID).limit(500).get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -793,9 +809,34 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
     }
 
+    private void SaveImageCloud(Context context, NotesItem notesItem) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        String userID = sharedPref.getString(Constants.FIRESTORE_USER_ID, "");
+        if (!userID.equals("")) {
+            FirestoreRepository firestoreRepository = new FirestoreRepository(context, userID);
+            FirestoreInterface firestoreInterface = new FirestoreInterface() {
+                @Override
+                public void onSuccess() {
+                    Log.d("ImageViewHolder", "Success!");
+                }
+
+                @Override
+                public OnFailureListener getFailureListener() {
+                    return new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ImageViewHolder", "Error writing document", e);
+                        }
+                    };
+                }
+            };
+            firestoreRepository.UploadImage(notesItem, firestoreInterface);
+        }
+    }
+
     public void DeleteNotesIndex(final FirebaseFirestore firestoreDB) {
         try {
-            firestoreDB.collection("users").document(userID).collection("notesindex")
+            firestoreDB.collection(Constants.FIRESTORE_COLLECTION_USERS).document(userID).collection("notesindex")
                     .limit(500)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

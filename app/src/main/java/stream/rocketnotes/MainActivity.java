@@ -549,6 +549,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void AddSyncErrorHeader() {
+        if (mAdapter.isScrollableHeaderOrFooter(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_ERROR, MainActivity.this))) {
+            mAdapter.setAnimationOnForwardScrolling(false).setAnimationOnReverseScrolling(false);
+            mAdapter.updateItem(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_ERROR, MainActivity.this));
+        } else {
+            mAdapter.addScrollableHeader(new SyncHeaderViewholder("Sync", SyncHeaderViewholder.SYNC_STATE_ERROR, MainActivity.this));
+        }
+        int[] viewsIds = mStaggeredLayoutManager.findFirstCompletelyVisibleItemPositions(null);
+        if (viewsIds.length > 0) {
+            //User is at top of page. Scroll and show backup complete message.
+            if (viewsIds[0] <= 6) {
+                mAppBar.setExpanded(true);
+                mAdapter.smoothScrollToPosition(0);
+            }
+        }
+    }
+
     public void RemoveSyncHeader() {
         mAdapter.removeAllScrollableHeaders();
     }
@@ -609,6 +626,9 @@ public class MainActivity extends AppCompatActivity {
             case SyncService.SYNC_STATE_COMPLETED:
                 RemoveSyncHeader();
                 break;
+            case SyncService.SYNC_STATE_ERROR:
+                AddSyncErrorHeader();
+                break;
             default:
                 break;
         }
@@ -657,7 +677,7 @@ public class MainActivity extends AppCompatActivity {
             if (user != null) {
                 //Save Firebase User to SharedPrefs.
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString(Constants.FIREBASE_USER_ID, user.getUid());
+                editor.putString(Constants.FIRESTORE_USER_ID, user.getUid());
                 editor.apply();
                 //Start SyncService again to begin notes syncronization.
                 InitializeSyncService();

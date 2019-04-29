@@ -1,9 +1,6 @@
 package stream.rocketnotes;
 
 public interface Constants {
-    String APP_NAME = "Rocket Note";
-    String APP_VERSION = "1.0.8";
-    String YEAR = "2017";
     Integer TITLE_LENGTH = 40;
     Integer RECENT_IMAGES = 8;
     Integer RECENT_NOTES = 40;
@@ -34,6 +31,9 @@ public interface Constants {
     String URL = "URL";
     String TITLE = "TITLE";
     String AUTHORITY = "stream.rocketnotes.provider";
-    String FIREBASE_USER_ID = "FIREBASE_USER_ID";
     Boolean ANALYTICS_ENABLED = false;
+
+    //Firestore
+    String FIRESTORE_COLLECTION_USERS = "users";
+    String FIRESTORE_USER_ID = "user_id";
 }

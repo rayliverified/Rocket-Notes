@@ -12,9 +12,11 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
+
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.zxy.tiny.Tiny;
 import com.zxy.tiny.callback.FileCallback;
 
@@ -23,9 +25,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.File;
 import java.util.Calendar;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
 import es.dmoral.toasty.Toasty;
 import stream.rocketnotes.Constants;
 import stream.rocketnotes.DatabaseHelper;
@@ -156,7 +155,7 @@ public class SaveNoteService extends Service {
     private void SaveNoteCloud() {
         Log.d(TAG, "SaveNoteCloud");
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String userID = sharedPref.getString(Constants.FIREBASE_USER_ID, "");
+        String userID = sharedPref.getString(Constants.FIRESTORE_USER_ID, "");
         if (!userID.equals("")) {
             firestoreRepository = new FirestoreRepository(mContext, userID, dbHelper);
             FirestoreInterface firestoreInterface = new FirestoreInterface() {
@@ -175,7 +174,7 @@ public class SaveNoteService extends Service {
                     };
                 }
             };
-            firestoreRepository.AddNote(notesItem, firestoreInterface);
+            firestoreRepository.SaveNoteCloud(notesItem, firestoreInterface);
         }
     }
 
@@ -193,7 +192,7 @@ public class SaveNoteService extends Service {
 
     private void UpdateNoteWidget()
     {
-        int widgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), NotesWidget.class));
+        int[] widgetIDs = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), NotesWidget.class));
         for (int id : widgetIDs) {
             AppWidgetManager.getInstance(getApplication()).notifyAppWidgetViewDataChanged(id, R.id.notes_listview);
         }
@@ -201,7 +200,7 @@ public class SaveNoteService extends Service {
 
     private void UpdateImageWidget()
     {
-        int imageWidgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), ImageWidget.class));
+        int[] imageWidgetIDs = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), ImageWidget.class));
         for (int id : imageWidgetIDs) {
             AppWidgetManager.getInstance(getApplication()).notifyAppWidgetViewDataChanged(id, R.id.image_gridview);
         }

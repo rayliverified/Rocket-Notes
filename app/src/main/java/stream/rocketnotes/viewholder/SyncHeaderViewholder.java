@@ -11,13 +11,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+
 import com.firebase.ui.auth.AuthUI;
 
 import java.util.Collections;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.helpers.AnimatorHelper;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -29,6 +30,7 @@ public class SyncHeaderViewholder extends AbstractFlexibleItem<SyncHeaderViewhol
     public static final String SYNC_STATE_LOGGEDOUT = "SYNC_STATE_LOGGEDOUT";
     public static final String SYNC_STATE_BACKINGUP = "SYNC_STATE_BACKINGUP";
     public static final String SYNC_STATE_BACKEDUP = "SYNC_STATE_BACKEDUP";
+    public static final String SYNC_STATE_ERROR = "SYNC_STATE_ERROR";
 
     private String id;
     private String state;
@@ -131,7 +133,7 @@ public class SyncHeaderViewholder extends AbstractFlexibleItem<SyncHeaderViewhol
                     holder.mProgressText.setVisibility(View.VISIBLE);
                     holder.mImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.icon_cloud_upload));
                     holder.mProgressBar.setIndeterminate(true);
-                    holder.mProgressText.setText(context.getString(R.string.sync_starting));
+                    holder.mProgressText.setText(context.getString(R.string.sync_starting_text));
                     break;
                 case SYNC_STATE_BACKEDUP:
                     holder.mLayout.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +149,28 @@ public class SyncHeaderViewholder extends AbstractFlexibleItem<SyncHeaderViewhol
                     holder.mProgressText.setVisibility(View.GONE);
                     holder.mTitle.setText(context.getString(R.string.sync_backedup_text));
                     holder.mImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.icon_cloud_done));
+                    holder.mButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            adapter.setAnimationOnForwardScrolling(true).setAnimationOnReverseScrolling(true);
+                            adapter.removeScrollableHeader(SyncHeaderViewholder.this);
+                        }
+                    });
+                    break;
+                case SYNC_STATE_ERROR:
+                    holder.mLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            adapter.setAnimationOnForwardScrolling(true).setAnimationOnReverseScrolling(true);
+                            adapter.removeScrollableHeader(SyncHeaderViewholder.this);
+                        }
+                    });
+                    holder.mTitle.setVisibility(View.VISIBLE);
+                    holder.mProgressBar.setVisibility(View.GONE);
+                    holder.mButton.setVisibility(View.VISIBLE);
+                    holder.mProgressText.setVisibility(View.GONE);
+                    holder.mTitle.setText(context.getString(R.string.sync_error_text));
+                    holder.mImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.icon_check_fit)); //TODO REMOVE Error drawable icon.
                     holder.mButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

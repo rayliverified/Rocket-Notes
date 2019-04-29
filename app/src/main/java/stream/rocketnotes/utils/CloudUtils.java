@@ -3,11 +3,11 @@ package stream.rocketnotes.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 
-import androidx.annotation.NonNull;
 import stream.rocketnotes.NotesItem;
 import stream.rocketnotes.interfaces.FirestoreInterface;
 import stream.rocketnotes.repository.FirestoreRepository;
@@ -30,7 +30,7 @@ public class CloudUtils {
                 };
             }
         };
-        firestoreRepository.AddNote(notesItem, firestoreInterface);
+        firestoreRepository.SaveNoteCloud(notesItem, firestoreInterface);
     }
 
     public static boolean isConnected(Context context) {
