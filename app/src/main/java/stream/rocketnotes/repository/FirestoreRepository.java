@@ -4,11 +4,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -23,6 +30,7 @@ import stream.rocketnotes.Constants;
 import stream.rocketnotes.DatabaseHelper;
 import stream.rocketnotes.NotesItem;
 import stream.rocketnotes.interfaces.FirestoreInterface;
+import stream.rocketnotes.utils.FileUtils;
 
 public class FirestoreRepository {
 
@@ -164,6 +172,79 @@ public class FirestoreRepository {
             }).addOnFailureListener(firestoreInterface.getFailureListener());
         } catch (NullPointerException e) {
             Log.e(TAG, String.valueOf(e));
+        }
+    }
+
+    public void RestoreNotes(Task<QuerySnapshot> task) {
+        try {
+            for (QueryDocumentSnapshot document : task.getResult()) {
+                String cloudID = (String) document.get(DatabaseHelper.KEY_CLOUDID);
+                Log.d("Cloud ID", cloudID);
+                if (cloudID != null) {
+                    firestoreDB.collection("users").document(userID).collection(DatabaseHelper.TABLE_NOTES).document(cloudID).get()
+                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.getResult() != null) {
+                                        DocumentSnapshot documentSnapshot = task.getResult();
+                                        Integer id = documentSnapshot.get(DatabaseHelper.KEY_ID) != null ? ((Long) documentSnapshot.get(DatabaseHelper.KEY_ID)).intValue() : null;
+                                        Long date = (Long) documentSnapshot.get(DatabaseHelper.KEY_DATE);
+                                        if (id != null && date != null) {
+                                            NotesItem note = dbHelper.GetNote(id);
+                                            if (note.getDate() != null) {
+                                                if (note.getDate() < date) {
+                                                    String imagePath = (String) documentSnapshot.get(DatabaseHelper.KEY_IMAGE);
+                                                    String imagePreviewPath = (String) documentSnapshot.get(DatabaseHelper.KEY_IMAGEPREVIEW);
+                                                    NotesItem noteItem = new NotesItem(id,
+                                                            date,
+                                                            (String) documentSnapshot.get(DatabaseHelper.KEY_NOTE),
+                                                            imagePath,
+                                                            imagePreviewPath,
+                                                            documentSnapshot.getReference().getId());
+                                                    dbHelper.UpdateOrInsertNote(noteItem);
+                                                    if (imagePath != null) {
+                                                        DownloadFile(imagePath);
+                                                    }
+                                                    if (imagePreviewPath != null) {
+                                                        DownloadFile(imagePreviewPath);
+                                                    }
+                                                }
+                                            } else {
+                                                String imagePath = (String) documentSnapshot.get(DatabaseHelper.KEY_IMAGE);
+                                                String imagePreviewPath = (String) documentSnapshot.get(DatabaseHelper.KEY_IMAGEPREVIEW);
+                                                NotesItem noteItem = new NotesItem(id,
+                                                        date,
+                                                        (String) documentSnapshot.get(DatabaseHelper.KEY_NOTE),
+                                                        imagePath,
+                                                        imagePreviewPath,
+                                                        documentSnapshot.getReference().getId());
+                                                dbHelper.UpdateOrInsertNote(noteItem);
+                                                if (imagePath != null) {
+                                                    DownloadFile(imagePath);
+                                                }
+                                                if (imagePreviewPath != null) {
+                                                    DownloadFile(imagePreviewPath);
+                                                }
+                                            }
+                                        }
+                                        Log.d("Restored: ", String.valueOf(id));
+                                    }
+                                }
+                            });
+                }
+            }
+        } catch (Exception e) {
+            Log.e("Error deleting: ", e.getMessage());
+        }
+    }
+
+    public void DownloadFile(String downloadPath) {
+        try {
+            StorageReference imageRef = firebaseStorage.getReference().child(Constants.FIRESTORE_COLLECTION_USERS).child(userID).child(FileUtils.GetFileNameFromPath(downloadPath));
+            File imageFile = new File(new URI(downloadPath));
+            imageRef.getFile(imageFile);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
     }
 

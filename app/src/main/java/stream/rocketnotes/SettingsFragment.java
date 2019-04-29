@@ -33,7 +33,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -251,9 +250,34 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             public boolean onPreferenceClick(Preference preference) {
                 if (CloudUtils.isConnected(mContext)) {
                     AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Cloud Restore");
-                    RefreshMainActivity();
-                    final FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
-                    RestoreNotes(firestoreDB);
+                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+                    String userID = sharedPref.getString(Constants.FIRESTORE_USER_ID, "");
+                    if (!userID.equals("")) {
+                        showpDialog("Restoring notes...");
+                        //Make sure Pictures folder exists. User could have no picture notes.
+                        FileUtils.InitializePicturesFolder(mContext);
+                        final FirestoreRepository firestoreRepository = new FirestoreRepository(mContext, userID);
+                        firestoreRepository.firestoreDB.collection(Constants.FIRESTORE_COLLECTION_USERS).document(userID).collection("notesindex").orderBy(DatabaseHelper.KEY_ID, Query.Direction.ASCENDING)
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        Integer notesCount = task.getResult().size();
+                                        if (task.isSuccessful() && notesCount > 0) {
+                                            firestoreRepository.RestoreNotes(task);
+                                            Handler handler = new Handler();
+                                            Runnable r1 = new Runnable() {
+                                                public void run() {
+                                                    hidepDialog();
+                                                    Toasty.success(mContext, "Notes Restored", Toast.LENGTH_SHORT).show();
+                                                    RefreshMainActivity();
+                                                }
+                                            };
+                                            handler.postDelayed(r1, notesCount * 30);
+                                        }
+                                    }
+                                });
+                    }
                 }
                 else
                 {
@@ -720,75 +744,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(Constants.REFRESH, true);
         editor.apply();
-    }
-
-
-    public void RestoreNotes(final FirebaseFirestore firestoreDB) {
-        try {
-            firestoreDB.collection(Constants.FIRESTORE_COLLECTION_USERS).document(userID).collection("notesindex").orderBy(DatabaseHelper.KEY_ID, Query.Direction.ASCENDING)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            Integer notesCount = task.getResult().size();
-                            if (task.isSuccessful() && notesCount > 0) {
-                                showpDialog("Restoring notes...");
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    String cloudID = (String) document.get(DatabaseHelper.KEY_CLOUDID);
-                                    Log.d("Cloud ID", cloudID);
-                                    if (cloudID != null) {
-                                        firestoreDB.collection("users").document(userID).collection(DatabaseHelper.TABLE_NOTES).document(cloudID).get()
-                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                        if (task.getResult() != null) {
-                                                            DocumentSnapshot documentSnapshot = task.getResult();
-                                                            Integer id = documentSnapshot.get(DatabaseHelper.KEY_ID) != null ? ((Long) documentSnapshot.get(DatabaseHelper.KEY_ID)).intValue() : null;
-                                                            Long date = (Long) documentSnapshot.get(DatabaseHelper.KEY_DATE);
-                                                            if (id != null && date != null) {
-                                                                NotesItem note = dbHelper.GetNote(id);
-                                                                if (note.date != null) {
-                                                                    if (note.date < date) {
-                                                                        NotesItem noteItem = new NotesItem(id,
-                                                                                date,
-                                                                                (String) documentSnapshot.get(DatabaseHelper.KEY_NOTE),
-                                                                                (String) documentSnapshot.get(DatabaseHelper.KEY_IMAGE),
-                                                                                (String) documentSnapshot.get(DatabaseHelper.KEY_IMAGEPREVIEW),
-                                                                                documentSnapshot.getReference().getId());
-                                                                        dbHelper.UpdateOrInsertNote(noteItem);
-                                                                    }
-                                                                } else {
-                                                                    NotesItem noteItem = new NotesItem(id,
-                                                                            date,
-                                                                            (String) documentSnapshot.get(DatabaseHelper.KEY_NOTE),
-                                                                            (String) documentSnapshot.get(DatabaseHelper.KEY_IMAGE),
-                                                                            (String) documentSnapshot.get(DatabaseHelper.KEY_IMAGEPREVIEW),
-                                                                            documentSnapshot.getReference().getId());
-                                                                    dbHelper.UpdateOrInsertNote(noteItem);
-                                                                }
-                                                            }
-                                                            Log.d("Restored: ", String.valueOf(id));
-                                                        }
-                                                    }
-                                                });
-                                    }
-                                }
-                                Handler handler = new Handler();
-                                Runnable r1 = new Runnable() {
-                                    public void run() {
-                                        hidepDialog();
-                                        Toasty.success(mContext, "Notes Restored", Toast.LENGTH_SHORT).show();
-                                    }
-                                };
-                                handler.postDelayed(r1, notesCount * 15);
-                            } else {
-
-                            }
-                        }
-                    });
-        } catch (Exception e) {
-            Log.e("Error deleting: ", e.getMessage());
-        }
     }
 
     public void RestoreNotesBatch(final FirebaseFirestore firestoreDB, Integer index) {
