@@ -7,6 +7,7 @@
     <string name="loading_backup_database">Backing up notes&#8230;</string>
     <string name="loading_restore_database">Restoring notes&#8230;</string>
     <string name="loading_cache">Refreshing cache&#8230;</string>
+    <string name="loading_delete_notes">Deleting notes&#8230;</string>
     <string name="settings_tos">Terms of Service</string>
     <string name="settings_privacy">Privacy Policy</string>
     <string name="settings_thanks">Acknowledgements</string>

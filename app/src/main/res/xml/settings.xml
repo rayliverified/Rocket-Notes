@@ -59,12 +59,12 @@
         <Preference
             android:key="settings_cloud_account"
             android:title="Enable Cloud Backup"
-            android:summary="Backup your notes to the cloud. Never lose notes again!"
+            android:summary="Backup your notes to Google Cloud"
             app:iconSpaceReserved="false"/>
 
         <Preference
             android:key="settings_cloud_image"
-            android:summary="Backup all images to the cloud."
+            android:summary="Backup all images to the cloud"
             android:title="Backup Images"
             app:iconSpaceReserved="false" />
     </PreferenceCategory>
@@ -91,6 +91,12 @@
             android:title="Refresh Image Cache"
             android:summary="Delete and then regenerate image thumbnails"
             app:iconSpaceReserved="false"/>
+
+        <Preference
+            android:key="settings_local_delete"
+            android:summary="Deletes all notes stored on this device. Notes backed up to the cloud are untouched"
+            android:title="Delete Notes"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
     <PreferenceCategory

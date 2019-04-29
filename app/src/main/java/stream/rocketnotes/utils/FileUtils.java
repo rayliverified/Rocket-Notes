@@ -6,10 +6,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -186,5 +186,25 @@ public class FileUtils {
             Log.d("GetFileNameFromUri", e.getMessage());
         }
         return result;
+    }
+
+    /**
+     * By default File#delete fails for non-empty directories, it works like "rm".
+     * We need something a little more brutual - this does the equivalent of "rm -r"
+     * https://stackoverflow.com/questions/779519/delete-directories-recursively-in-java/4026761#4026761
+     *
+     * @param path Root File Path
+     * @return true iff the file and all sub files/directories have been removed
+     * @throws FileNotFoundException
+     */
+    public static boolean DeleteFiles(File path) throws FileNotFoundException {
+        if (!path.exists()) throw new FileNotFoundException(path.getAbsolutePath());
+        boolean ret = true;
+        if (path.isDirectory()) {
+            for (File f : path.listFiles()) {
+                ret = ret && DeleteFiles(f);
+            }
+        }
+        return ret && path.delete();
     }
 }

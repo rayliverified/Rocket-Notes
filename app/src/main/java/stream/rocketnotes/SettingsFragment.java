@@ -44,6 +44,7 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -88,6 +89,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private Preference itemLocalBackup;
     private Preference itemLocalRestore;
     private Preference itemCacheImage;
+    private Preference itemLocalDelete;
 
     private Preference itemMoreApps;
     private Preference itemContactUs;
@@ -136,6 +138,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         itemLocalBackup = findPreference("settings_local_backup");
         itemLocalRestore = findPreference("settings_local_restore");
         itemCacheImage = findPreference("settings_cache_image");
+        itemLocalDelete = findPreference("settings_local_delete");
 
         itemMoreApps = findPreference("settings_moreapps");
         itemContactUs = findPreference("settings_contact_us");
@@ -397,7 +400,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         itemCacheImage.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference arg0) {
-
                 AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Refresh Cache");
                 showpDialog(getString(R.string.loading_cache));
                 Handler handler = new Handler();
@@ -413,6 +415,64 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 };
                 handler.postDelayed(r1, 100);
 
+                return false;
+            }
+        });
+        itemLocalDelete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AnalyticsUtils.AnalyticEvent(mActivity, "Click", "Delete Notes");
+                CustomAlertDialogue.Builder alert = new CustomAlertDialogue.Builder(getActivity())
+                        .setStyle(CustomAlertDialogue.Style.INPUT)
+                        .setTitle("Delete Notes")
+                        .setMessage("Are you sure you want to delete all notes stored on this device?")
+                        .setPositiveText("Confirm")
+                        .setPositiveColor(R.color.negative)
+                        .setPositiveTypeface(Typeface.DEFAULT_BOLD)
+                        .setOnInputClicked(new CustomAlertDialogue.OnInputClicked() {
+                            @Override
+                            public void OnClick(View view, Dialog dialog, ArrayList<String> inputList) {
+                                dialog.dismiss();
+                                showpDialog(getString(R.string.loading_delete_notes));
+                                Handler handler = new Handler();
+                                Runnable r1 = new Runnable() {
+                                    public void run() {
+                                        try {
+                                            FileUtils.DeleteFiles(new File(mContext.getFilesDir() + "/.Pictures"));
+                                        } catch (FileNotFoundException e) {
+                                            e.printStackTrace();
+                                        }
+                                        dbHelper.resetDatabase(mContext);
+                                        hidepDialog();
+                                        Toasty.success(mContext, "Notes Deleted", Toast.LENGTH_SHORT).show();
+
+                                        RefreshMainActivity();
+                                        int[] widgetIDs = AppWidgetManager.getInstance(getActivity().getApplication()).getAppWidgetIds(new ComponentName(mContext, NotesWidget.class));
+                                        for (int id : widgetIDs) {
+                                            AppWidgetManager.getInstance(getActivity().getApplication()).notifyAppWidgetViewDataChanged(id, R.id.notes_listview);
+                                        }
+
+                                        int[] imageWidgetIDs = AppWidgetManager.getInstance(getActivity().getApplication()).getAppWidgetIds(new ComponentName(mContext, ImageWidget.class));
+                                        for (int id : imageWidgetIDs) {
+                                            AppWidgetManager.getInstance(getActivity().getApplication()).notifyAppWidgetViewDataChanged(id, R.id.image_gridview);
+                                        }
+                                    }
+
+                                };
+                                handler.postDelayed(r1, 100);
+                            }
+                        })
+                        .setNegativeText("Cancel")
+                        .setNegativeColor(R.color.positive)
+                        .setOnNegativeClicked(new CustomAlertDialogue.OnNegativeClicked() {
+                            @Override
+                            public void OnClick(View view, Dialog dialog) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setDecorView(getActivity().getWindow().getDecorView())
+                        .build();
+                alert.show();
                 return false;
             }
         });
